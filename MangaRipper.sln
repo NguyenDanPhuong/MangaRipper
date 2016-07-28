@@ -1,26 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper", "MangaRipper\MangaRipper.csproj", "{E4C5D602-ED1E-4C04-B845-74EC5A58530D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Core", "MangaRipper.Core\MangaRipper.Core.csproj", "{13EFFE36-DBB8-4573-9260-B601177F66E3}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs28
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = MangaRipper\\MangaRipper.csproj
-		SccProjectName1 = MangaRipper
-		SccLocalPath1 = MangaRipper
-		SccProjectUniqueName2 = MangaRipper.Core\\MangaRipper.Core.csproj
-		SccProjectName2 = MangaRipper.Core
-		SccLocalPath2 = MangaRipper.Core
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = MangaRipper.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -53,5 +40,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = MangaRipper.vsmdi
 	EndGlobalSection
 EndGlobal
