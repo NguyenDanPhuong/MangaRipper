@@ -29,7 +29,7 @@ namespace MangaRipper
         {
             try
             {
-                var titleUrl = new Uri(cbTitleUrl.Text);
+                var titleUrl = cbTitleUrl.Text;
                 ITitle title = TitleFactory.CreateTitle(titleUrl);
                 title.Proxy = Option.GetProxy();
                 btnGetChapter.Enabled = false;
@@ -206,9 +206,9 @@ namespace MangaRipper
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            Size = MangaRipper.Properties.Settings.Default.Size;
-            Location = MangaRipper.Properties.Settings.Default.Location;
-            WindowState = MangaRipper.Properties.Settings.Default.WindowState;
+            Size = Properties.Settings.Default.Size;
+            Location = Properties.Settings.Default.Location;
+            WindowState = Properties.Settings.Default.WindowState;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
@@ -246,13 +246,13 @@ namespace MangaRipper
         {
             if (WindowState == FormWindowState.Normal)
             {
-                MangaRipper.Properties.Settings.Default.Size = Size;
-                MangaRipper.Properties.Settings.Default.Location = Location;
-                MangaRipper.Properties.Settings.Default.WindowState = WindowState;
+                Properties.Settings.Default.Size = Size;
+                Properties.Settings.Default.Location = Location;
+                Properties.Settings.Default.WindowState = WindowState;
             }
             else if (WindowState == FormWindowState.Maximized)
             {
-                MangaRipper.Properties.Settings.Default.WindowState = WindowState;
+                Properties.Settings.Default.WindowState = WindowState;
             }
 
             Properties.Settings.Default.Save();
@@ -268,7 +268,7 @@ namespace MangaRipper
         private void LoadBookmark()
         {
             cbTitleUrl.Items.Clear();
-            StringCollection sc = MangaRipper.Properties.Settings.Default.Bookmark;
+            StringCollection sc = Properties.Settings.Default.Bookmark;
             if (sc != null)
             {
                 foreach (string item in sc)
@@ -280,7 +280,7 @@ namespace MangaRipper
 
         private void btnAddBookmark_Click(object sender, EventArgs e)
         {
-            StringCollection sc = MangaRipper.Properties.Settings.Default.Bookmark;
+            StringCollection sc = Properties.Settings.Default.Bookmark;
             if (sc == null)
             {
                 sc = new StringCollection();
@@ -288,18 +288,18 @@ namespace MangaRipper
             if (sc.Contains(cbTitleUrl.Text) == false)
             {
                 sc.Add(cbTitleUrl.Text);
-                MangaRipper.Properties.Settings.Default.Bookmark = sc;
+                Properties.Settings.Default.Bookmark = sc;
                 LoadBookmark();
             }
         }
 
         private void btnRemoveBookmark_Click(object sender, EventArgs e)
         {
-            StringCollection sc = MangaRipper.Properties.Settings.Default.Bookmark;
+            StringCollection sc = Properties.Settings.Default.Bookmark;
             if (sc != null)
             {
                 sc.Remove(cbTitleUrl.Text);
-                MangaRipper.Properties.Settings.Default.Bookmark = sc;
+                Properties.Settings.Default.Bookmark = sc;
 
                 LoadBookmark();
             }

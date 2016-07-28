@@ -65,6 +65,9 @@
     <Compile Include="Site\MangaToshokan\TitleMangaToshokan.cs" />
     <Compile Include="Site\Otakuworks\ChapterOtakuworks.cs" />
     <Compile Include="Site\Otakuworks\TitleOtakuworks.cs" />
+    <Compile Include="Storage\DiskStorage.cs" />
+    <Compile Include="Storage\IStorage.cs" />
+    <Compile Include="Storage\MockStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

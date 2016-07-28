@@ -79,11 +79,11 @@ namespace MangaRipper.Core
 
         }
 
-        public Task DownloadImageAsync(string fileName, CancellationToken cancellationToken, Progress<ChapterProgress> progress)
+        public Task DownloadImageAsync(string saveToDirectory, CancellationToken cancellationToken, Progress<ChapterProgress> progress)
         {
             _cancellationToken = cancellationToken;
             _progress = progress;
-            SaveTo = fileName;
+            SaveTo = saveToDirectory;
 
             _task = Task.Factory.StartNew(() =>
             {
