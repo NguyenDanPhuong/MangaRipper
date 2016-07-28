@@ -17,7 +17,7 @@ namespace MangaRipper.Test
             ITitle title = TitleFactory.CreateTitle(naruto);
             Assert.IsNotNull(title);
             Assert.IsNull(title.Chapters);
-            await title.PopulateChapterAsync(new Core.Progress<int>(percent =>
+            await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
             }));
@@ -44,7 +44,7 @@ namespace MangaRipper.Test
             ITitle title = TitleFactory.CreateTitle(naruto);
             Assert.IsNotNull(title);
             Assert.IsNull(title.Chapters);
-            await title.PopulateChapterAsync(new Core.Progress<int>(percent =>
+            await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
             }));

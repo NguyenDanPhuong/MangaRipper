@@ -35,11 +35,11 @@ namespace MangaRipper.Core
             Address = address;
         }
 
-        public Task PopulateChapterAsync(Progress<int> progress)
+        public Task PopulateChapterAsync(IProgress<int> progress)
         {
             return Task.Factory.StartNew(() =>
             {
-                progress.ReportProgress(0);
+                progress.Report(0);
 
                 var client = new WebClient();
                 client.Proxy = Proxy;
@@ -59,13 +59,13 @@ namespace MangaRipper.Core
                         string content = client.DownloadString(item);
                         sb.AppendLine(content);
                         count++;
-                        progress.ReportProgress(count * 100 / uris.Count);
+                        progress.Report(count * 100 / uris.Count);
                     }
                 }
 
                 Chapters = ParseChapterObjects(sb.ToString());
 
-                progress.ReportProgress(100);
+                progress.Report(100);
             });
         }
     }

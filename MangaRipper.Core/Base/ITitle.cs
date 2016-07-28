@@ -23,6 +23,6 @@ namespace MangaRipper.Core
             set;
         }
 
-        Task PopulateChapterAsync(Progress<int> progress);
+        Task PopulateChapterAsync(IProgress<int> progress);
     }
 }
