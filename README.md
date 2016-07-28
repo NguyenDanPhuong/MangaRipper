@@ -1,6 +1,6 @@
 # MangaRipper
 
-CI: https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper
+[![Build status](https://ci.appveyor.com/api/projects/status/92scfmfbep7b9ieo?svg=true)](https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper)
 
 I wrote MangaRipper in 2011, 1 year after I've worked as software engineer, to learn about OO programing and design patterns.
 
