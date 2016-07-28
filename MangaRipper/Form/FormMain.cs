@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Deployment.Application;
 using System.Collections.Specialized;
 using MangaRipper.Core;
 using System.Threading;
@@ -210,21 +206,21 @@ namespace MangaRipper
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            this.Size = MangaRipper.Properties.Settings.Default.Size;
-            this.Location = MangaRipper.Properties.Settings.Default.Location;
-            this.WindowState = MangaRipper.Properties.Settings.Default.WindowState;
+            Size = MangaRipper.Properties.Settings.Default.Size;
+            Location = MangaRipper.Properties.Settings.Default.Location;
+            WindowState = MangaRipper.Properties.Settings.Default.WindowState;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            this.Text = String.Format("{0} {1}", Application.ProductName, AppInfo.DeploymentVersion);
+            Text = string.Format("{0} {1}", Application.ProductName, AppInfo.DeploymentVersion);
 
             foreach (string[] item in TitleFactory.GetSupportedSites())
             {
                 dgvSupportedSites.Rows.Add(item);
             }
 
-            if (String.IsNullOrEmpty(txtSaveTo.Text))
+            if (string.IsNullOrEmpty(txtSaveTo.Text))
             {
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
@@ -248,15 +244,15 @@ namespace MangaRipper
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.WindowState == FormWindowState.Normal)
+            if (WindowState == FormWindowState.Normal)
             {
-                MangaRipper.Properties.Settings.Default.Size = this.Size;
-                MangaRipper.Properties.Settings.Default.Location = this.Location;
-                MangaRipper.Properties.Settings.Default.WindowState = this.WindowState;
+                MangaRipper.Properties.Settings.Default.Size = Size;
+                MangaRipper.Properties.Settings.Default.Location = Location;
+                MangaRipper.Properties.Settings.Default.WindowState = WindowState;
             }
-            else if (this.WindowState == FormWindowState.Maximized)
+            else if (WindowState == FormWindowState.Maximized)
             {
-                MangaRipper.Properties.Settings.Default.WindowState = this.WindowState;
+                MangaRipper.Properties.Settings.Default.WindowState = WindowState;
             }
 
             Properties.Settings.Default.Save();
@@ -320,7 +316,7 @@ namespace MangaRipper
             chapters = Common.CloneIChapterCollection(chapters);
 
             chapters.Reverse();
-            chapters.ForEach(r => r.Name = String.Format("[{0:000}] - {1}", chapters.IndexOf(r) + 1, r.Name));
+            chapters.ForEach(r => r.Name = string.Format("[{0:000}] - {1}", chapters.IndexOf(r) + 1, r.Name));
             chapters.Reverse();
 
             dgvChapter.DataSource = chapters;

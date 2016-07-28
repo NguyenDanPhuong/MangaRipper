@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MangaRipper.Core
@@ -22,7 +20,7 @@ namespace MangaRipper.Core
             foreach (Match match in matches)
             {
                 var value = new Uri(Address, match.Groups["Value"].Value + "/read/");
-                string name = String.Format("{0} {1}", title, match.Groups["Text"].Value);
+                string name = string.Format("{0} {1}", title, match.Groups["Text"].Value);
                 IChapter chapter = new ChapterOtakuworks(name, value);
                 list.Add(chapter);
             }

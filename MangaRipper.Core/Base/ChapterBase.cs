@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.ComponentModel;
 using System.Net;
 using System.IO;
 using System.Threading;
@@ -96,7 +94,7 @@ namespace MangaRipper.Core
                     PopulateImageAddress(html);
                 }
 
-                string saveToFolder = SaveTo + "\\" + this.Name.RemoveFileNameInvalidChar();
+                string saveToFolder = SaveTo + "\\" + Name.RemoveFileNameInvalidChar();
                 Directory.CreateDirectory(saveToFolder);
 
                 int countImage = 0;
@@ -178,7 +176,7 @@ namespace MangaRipper.Core
             }
             catch (Exception ex)
             {
-                string error = String.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), this.Name, address.AbsoluteUri, ex.Message);
+                string error = string.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), Name, address.AbsoluteUri, ex.Message);
                 throw new OperationCanceledException(error, ex);
             }
         }
@@ -213,7 +211,7 @@ namespace MangaRipper.Core
             }
             catch (Exception ex)
             {
-                string error = String.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), this.Name, address.AbsoluteUri, ex.Message);
+                string error = string.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), Name, address.AbsoluteUri, ex.Message);
                 throw new Exception(error, ex);
             }
         }

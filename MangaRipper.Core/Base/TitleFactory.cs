@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MangaRipper.Core
 {
@@ -36,7 +34,7 @@ namespace MangaRipper.Core
                     title = new TitleMangaReader(uri);
                     break;
                 default:
-                    string message = String.Format("This site ({0}) is not supported.", uri.Host);
+                    string message = string.Format("This site ({0}) is not supported.", uri.Host);
                     throw new Exception(message);
             }
             return title;
