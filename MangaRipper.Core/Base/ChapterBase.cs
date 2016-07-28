@@ -36,10 +36,10 @@ namespace MangaRipper.Core
             protected set;
         }
 
-        private List<Uri> ImageAddresses
+        public List<Uri> ImageAddresses
         {
             get;
-            set;
+            private set;
         }
 
         public string SaveTo
@@ -115,7 +115,7 @@ namespace MangaRipper.Core
         }
 
 
-        private void PopulateImageAddress(string html)
+        public void PopulateImageAddress(string html)
         {
             List<Uri> pageAddresses = ParsePageAddresses(html);
 
@@ -131,7 +131,10 @@ namespace MangaRipper.Core
 
                 countPage++;
                 int percent = countPage * 100 / (pageAddresses.Count * 2);
-                _progress.ReportProgress(new ChapterProgress(this, percent));
+                if (_progress != null)
+                {
+                    _progress.ReportProgress(new ChapterProgress(this, percent));
+                }
             }
 
             ImageAddresses = ParseImageAddresses(sbHtml.ToString());
@@ -144,6 +147,7 @@ namespace MangaRipper.Core
                 if (File.Exists(fileName) == false)
                 {
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                    request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                     request.Proxy = Proxy;
                     request.Credentials = CredentialCache.DefaultCredentials;
                     request.Referer = Address.AbsoluteUri;
@@ -187,6 +191,7 @@ namespace MangaRipper.Core
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                 request.Proxy = Proxy;
                 request.Credentials = CredentialCache.DefaultCredentials;
                 request.UserAgent = "Safari";
