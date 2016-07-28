@@ -69,7 +69,7 @@ namespace MangaRipper.Test
                 chap.PopulateImageAddress(html);
             }
 
-            Assert.IsTrue(chap.ImageAddresses.Count > 12);
+            Assert.IsTrue(chap.ImageAddresses.Count > 0);
         }
     }
 }
