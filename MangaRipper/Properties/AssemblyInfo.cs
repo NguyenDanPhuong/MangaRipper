@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MangaRipper")]
 [assembly: AssemblyDescription("MangaRipper is a small and very easy to use application that is able to automatically download your favorites manga series from some 'read manga online' websites.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Nguyen Dan Phuong")]
+[assembly: AssemblyCompany("NguyenDanPhuong")]
 [assembly: AssemblyProduct("MangaRipper")]
 [assembly: AssemblyCopyright("Copyright ©  2011")]
 [assembly: AssemblyTrademark("")]

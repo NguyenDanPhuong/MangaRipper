@@ -213,7 +213,7 @@ namespace MangaRipper
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            Text = string.Format("{0} {1}", Application.ProductName, "2012");
+            Text = string.Format("{0} {1}", Application.ProductName, Application.ProductVersion);
 
             foreach (string[] item in TitleFactory.GetSupportedSites())
             {
