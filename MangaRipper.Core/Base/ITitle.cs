@@ -7,16 +7,11 @@ namespace MangaRipper.Core
 {
     public interface ITitle
     {
-        List<IChapter> Chapters
-        {
-            get;
-        }
-
         string Address
         {
             get;
         }
 
-        Task PopulateChapterAsync(IProgress<int> progress);
+        Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress);
     }
 }

@@ -16,13 +16,12 @@ namespace MangaRipper.Test
             string naruto = "http://www.mangareader.net/naruto";
             ITitle title = TitleFactory.CreateTitle(naruto);
             Assert.IsNotNull(title);
-            Assert.IsNull(title.Chapters);
-            await title.PopulateChapterAsync(new Progress<int>(percent =>
+            var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
             }));
 
-            Assert.IsTrue(title.Chapters.Count > 0);
+            Assert.IsTrue(chapters.Count > 0);
         }
 
         [TestMethod]
@@ -43,13 +42,12 @@ namespace MangaRipper.Test
             string naruto = "http://mangafox.me/manga/poputepipikku/";
             ITitle title = TitleFactory.CreateTitle(naruto);
             Assert.IsNotNull(title);
-            Assert.IsNull(title.Chapters);
-            await title.PopulateChapterAsync(new Progress<int>(percent =>
+            var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
             }));
 
-            Assert.IsTrue(title.Chapters.Count > 0);
+            Assert.IsTrue(chapters.Count > 0);
         }
 
         //[TestMethod]

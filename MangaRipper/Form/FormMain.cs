@@ -33,8 +33,8 @@ namespace MangaRipper
                 var titleUrl = cbTitleUrl.Text;
                 ITitle title = TitleFactory.CreateTitle(titleUrl);
                 Downloader.Proxy = Option.GetProxy();
-                await title.PopulateChapterAsync(new Progress<int>(progress => txtPercent.Text = progress + "%"));
-                dgvChapter.DataSource = title.Chapters;
+                var chapters =  await title.PopulateChapterAsync(new Progress<int>(progress => txtPercent.Text = progress + "%"));
+                dgvChapter.DataSource = chapters;
             }
             catch (Exception ex)
             {

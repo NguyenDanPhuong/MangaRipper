@@ -16,12 +16,6 @@ namespace MangaRipper.Core
 
         abstract protected List<IChapter> ParseChapterObjects(string html);
 
-        public List<IChapter> Chapters
-        {
-            get;
-            protected set;
-        }
-
         public string Address
         {
             get;
@@ -33,7 +27,7 @@ namespace MangaRipper.Core
             Address = address;
         }
 
-        public async Task PopulateChapterAsync(IProgress<int> progress)
+        public async Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress)
         {
             progress.Report(0);
 
@@ -56,9 +50,10 @@ namespace MangaRipper.Core
                 }
             }
 
-            Chapters = ParseChapterObjects(sb.ToString());
+            var chapters = ParseChapterObjects(sb.ToString());
 
             progress.Report(100);
+            return chapters;
         }
     }
 }
