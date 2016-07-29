@@ -17,22 +17,16 @@ namespace MangaRipper.Core
             switch (uri.Host)
             {
                 case "mangafox.me":
-                    title = new TitleMangaFox(uri);
+                    title = new TitleMangaFox(url);
                     break;
-                case "read.mangashare.com":
-                    title = new TitleMangaShare(uri);
-                    break;
-                case "www.mangatoshokan.com":
-                    title = new TitleMangaToshokan(uri);
+                case "read.mangashare.co":
+                    title = new TitleMangaShare(url);
                     break;
                 case "www.mangahere.com":
-                    title = new TitleMangaHere(uri);
-                    break;
-                case "www.otakuworks.com":
-                    title = new TitleOtakuworks(uri);
+                    title = new TitleMangaHere(url);
                     break;
                 case "www.mangareader.net":
-                    title = new TitleMangaReader(uri);
+                    title = new TitleMangaReader(url);
                     break;
                 default:
                     string message = string.Format("This site ({0}) is not supported.", uri.Host);

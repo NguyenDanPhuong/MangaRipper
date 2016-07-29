@@ -25,29 +25,24 @@ namespace MangaRipper
             InitializeComponent();
         }
 
-        private void btnGetChapter_Click(object sender, EventArgs e)
+        private async void btnGetChapter_Click(object sender, EventArgs e)
         {
             try
             {
+                btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
                 ITitle title = TitleFactory.CreateTitle(titleUrl);
-                title.Proxy = Option.GetProxy();
-                btnGetChapter.Enabled = false;
-                var task = title.PopulateChapterAsync(new Progress<int>(progress => txtPercent.Text = progress + "%"));
-                task.ContinueWith(t =>
-                {
-                    btnGetChapter.Enabled = true;
-                    dgvChapter.DataSource = title.Chapters;
-
-                    if (t.Exception != null && t.Exception.InnerException != null)
-                    {
-                        txtMessage.Text = t.Exception.InnerException.Message;
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                Downloader.Proxy = Option.GetProxy();
+                await title.PopulateChapterAsync(new Progress<int>(progress => txtPercent.Text = progress + "%"));
+                dgvChapter.DataSource = title.Chapters;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                btnGetChapter.Enabled = true;
             }
         }
 

@@ -6,7 +6,7 @@ namespace MangaRipper.Core
 {
     class TitleMangaHere:TitleBase
     {
-        public TitleMangaHere(Uri address) : base(address) { }
+        public TitleMangaHere(string address) : base(address) { }
 
         protected override List<IChapter> ParseChapterObjects(string html)
         {
@@ -17,7 +17,7 @@ namespace MangaRipper.Core
 
             foreach (Match match in matches)
             {
-                var value = new Uri(Address, match.Groups["Value"].Value);
+                var value = new Uri(new Uri(Address), match.Groups["Value"].Value);
                 string name = match.Groups["Text"].Value.Trim();
                 IChapter chapter = new ChapterMangaHere(name, value);
                 list.Add(chapter);

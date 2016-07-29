@@ -52,6 +52,7 @@
     <Compile Include="Base\ITitle.cs" />
     <Compile Include="Base\TitleBase.cs" />
     <Compile Include="Base\TitleFactory.cs" />
+    <Compile Include="Downloader.cs" />
     <Compile Include="Helper\ChapterProgress.cs" />
     <Compile Include="Helper\Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,10 +64,6 @@
     <Compile Include="Site\MangaReader\TitleMangaReader.cs" />
     <Compile Include="Site\MangaShare\ChapterMangaShare.cs" />
     <Compile Include="Site\MangaShare\TitleMangaShare.cs" />
-    <Compile Include="Site\MangaToshokan\ChapterMangaToshokan.cs" />
-    <Compile Include="Site\MangaToshokan\TitleMangaToshokan.cs" />
-    <Compile Include="Site\Otakuworks\ChapterOtakuworks.cs" />
-    <Compile Include="Site\Otakuworks\TitleOtakuworks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

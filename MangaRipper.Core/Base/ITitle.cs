@@ -12,15 +12,9 @@ namespace MangaRipper.Core
             get;
         }
 
-        Uri Address
+        string Address
         {
             get;
-        }
-
-        IWebProxy Proxy
-        {
-            get;
-            set;
         }
 
         Task PopulateChapterAsync(IProgress<int> progress);

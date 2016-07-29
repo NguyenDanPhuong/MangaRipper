@@ -9,7 +9,7 @@ namespace MangaRipper.Core
     public abstract class TitleBase : ITitle
     {
 
-        protected virtual List<Uri> ParseChapterAddresses(string html)
+        protected virtual List<string> ParseChapterAddresses(string html)
         {
             return null;
         }
@@ -22,51 +22,43 @@ namespace MangaRipper.Core
             protected set;
         }
 
-        public Uri Address
+        public string Address
         {
             get;
             protected set;
         }
 
-        public IWebProxy Proxy { get; set; }
-
-        public TitleBase(Uri address)
+        public TitleBase(string address)
         {
             Address = address;
         }
 
-        public Task PopulateChapterAsync(IProgress<int> progress)
+        public async Task PopulateChapterAsync(IProgress<int> progress)
         {
-            return Task.Factory.StartNew(() =>
+            progress.Report(0);
+
+            string html = await Downloader.DownloadStringAsync(Address);
+
+            var sb = new StringBuilder();
+            sb.AppendLine(html);
+
+            List<string> uris = ParseChapterAddresses(html);
+
+            if (uris != null)
             {
-                progress.Report(0);
-
-                var client = new WebClient();
-                client.Proxy = Proxy;
-                client.Encoding = Encoding.UTF8;
-                string html = client.DownloadString(Address);
-
-                var sb = new StringBuilder();
-                sb.AppendLine(html);
-
-                List<Uri> uris = ParseChapterAddresses(html);
-
-                if (uris != null)
+                int count = 0;
+                foreach (string item in uris)
                 {
-                    int count = 0;
-                    foreach (Uri item in uris)
-                    {
-                        string content = client.DownloadString(item);
-                        sb.AppendLine(content);
-                        count++;
-                        progress.Report(count * 100 / uris.Count);
-                    }
+                    string content = await Downloader.DownloadStringAsync(item);
+                    sb.AppendLine(content);
+                    count++;
+                    progress.Report(count * 100 / uris.Count);
                 }
+            }
 
-                Chapters = ParseChapterObjects(sb.ToString());
+            Chapters = ParseChapterObjects(sb.ToString());
 
-                progress.Report(100);
-            });
+            progress.Report(100);
         }
     }
 }
