@@ -17,7 +17,7 @@ namespace MangaRipper.Core
 
             foreach (Match match in matches)
             {
-                var value = new Uri(new Uri(Address), match.Groups["Value"].Value);
+                var value = new Uri(new Uri(Address), match.Groups["Value"].Value).AbsoluteUri;
                 string name = match.Groups["Text"].Value.Trim();
                 IChapter chapter = new ChapterMangaHere(name, value);
                 list.Add(chapter);

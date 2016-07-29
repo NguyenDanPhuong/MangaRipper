@@ -13,7 +13,7 @@ namespace MangaRipper.Core
             set;
         }
 
-        Uri Address
+        string Address
         {
             get;
         }

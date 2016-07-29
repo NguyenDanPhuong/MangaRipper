@@ -28,11 +28,11 @@ namespace MangaRipper.Test
         public async Task TestMangaReader_ParseImages()
         {
             string naruto_700 = "http://www.mangareader.net/naruto/700";
-            var chap = new ChapterMangaReader("Naruto 700", new Uri(naruto_700));
+            var chap = new ChapterMangaReader("Naruto 700", naruto_700);
             var webclient = new WebClient();
             string html = await webclient.DownloadStringTaskAsync(naruto_700);
             Assert.IsTrue(chap.ImageAddresses == null);
-            chap.PopulateImageAddress(html);
+            await chap.PopulateImageAddress(html);
             Assert.IsTrue(chap.ImageAddresses.Count > 0);
         }
 
@@ -54,7 +54,7 @@ namespace MangaRipper.Test
         public async Task TestMangaFox_ParseImages()
         {
             string naruto_700 = "http://mangafox.me/manga/poputepipikku/v02/c021/1.html";
-            var chap = new ChapterMangaFox("Naruto 700", new Uri(naruto_700));
+            var chap = new ChapterMangaFox("Naruto 700", naruto_700);
 
             var webclient = WebRequest.CreateHttp(naruto_700);
             webclient.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -64,7 +64,7 @@ namespace MangaRipper.Test
             {
                 StreamReader sr = new StreamReader(stream, System.Text.Encoding.UTF8);
                 string html = await sr.ReadToEndAsync();
-                chap.PopulateImageAddress(html);
+                await chap.PopulateImageAddress(html);
             }
 
             Assert.IsTrue(chap.ImageAddresses.Count > 0);
