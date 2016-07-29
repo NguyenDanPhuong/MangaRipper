@@ -37,7 +37,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chap.ImageAddresses.Count > 0);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task TestMangaFox_GetChapters()
         {
             string naruto = "http://mangafox.me/manga/poputepipikku/";
@@ -52,7 +52,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(title.Chapters.Count > 0);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task TestMangaFox_ParseImages()
         {
             string naruto_700 = "http://mangafox.me/manga/poputepipikku/v02/c021/1.html";
