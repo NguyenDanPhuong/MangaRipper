@@ -4,6 +4,7 @@ using MangaRipper.Core;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Threading;
 
 namespace MangaRipper.Test
 {
@@ -19,7 +20,7 @@ namespace MangaRipper.Test
             var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
-            }));
+            }), new CancellationTokenSource().Token);
 
             Assert.IsTrue(chapters.Count > 0);
         }
@@ -45,7 +46,7 @@ namespace MangaRipper.Test
             var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
             {
                 Console.WriteLine(percent);
-            }));
+            }), new CancellationTokenSource().Token);
 
             Assert.IsTrue(chapters.Count > 0);
         }

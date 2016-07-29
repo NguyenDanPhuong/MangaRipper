@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MangaRipper.Core
 {
@@ -27,7 +28,7 @@ namespace MangaRipper.Core
             Address = address;
         }
 
-        public async Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress)
+        public async Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
 
@@ -43,6 +44,7 @@ namespace MangaRipper.Core
                 int count = 0;
                 foreach (string item in uris)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     string content = await Downloader.DownloadStringAsync(item);
                     sb.AppendLine(content);
                     count++;

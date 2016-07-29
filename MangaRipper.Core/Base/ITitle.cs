@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaRipper.Core
@@ -12,6 +13,6 @@ namespace MangaRipper.Core
             get;
         }
 
-        Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress);
+        Task<IList<IChapter>> PopulateChapterAsync(IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

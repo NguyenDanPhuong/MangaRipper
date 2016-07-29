@@ -103,7 +103,7 @@ namespace MangaRipper.Core
                 {
                     _cancellationToken.ThrowIfCancellationRequested();
                     string filename = saveToFolder + "\\" + Path.GetFileName(new Uri(imageAddress).LocalPath);
-                    await DownloadFile(imageAddress, filename);
+                    await DownloadImagePage(imageAddress, filename);
 
                     countImage++;
                     int percent = (countImage * 100 / ImageAddresses.Count / 2) + 50;
@@ -111,7 +111,7 @@ namespace MangaRipper.Core
                 }
             });
 
-             await _task;
+            await _task;
         }
 
 
@@ -140,7 +140,7 @@ namespace MangaRipper.Core
             ImageAddresses = ParseImageAddresses(sbHtml.ToString());
         }
 
-        private async Task DownloadFile(string address, string fileName)
+        private async Task DownloadImagePage(string address, string fileName)
         {
             try
             {
@@ -159,41 +159,6 @@ namespace MangaRipper.Core
             {
                 string error = string.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), Name, address, ex.Message);
                 throw new OperationCanceledException(error, ex);
-            }
-        }
-
-        private string DownloadString(Uri address)
-        {
-            StringBuilder result = new StringBuilder();
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
-                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-                request.Proxy = Proxy;
-                request.Credentials = CredentialCache.DefaultCredentials;
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        byte[] downBuffer = new byte[2048];
-                        int bytesSize = 0;
-                        while ((bytesSize = responseStream.Read(downBuffer, 0, downBuffer.Length)) > 0)
-                        {
-                            _cancellationToken.ThrowIfCancellationRequested();
-                            result.Append(Encoding.UTF8.GetString(downBuffer, 0, bytesSize));
-                        }
-                    }
-                }
-                return result.ToString();
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                string error = string.Format("{0} - Error while download: {2} - Reason: {3}", DateTime.Now.ToLongTimeString(), Name, address.AbsoluteUri, ex.Message);
-                throw new Exception(error, ex);
             }
         }
     }

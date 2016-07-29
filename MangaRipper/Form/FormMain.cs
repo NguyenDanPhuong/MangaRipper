@@ -23,6 +23,7 @@ namespace MangaRipper
         public FormMain()
         {
             InitializeComponent();
+            _cts = new CancellationTokenSource();
         }
 
         private async void btnGetChapter_Click(object sender, EventArgs e)
@@ -33,7 +34,8 @@ namespace MangaRipper
                 var titleUrl = cbTitleUrl.Text;
                 ITitle title = TitleFactory.CreateTitle(titleUrl);
                 Downloader.Proxy = Option.GetProxy();
-                var chapters =  await title.PopulateChapterAsync(new Progress<int>(progress => txtPercent.Text = progress + "%"));
+                var progress_int = new Progress<int>(progress => txtPercent.Text = progress + "%");
+                var chapters =  await title.PopulateChapterAsync(progress_int, _cts.Token);
                 dgvChapter.DataSource = chapters;
             }
             catch (Exception ex)
@@ -108,7 +110,6 @@ namespace MangaRipper
 
         private void btnDownload_Click(object sender, EventArgs e)
         {
-            _cts = new CancellationTokenSource();
             DownloadChapter();
         }
 

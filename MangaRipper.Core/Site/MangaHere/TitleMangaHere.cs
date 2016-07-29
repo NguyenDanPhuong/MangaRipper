@@ -11,7 +11,7 @@ namespace MangaRipper.Core
         protected override List<IChapter> ParseChapterObjects(string html)
         {
             var list = new List<IChapter>();
-            Regex reg = new Regex("<a class=\"color_0077\" href=\"(?<Value>[^\"]+)\"[^<]+>(?<Text>[^<]+)</a>",
+            Regex reg = new Regex("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Text>[^<]+)</a>",
                 RegexOptions.IgnoreCase);
             MatchCollection matches = reg.Matches(html);
 

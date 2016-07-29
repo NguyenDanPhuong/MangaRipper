@@ -19,10 +19,10 @@ namespace MangaRipper.Core
                 case "mangafox.me":
                     title = new TitleMangaFox(url);
                     break;
-                case "read.mangashare.co":
+                case "read.mangashare.com":
                     title = new TitleMangaShare(url);
                     break;
-                case "www.mangahere.com":
+                case "www.mangahere.co":
                     title = new TitleMangaHere(url);
                     break;
                 case "www.mangareader.net":
@@ -43,11 +43,9 @@ namespace MangaRipper.Core
         {
             var lst = new List<string[]>();
             lst.Add(new string[] { "MangaFox", "http://mangafox.me/", "English" });
-            //lst.Add(new string[] { "MangaHere", "http://www.mangahere.com/", "English" });
-            lst.Add(new string[] { "MangaReader", "http://www.mangareader.net/", "English" }); 
-            //lst.Add(new string[] { "MangaShare", "http://read.mangashare.com/", "English" });
-            //lst.Add(new string[] { "MangaToshokan", "http://www.mangatoshokan.com/", "English" });
-            //lst.Add(new string[] { "Otakuworks", "http://www.otakuworks.com/", "English" });
+            lst.Add(new string[] { "MangaHere", "http://www.mangahere.co/", "English" });
+            lst.Add(new string[] { "MangaReader", "http://www.mangareader.net/", "English" });
+            lst.Add(new string[] { "MangaShare", "http://read.mangashare.com/", "English" });
             return lst;
         }
     }

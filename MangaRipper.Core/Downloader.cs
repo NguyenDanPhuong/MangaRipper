@@ -28,9 +28,19 @@ namespace MangaRipper.Core
             return request;
         }
 
+        public static async Task<IList<IChapter>> DownloadTitle(ITitle title, IProgress<int> progress, CancellationToken cancellationToken)
+        {
+            return await title.PopulateChapterAsync(progress, cancellationToken);
+        }
+
+        public static async Task DownloadChapter(IChapter chapter, string savePath, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
+        {
+            await chapter.DownloadImageAsync(savePath, cancellationToken, progress);
+        }
+
         public static async Task<string> DownloadStringAsync(string url)
         {
-            var task = Task.Run(async () =>
+            return await Task.Run(async () =>
             {
                 var request = CreateRequest(url);
                 using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
@@ -42,14 +52,12 @@ namespace MangaRipper.Core
                     }
                 }
             });
-
-            return await task;
         }
 
 
         public static async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
-            var task = Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 var request = CreateRequest(url);
                 using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
@@ -61,8 +69,6 @@ namespace MangaRipper.Core
                     }
                 }
             });
-
-            await task;
         }
     }
 }
