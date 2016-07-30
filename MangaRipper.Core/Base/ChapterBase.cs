@@ -88,7 +88,8 @@ namespace MangaRipper.Core
             _task = Task.Run(async () =>
             {
                 _progress.Report(new ChapterProgress(this, 0));
-                string html = await Downloader.DownloadStringAsync(Address);
+                var downloader = new Downloader();
+                string html = await downloader.DownloadStringAsync(Address);
                 if (ImageAddresses == null)
                 {
                     await PopulateImageAddress(html);
@@ -126,7 +127,8 @@ namespace MangaRipper.Core
             foreach (string pageAddress in pageAddresses)
             {
                 _cancellationToken.ThrowIfCancellationRequested();
-                string content = await Downloader.DownloadStringAsync(pageAddress);
+                var downloader = new Downloader();
+                string content = await downloader.DownloadStringAsync(pageAddress);
                 sbHtml.AppendLine(content);
 
                 countPage++;
@@ -147,7 +149,8 @@ namespace MangaRipper.Core
                 if (File.Exists(fileName) == false)
                 {
                     string tmpFileName = Path.GetTempFileName();
-                    await Downloader.DownloadFileAsync(address, tmpFileName, _cancellationToken);
+                    var downloader = new Downloader();
+                    await downloader.DownloadFileAsync(address, tmpFileName, _cancellationToken);
                     File.Move(tmpFileName, fileName);
                 }
             }

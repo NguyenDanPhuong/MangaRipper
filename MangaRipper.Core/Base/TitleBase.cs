@@ -32,7 +32,8 @@ namespace MangaRipper.Core
         {
             progress.Report(0);
 
-            string html = await Downloader.DownloadStringAsync(Address);
+            var downloader = new Downloader();
+            string html = await downloader.DownloadStringAsync(Address);
 
             var sb = new StringBuilder();
             sb.AppendLine(html);
@@ -45,7 +46,7 @@ namespace MangaRipper.Core
                 foreach (string item in uris)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    string content = await Downloader.DownloadStringAsync(item);
+                    string content = await downloader.DownloadStringAsync(item);
                     sb.AppendLine(content);
                     count++;
                     progress.Report(count * 100 / uris.Count);

@@ -100,12 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\Option.cs" />
-    <Compile Include="Form\FormOption.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\FormOption.Designer.cs">
-      <DependentUpon>FormOption.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,9 +120,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form\FormOption.resx">
-      <DependentUpon>FormOption.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

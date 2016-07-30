@@ -33,7 +33,6 @@ namespace MangaRipper
                 btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
                 ITitle title = TitleFactory.CreateTitle(titleUrl);
-                Downloader.Proxy = Option.GetProxy();
                 var progress_int = new Progress<int>(progress => txtPercent.Text = progress + "%");
                 var chapters =  await title.PopulateChapterAsync(progress_int, _cts.Token);
                 dgvChapter.DataSource = chapters;
@@ -253,12 +252,6 @@ namespace MangaRipper
 
             Properties.Settings.Default.Save();
             Common.SaveIChapterCollection(DownloadQueue, FILENAME_ICHAPTER_COLLECTION);
-        }
-
-        private void btnOptions_Click(object sender, EventArgs e)
-        {
-            FormOption form = new FormOption();
-            form.ShowDialog(this);
         }
 
         private void LoadBookmark()
