@@ -11,10 +11,6 @@ namespace MangaRipper.Core
 {
     public class Downloader
     {
-        public int MaxJobs { get; set; }
-
-        public SemaphoreSlim semaphore = new SemaphoreSlim(5);
-
         private HttpWebRequest CreateRequest(string url)
         {
             var uri = new Uri(url);
@@ -39,6 +35,17 @@ namespace MangaRipper.Core
             }
         }
 
+        internal async Task<string> DownloadStringAsync(IEnumerable<string> urls)
+        {
+            var sb = new StringBuilder();
+            foreach (var url in urls)
+            {
+                string input = await DownloadStringAsync(url);
+                sb.Append(input);
+            }
+
+            return sb.ToString();
+        }
 
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {

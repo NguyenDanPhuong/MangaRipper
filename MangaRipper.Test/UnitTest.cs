@@ -11,6 +11,12 @@ namespace MangaRipper.Test
     [TestClass]
     public class UnitTest
     {
+        [TestInitialize]
+        public void Initialize()
+        {
+            Framework.Register(new MangaFoxImpl());
+        }
+
         [TestMethod]
         public async Task TestMangaReader_GetChapters()
         {
@@ -37,38 +43,16 @@ namespace MangaRipper.Test
             Assert.IsTrue(chap.ImageAddresses.Count > 0);
         }
 
-        //[TestMethod]
-        public async Task TestMangaFox_GetChapters()
+        [TestMethod]
+        public async Task MangaFox_Test()
         {
-            string naruto = "http://mangafox.me/manga/poputepipikku/";
-            ITitle title = TitleFactory.CreateTitle(naruto);
-            Assert.IsNotNull(title);
-            var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
-            {
-                Console.WriteLine(percent);
-            }), new CancellationTokenSource().Token);
-
-            Assert.IsTrue(chapters.Count > 0);
-        }
-
-        //[TestMethod]
-        public async Task TestMangaFox_ParseImages()
-        {
-            string naruto_700 = "http://mangafox.me/manga/poputepipikku/v02/c021/1.html";
-            var chap = new ChapterMangaFox("Naruto 700", naruto_700);
-
-            var webclient = WebRequest.CreateHttp(naruto_700);
-            webclient.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            var response = await webclient.GetResponseAsync();
-            using (Stream stream = response.GetResponseStream())
-            {
-                StreamReader sr = new StreamReader(stream, System.Text.Encoding.UTF8);
-                string html = await sr.ReadToEndAsync();
-                await chap.PopulateImageAddress(html);
-            }
-
-            Assert.IsTrue(chap.ImageAddresses.Count > 0);
+            string url = "http://mangafox.me/manga/poputepipikku";
+            var service = Framework.GetService(url);
+            var chapters = await service.FindChapters(url);
+            Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
+            var chapter = chapters[0];
+            var images = await service.FindImanges(chapter);
+            Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
     }
 }

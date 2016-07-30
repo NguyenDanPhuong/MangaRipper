@@ -49,13 +49,19 @@
   <ItemGroup>
     <Compile Include="Base\ChapterBase.cs" />
     <Compile Include="Base\IChapter.cs" />
+    <Compile Include="Chapter.cs" />
+    <Compile Include="Framework.cs" />
+    <Compile Include="IManga.cs" />
     <Compile Include="Base\ITitle.cs" />
     <Compile Include="Base\TitleBase.cs" />
     <Compile Include="Base\TitleFactory.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Helper\ChapterProgress.cs" />
     <Compile Include="Helper\Extension.cs" />
+    <Compile Include="MangaFoxImpl.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SiteInformation.cs" />
     <Compile Include="Site\MangaFox\ChapterMangaFox.cs" />
     <Compile Include="Site\MangaFox\TitleMangaFox.cs" />
     <Compile Include="Site\MangaHere\ChapterMangaHere.cs" />
