@@ -14,7 +14,7 @@ namespace MangaRipper.Test
         [TestInitialize]
         public void Initialize()
         {
-            Framework.Register(new MangaFoxImpl());
+            Framework.Init();
         }
 
         [TestMethod]

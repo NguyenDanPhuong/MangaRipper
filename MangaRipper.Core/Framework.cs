@@ -10,6 +10,11 @@ namespace MangaRipper.Core
     {
         private static IList<IManga> services = new List<IManga>();
 
+        public static void Init()
+        {
+            Register(new MangaFoxImpl());
+        }
+
         public static void Register(IManga manga)
         {
             services.Add(manga);
