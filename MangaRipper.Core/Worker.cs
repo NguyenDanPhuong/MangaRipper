@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,11 +11,14 @@ namespace MangaRipper.Core
 {
     public class Worker
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         CancellationTokenSource source;
         SemaphoreSlim sema;
 
         public Worker()
         {
+            logger.Info("> Worker()");
             source = new CancellationTokenSource();
             sema = new SemaphoreSlim(1);
         }
@@ -26,6 +30,7 @@ namespace MangaRipper.Core
 
         public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
         {
+            logger.Info("> DownloadChapter: {0} To: {1}", chapter.Link, mangaLocalPath);
             await Task.Run(async () =>
             {
                 try
@@ -35,8 +40,9 @@ namespace MangaRipper.Core
                     chapter.IsBusy = true;
                     await DownloadChapterInternal(chapter, mangaLocalPath, progress);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.Error(ex, "Failed to download chapter: {0}", chapter.Link);
                     throw;
                 }
                 finally
@@ -49,6 +55,7 @@ namespace MangaRipper.Core
 
         public async Task<IList<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
         {
+            logger.Info("> FindChapters: {0}", mangaPath);
             return await Task.Run(async () =>
             {
                 try
@@ -56,8 +63,9 @@ namespace MangaRipper.Core
                     await sema.WaitAsync();
                     return await FindChaptersInternal(mangaPath, progress);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.Error(ex, "Failed to find chapters: {0}", mangaPath);
                     throw;
                 }
                 finally

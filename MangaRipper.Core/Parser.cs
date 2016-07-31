@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,11 @@ namespace MangaRipper.Core
 {
     class Parser
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public IList<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {
+            logger.Info("> ParseGroup: {0}", regExp);
             var list = new List<Chapter>();
             Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
             MatchCollection matches = reg.Matches(input);
@@ -28,6 +32,7 @@ namespace MangaRipper.Core
 
         public IList<string> Parse(string regExp, string input, string groupName)
         {
+            logger.Info("> Parse: {0}", regExp);
             var list = new List<string>();
             Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
             MatchCollection matches = reg.Matches(input);
