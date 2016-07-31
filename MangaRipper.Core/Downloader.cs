@@ -35,13 +35,14 @@ namespace MangaRipper.Core
             }
         }
 
-        internal async Task<string> DownloadStringAsync(IEnumerable<string> urls)
+        internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, CancellationToken cancellationToken)
         {
             var sb = new StringBuilder();
             foreach (var url in urls)
             {
                 string input = await DownloadStringAsync(url);
                 sb.Append(input);
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             return sb.ToString();

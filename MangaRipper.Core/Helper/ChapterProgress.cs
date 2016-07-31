@@ -2,12 +2,12 @@
 {
     public class ChapterProgress
     {
-        public ChapterProgress(IChapter chapter, int percent)
+        public ChapterProgress(Chapter chapter, int percent)
         {
             Chapter = chapter;
             Percent = percent;
         }
-        public IChapter Chapter
+        public Chapter Chapter
         {
             get;
             private set;

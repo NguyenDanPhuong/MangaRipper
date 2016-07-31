@@ -11,10 +11,12 @@ namespace MangaRipper.Test
     [TestClass]
     public class UnitTest
     {
+        CancellationTokenSource source;
         [TestInitialize]
         public void Initialize()
         {
             Framework.Init();
+            source = new CancellationTokenSource();
         }
 
         [TestMethod]
@@ -22,10 +24,10 @@ namespace MangaRipper.Test
         {
             string url = "http://www.mangareader.net/naruto";
             var service = Framework.GetService(url);
-            var chapters = await service.FindChapters(url);
+            var chapters = await service.FindChapters(url, source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter);
+            var images = await service.FindImanges(chapter, source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
@@ -34,10 +36,10 @@ namespace MangaRipper.Test
         {
             string url = "http://mangafox.me/manga/poputepipikku";
             var service = Framework.GetService(url);
-            var chapters = await service.FindChapters(url);
+            var chapters = await service.FindChapters(url, source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter);
+            var images = await service.FindImanges(chapter, source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
@@ -46,10 +48,10 @@ namespace MangaRipper.Test
         {
             string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
             var service = Framework.GetService(url);
-            var chapters = await service.FindChapters(url);
+            var chapters = await service.FindChapters(url, source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter);
+            var images = await service.FindImanges(chapter, source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
@@ -58,10 +60,10 @@ namespace MangaRipper.Test
         {
             string url = "http://read.mangashare.com/Beelzebub";
             var service = Framework.GetService(url);
-            var chapters = await service.FindChapters(url);
+            var chapters = await service.FindChapters(url, source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter);
+            var images = await service.FindImanges(chapter, source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
     }

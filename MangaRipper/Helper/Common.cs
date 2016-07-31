@@ -15,7 +15,7 @@ namespace MangaRipper
         /// </summary>
         /// <param name="chapters"></param>
         /// <param name="fileName"></param>
-        public static void SaveIChapterCollection(BindingList<IChapter> chapters, string fileName)
+        public static void SaveIChapterCollection(BindingList<Chapter> chapters, string fileName)
         {
             try
             {
@@ -37,9 +37,9 @@ namespace MangaRipper
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static BindingList<IChapter> LoadIChapterCollection(string fileName)
+        public static BindingList<Chapter> LoadIChapterCollection(string fileName)
         {
-            BindingList<IChapter> result = null;
+            BindingList<Chapter> result = null;
             try
             {
                 using (IsolatedStorageFile scope = IsolatedStorageFile.GetUserStoreForApplication())
@@ -48,7 +48,7 @@ namespace MangaRipper
                     if (fs.Length != 0)
                     {
                         IFormatter formatter = new BinaryFormatter();
-                        result = (BindingList<IChapter>)formatter.Deserialize(fs);
+                        result = (BindingList<Chapter>)formatter.Deserialize(fs);
                     }
                 }
             }
@@ -56,21 +56,21 @@ namespace MangaRipper
             {
                 if (result == null)
                 {
-                    result = new BindingList<IChapter>();
+                    result = new BindingList<Chapter>();
                 }
             }
 
             return result;
         }
 
-        public static List<IChapter> CloneIChapterCollection(List<IChapter> chapters)
+        public static List<Chapter> CloneIChapterCollection(List<Chapter> chapters)
         {
             using (Stream objectStream = new MemoryStream())
             {
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(objectStream, chapters);
                 objectStream.Seek(0, SeekOrigin.Begin);
-                return (List<IChapter>)formatter.Deserialize(objectStream);
+                return (List<Chapter>)formatter.Deserialize(objectStream);
             }
         }
     }

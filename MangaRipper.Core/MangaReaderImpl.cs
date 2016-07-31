@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
     class MangaReaderImpl : IManga
     {
-        public async Task<IList<Chapter>> FindChapters(string manga)
+        public async Task<IList<Chapter>> FindChapters(string manga, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -25,7 +26,7 @@ namespace MangaRipper.Core
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter)
+        public async Task<IList<string>> FindImanges(Chapter chapter, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -41,7 +42,7 @@ namespace MangaRipper.Core
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages);
+            var pageData = await downloader.DownloadStringAsync(pages, cancellationToken);
             var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
 
             return images;

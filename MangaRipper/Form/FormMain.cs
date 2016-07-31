@@ -14,7 +14,7 @@ namespace MangaRipper
 {
     public partial class FormMain : Form
     {
-        BindingList<IChapter> DownloadQueue;
+        BindingList<Chapter> DownloadQueue;
 
         protected const string FILENAME_ICHAPTER_COLLECTION = "IChapterCollection.bin";
 

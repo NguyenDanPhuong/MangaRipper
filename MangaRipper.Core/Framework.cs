@@ -8,24 +8,27 @@ namespace MangaRipper.Core
 {
     public class Framework
     {
-        private static IList<IManga> services = new List<IManga>();
+        private static IList<IManga> services;
+        private static WorkManager workManger;
 
         public static void Init()
         {
-            Register(new MangaFoxImpl());
-            Register(new MangaHereImpl());
-            Register(new MangaReaderImpl());
-            Register(new MangaShareImpl());
-        }
-
-        public static void Register(IManga manga)
-        {
-            services.Add(manga);
+            workManger = new WorkManager();
+            services = new List<IManga>();
+            services.Add(new MangaFoxImpl());
+            services.Add(new MangaHereImpl());
+            services.Add(new MangaReaderImpl());
+            services.Add(new MangaShareImpl());
         }
 
         public static IEnumerable<IManga> GetServices()
         {
             return services.ToList().AsReadOnly();
+        }
+
+        public static WorkManager GetWorkManager()
+        {
+            return workManger;
         }
 
         public static IManga GetService(string link)
