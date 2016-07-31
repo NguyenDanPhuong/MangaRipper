@@ -24,17 +24,18 @@ namespace MangaRipper.Core
             source.Cancel();
         }
 
-        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
+        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
         {
             await Task.Run(async () =>
             {
                 try
                 {
+                    source = new CancellationTokenSource();
                     await sema.WaitAsync();
                     chapter.IsBusy = true;
                     await DownloadChapterInternal(chapter, mangaLocalPath, progress);
                 }
-                 catch (Exception)
+                catch (Exception)
                 {
                     throw;
                 }
@@ -66,26 +67,36 @@ namespace MangaRipper.Core
             });
         }
 
-        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
+        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
         {
-            progress.Report(new ChapterProgress(chapter, 0));
+            progress.Report(0);
             // let service find all images of chapter
             var service = Framework.GetService(chapter.Link);
-            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
+            var images = await service.FindImanges(chapter, new Progress<int>((count) =>
+            {
+                progress.Report(count / 2);
+            }), source.Token);
             // create folder to keep images
             var downloader = new Downloader();
             var folderName = chapter.Name.RemoveFileNameInvalidChar();
             var destinationPath = Path.Combine(mangaLocalPath, folderName); ;
             Directory.CreateDirectory(destinationPath);
             // download images
+            int countImage = 0;
             foreach (var image in images)
             {
                 string tempFilePath = Path.GetTempFileName();
-                await downloader.DownloadFileAsync(image, tempFilePath, source.Token);
                 string filePath = Path.Combine(destinationPath, Path.GetFileName(image));
-                File.Move(tempFilePath, filePath);
+                if (!File.Exists(filePath))
+                {
+                    await downloader.DownloadFileAsync(image, tempFilePath, source.Token);
+                    File.Move(tempFilePath, filePath);
+                }
+                countImage++;
+                int i = Convert.ToInt32((float)countImage / images.Count * 100 / 2);
+                progress.Report(50 + i);
             }
-            progress.Report(new ChapterProgress(chapter, 100));
+            progress.Report(100);
         }
 
 

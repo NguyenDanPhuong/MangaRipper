@@ -13,7 +13,7 @@ namespace MangaRipper.Core
         {
             var downloader = new Downloader();
             var parser = new Parser();
-
+            progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
@@ -23,11 +23,11 @@ namespace MangaRipper.Core
             {
                 return new Chapter(c.Name, new Uri(new Uri(manga), c.Link).AbsoluteUri);
             }).ToList();
-
+            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
+        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -44,7 +44,12 @@ namespace MangaRipper.Core
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>(), cancellationToken);
+            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
+            {
+                var f = (float)count / pages.Count;
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }), cancellationToken);
             var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
 
             return images;

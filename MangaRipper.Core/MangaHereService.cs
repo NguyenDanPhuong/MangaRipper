@@ -13,14 +13,15 @@ namespace MangaRipper.Core
         {
             var downloader = new Downloader();
             var parser = new Parser();
-
+            progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Text>[^<]+)</a>", input, "Name", "Value");
+            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
+        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -30,13 +31,19 @@ namespace MangaRipper.Core
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link
-            pages = pages.Select(p => {
+            pages = pages.Select(p =>
+            {
                 var value = new Uri(new Uri(chapter.Link), p).AbsoluteUri;
                 return value;
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>(), cancellationToken);
+            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
+            {
+                var f = (float)count / pages.Count;
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }), cancellationToken);
             var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
 
             return images;
@@ -44,7 +51,7 @@ namespace MangaRipper.Core
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaHere", "http://www.mangahere.co/", "English");
+            return new SiteInformation("MangaHere", "http://www.mangahere.co", "English");
         }
 
         public bool Of(string link)

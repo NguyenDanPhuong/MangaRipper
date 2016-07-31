@@ -13,7 +13,7 @@ namespace MangaRipper.Core
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaFox", "http://mangafox.me/", "English");
+            return new SiteInformation("MangaFox", "http://mangafox.me", "English");
         }
 
         public bool Of(string link)
@@ -35,9 +35,9 @@ namespace MangaRipper.Core
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
+        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            progress.Report(new ChapterProgress(chapter, 0));
+            progress.Report(0);
             var downloader = new Downloader();
             var parser = new Parser();
 
@@ -46,16 +46,25 @@ namespace MangaRipper.Core
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link
-            pages = pages.Select(p => {
+            pages = pages.Select(p =>
+            {
                 var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
                 return value;
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>(), cancellationToken);
+            var pageData = await downloader.DownloadStringAsync(
+                pages,
+                new Progress<int>((count) =>
+                {
+                    var f = (float)count / pages.Count;
+                    int i = Convert.ToInt32(f * 100);
+                    progress.Report(i);
+                }),
+                cancellationToken);
             var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
 
-            progress.Report(new ChapterProgress(chapter, 100));
+            progress.Report(100);
             return images;
         }
     }

@@ -114,7 +114,7 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
-
+                txtMessage.Text = "Download cancelled! Reason: " + ex.Message;
             }
             finally
             {
@@ -128,13 +128,13 @@ namespace MangaRipper
             {
                 var chapter = DownloadQueue.First();
                 var worker = Framework.GetWorker();
-                await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<ChapterProgress>(c =>
+                await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<int>(c =>
                     {
                         foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         {
-                            if (c.Chapter == item.DataBoundItem)
+                            if (chapter == item.DataBoundItem)
                             {
-                                item.Cells[ColChapterStatus.Name].Value = c.Percent + "%";
+                                item.Cells[ColChapterStatus.Name].Value = c + "%";
                                 break;
                             }
                         }

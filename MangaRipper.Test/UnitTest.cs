@@ -27,11 +27,11 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
+            var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task MangaFox_Test()
         {
             string url = "http://mangafox.me/manga/poputepipikku";
@@ -39,7 +39,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
+            var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
@@ -51,7 +51,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
+            var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
@@ -63,7 +63,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
+            var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
     }
