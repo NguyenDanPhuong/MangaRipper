@@ -9,7 +9,7 @@ namespace MangaRipper.Core
 {
     class MangaReaderImpl : IManga
     {
-        public async Task<IList<Chapter>> FindChapters(string manga, CancellationToken cancellationToken)
+        public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -26,7 +26,7 @@ namespace MangaRipper.Core
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, CancellationToken cancellationToken)
+        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();

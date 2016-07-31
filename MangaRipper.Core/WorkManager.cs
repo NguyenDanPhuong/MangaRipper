@@ -19,14 +19,15 @@ namespace MangaRipper.Core
             sema = new SemaphoreSlim(3);
         }
 
-        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath)
+        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
         {
             await Task.Run(async () =>
             {
                 try
                 {
                     await sema.WaitAsync();
-                    await DownloadChapterInternal(chapter, mangaLocalPath);
+                    chapter.IsBusy = true;
+                    await DownloadChapterInternal(chapter, mangaLocalPath, progress);
                 }
                 catch (Exception)
                 {
@@ -34,19 +35,20 @@ namespace MangaRipper.Core
                 }
                 finally
                 {
+                    chapter.IsBusy = false;
                     sema.Release();
                 }
             });
         }
 
-        public async Task<IList<Chapter>> FindChapters(string mangaPath)
+        public async Task<IList<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
         {
             return await Task.Run(async () =>
             {
                 try
                 {
                     await sema.WaitAsync();
-                    return await FindChaptersInternal(mangaPath);
+                    return await FindChaptersInternal(mangaPath, progress);
                 }
                 catch (Exception)
                 {
@@ -59,31 +61,32 @@ namespace MangaRipper.Core
             });
         }
 
-        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath)
+        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
         {
             // let service find all images of chapter
             var service = Framework.GetService(chapter.Link);
-            var images = await service.FindImanges(chapter, source.Token);
+            var images = await service.FindImanges(chapter, progress, source.Token);
             // create folder to keep images
             var downloader = new Downloader();
             var folderName = chapter.Name.RemoveFileNameInvalidChar();
-            var destinationPath = new Uri(new Uri(mangaLocalPath), folderName).AbsolutePath;
+            var destinationPath = Path.Combine(mangaLocalPath, folderName); ;
             Directory.CreateDirectory(destinationPath);
             // download images
             foreach (var image in images)
             {
                 string tempFilePath = Path.GetTempFileName();
                 await downloader.DownloadFileAsync(image, tempFilePath, source.Token);
-                File.Move(tempFilePath, destinationPath);
+                string filePath = Path.Combine(destinationPath, Path.GetFileName(image));
+                File.Move(tempFilePath, filePath);
             }
         }
 
 
-        private async Task<IList<Chapter>> FindChaptersInternal(string mangaPath)
+        private async Task<IList<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
         {
             // let service find all chapters in manga
             var service = Framework.GetService(mangaPath);
-            return await service.FindChapters(mangaPath, source.Token);
+            return await service.FindChapters(mangaPath, progress, source.Token);
         }
     }
 }

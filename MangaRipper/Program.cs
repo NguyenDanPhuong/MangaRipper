@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MangaRipper.Core;
+using System;
 using System.Windows.Forms;
 
 namespace MangaRipper
@@ -11,6 +12,7 @@ namespace MangaRipper
         [STAThread]
         static void Main()
         {
+            Framework.Init();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());
