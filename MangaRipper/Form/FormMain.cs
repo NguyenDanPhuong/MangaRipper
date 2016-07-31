@@ -110,7 +110,11 @@ namespace MangaRipper
             try
             {
                 btnDownload.Enabled = false;
-                await DownloadChapter();
+                await StartDownload();
+            }
+            catch (Exception ex)
+            {
+
             }
             finally
             {
@@ -118,32 +122,25 @@ namespace MangaRipper
             }
         }
 
-        private async Task DownloadChapter()
+        private async Task StartDownload()
         {
             while (DownloadQueue.Count > 0)
             {
-                int current = DownloadQueue.Where(c => c.IsBusy == true).Count();
-                int max = Convert.ToInt32(nudThread.Value);
-                int remain = max - current;
-                var chapters = DownloadQueue.Where(c => c.IsBusy == false).Take(remain);
-
-                foreach (var chapter in chapters)
-                {
-                    var worker = Framework.GetWorker();
-                    await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<ChapterProgress>(c =>
+                var chapter = DownloadQueue.First();
+                var worker = Framework.GetWorker();
+                await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<ChapterProgress>(c =>
+                    {
+                        foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         {
-                            foreach (DataGridViewRow item in dgvQueueChapter.Rows)
+                            if (c.Chapter == item.DataBoundItem)
                             {
-                                if (c.Chapter == item.DataBoundItem)
-                                {
-                                    item.Cells[ColChapterStatus.Name].Value = c.Percent + "%";
-                                    break;
-                                }
+                                item.Cells[ColChapterStatus.Name].Value = c.Percent + "%";
+                                break;
                             }
-                        }));
+                        }
+                    }));
 
-                    DownloadQueue.Remove(chapter);
-                }
+                DownloadQueue.Remove(chapter);
             }
         }
 
@@ -211,7 +208,7 @@ namespace MangaRipper
 
         private void btnHowToUse_Click(object sender, EventArgs e)
         {
-            Process.Start("http://mangaripper.codeplex.com/documentation");
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki");
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)

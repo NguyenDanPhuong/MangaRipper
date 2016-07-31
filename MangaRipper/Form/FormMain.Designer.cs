@@ -58,7 +58,6 @@
             this.btnRemoveBookmark = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnAddPrefixCounter = new System.Windows.Forms.Button();
-            this.nudThread = new System.Windows.Forms.NumericUpDown();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,7 +66,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudThread)).BeginInit();
             this.SuspendLayout();
             // 
             // btnGetChapter
@@ -86,9 +84,9 @@
             // 
             this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownload.Location = new System.Drawing.Point(719, 551);
+            this.btnDownload.Location = new System.Drawing.Point(665, 551);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(162, 23);
+            this.btnDownload.Size = new System.Drawing.Size(216, 23);
             this.btnDownload.TabIndex = 18;
             this.btnDownload.Text = "Start Download";
             this.btnDownload.UseVisualStyleBackColor = true;
@@ -286,9 +284,9 @@
             // btnHowToUse
             // 
             this.btnHowToUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnHowToUse.Location = new System.Drawing.Point(123, 551);
+            this.btnHowToUse.Location = new System.Drawing.Point(15, 551);
             this.btnHowToUse.Name = "btnHowToUse";
-            this.btnHowToUse.Size = new System.Drawing.Size(203, 23);
+            this.btnHowToUse.Size = new System.Drawing.Size(273, 23);
             this.btnHowToUse.TabIndex = 21;
             this.btnHowToUse.Text = "How To Use && F.A.Q.";
             this.btnHowToUse.UseVisualStyleBackColor = true;
@@ -297,9 +295,9 @@
             // btnAbout
             // 
             this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAbout.Location = new System.Drawing.Point(332, 551);
+            this.btnAbout.Location = new System.Drawing.Point(294, 551);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(105, 23);
+            this.btnAbout.Size = new System.Drawing.Size(143, 23);
             this.btnAbout.TabIndex = 22;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -384,32 +382,6 @@
             this.btnAddPrefixCounter.UseVisualStyleBackColor = true;
             this.btnAddPrefixCounter.Click += new System.EventHandler(this.btnAddPrefixCounter_Click);
             // 
-            // nudThread
-            // 
-            this.nudThread.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudThread.Location = new System.Drawing.Point(666, 552);
-            this.nudThread.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.nudThread.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudThread.Name = "nudThread";
-            this.nudThread.ReadOnly = true;
-            this.nudThread.Size = new System.Drawing.Size(47, 22);
-            this.nudThread.TabIndex = 24;
-            this.nudThread.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.toolTip1.SetToolTip(this.nudThread, "Max Connections Number");
-            this.nudThread.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // txtSaveTo
             // 
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -463,7 +435,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 606);
-            this.Controls.Add(this.nudThread);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.btnAddPrefixCounter);
             this.Controls.Add(this.btnRemoveBookmark);
@@ -496,7 +467,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudThread)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -533,7 +503,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnAddPrefixCounter;
         private System.Windows.Forms.TextBox txtMessage;
-        private System.Windows.Forms.NumericUpDown nudThread;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
