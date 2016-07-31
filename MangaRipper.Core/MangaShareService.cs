@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    class MangaShareImpl : IManga
+    class MangaShareService : IMangaService
     {
         public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -42,7 +42,7 @@ namespace MangaRipper.Core
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pagesExtend, cancellationToken);
+            var pageData = await downloader.DownloadStringAsync(pagesExtend, new Progress<int>(), cancellationToken);
             var images = parser.Parse(@"<img src=""(?<Value>[^""]+)"" border=""0"" alt=""[^""]+"" />\n", pageData, "Value");
 
             return images;

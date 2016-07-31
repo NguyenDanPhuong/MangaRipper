@@ -8,32 +8,32 @@ namespace MangaRipper.Core
 {
     public class Framework
     {
-        private static IList<IManga> services;
-        private static WorkManager workManger;
+        private static IList<IMangaService> services;
+        private static Worker worker;
 
         public static void Init()
         {
-            workManger = new WorkManager();
-            services = new List<IManga>();
-            services.Add(new MangaFoxImpl());
-            services.Add(new MangaHereImpl());
-            services.Add(new MangaReaderImpl());
-            services.Add(new MangaShareImpl());
+            worker = new Worker();
+            services = new List<IMangaService>();
+            services.Add(new MangaFoxService());
+            services.Add(new MangaHereService());
+            services.Add(new MangaReaderService());
+            services.Add(new MangaShareService());
         }
 
-        public static IEnumerable<IManga> GetServices()
+        public static IEnumerable<IMangaService> GetServices()
         {
             return services.ToList().AsReadOnly();
         }
 
-        public static WorkManager GetWorkManager()
+        public static Worker GetWorker()
         {
-            return workManger;
+            return worker;
         }
 
-        public static IManga GetService(string link)
+        public static IMangaService GetService(string link)
         {
-            IManga service = services.FirstOrDefault(s => s.Of(link));
+            IMangaService service = services.FirstOrDefault(s => s.Of(link));
             if(service == null)
             {
                 throw new Exception("Cannot find service to download from input site!");

@@ -18,12 +18,9 @@ namespace MangaRipper
 
         protected const string FILENAME_ICHAPTER_COLLECTION = "IChapterCollection.bin";
 
-        private CancellationTokenSource _cts;
-
         public FormMain()
         {
             InitializeComponent();
-            _cts = new CancellationTokenSource();
         }
 
         private async void btnGetChapter_Click(object sender, EventArgs e)
@@ -33,7 +30,7 @@ namespace MangaRipper
                 btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
 
-                var worker = Framework.GetWorkManager();
+                var worker = Framework.GetWorker();
                 var progress_int = new Progress<int>(progress => txtPercent.Text = progress + "%");
                 var chapters = await worker.FindChapters(titleUrl, progress_int);
                 dgvChapter.DataSource = chapters;
@@ -108,21 +105,22 @@ namespace MangaRipper
             }
         }
 
-        private void btnDownload_Click(object sender, EventArgs e)
+        private async void btnDownload_Click(object sender, EventArgs e)
         {
-            DownloadChapter();
+            try
+            {
+                btnDownload.Enabled = false;
+                await DownloadChapter();
+            }
+            finally
+            {
+                btnDownload.Enabled = true;
+            }
         }
 
-
-        private void DownloadChapter(int millisecond)
+        private async Task DownloadChapter()
         {
-            timer1.Interval = millisecond;
-            timer1.Enabled = true;
-        }
-
-        private async void DownloadChapter()
-        {
-            if (DownloadQueue.Count > 0 && _cts.IsCancellationRequested == false)
+            while (DownloadQueue.Count > 0)
             {
                 int current = DownloadQueue.Where(c => c.IsBusy == true).Count();
                 int max = Convert.ToInt32(nudThread.Value);
@@ -131,8 +129,7 @@ namespace MangaRipper
 
                 foreach (var chapter in chapters)
                 {
-                    btnDownload.Enabled = false;
-                    var worker = Framework.GetWorkManager();
+                    var worker = Framework.GetWorker();
                     await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<ChapterProgress>(c =>
                         {
                             foreach (DataGridViewRow item in dgvQueueChapter.Rows)
@@ -146,18 +143,13 @@ namespace MangaRipper
                         }));
 
                     DownloadQueue.Remove(chapter);
-                    btnDownload.Enabled = true;
                 }
-            }
-            else
-            {
-                btnDownload.Enabled = true;
             }
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            _cts.Cancel();
+            Framework.GetWorker().Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
@@ -196,7 +188,8 @@ namespace MangaRipper
 
             foreach (var service in Framework.GetServices())
             {
-                dgvSupportedSites.Rows.Add(service.GetInformation());
+                var infor = service.GetInformation();
+                dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
             }
 
             if (string.IsNullOrEmpty(txtSaveTo.Text))
@@ -273,7 +266,6 @@ namespace MangaRipper
             {
                 sc.Remove(cbTitleUrl.Text);
                 Properties.Settings.Default.Bookmark = sc;
-
                 LoadBookmark();
             }
         }
@@ -295,10 +287,5 @@ namespace MangaRipper
             dgvChapter.DataSource = chapters;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            timer1.Enabled = false;
-            DownloadChapter();
-        }
     }
 }

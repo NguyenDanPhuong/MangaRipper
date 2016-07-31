@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    public class MangaFoxImpl : IManga
+    public class MangaFoxService : IMangaService
     {
         private string Link { get; set; }
 
@@ -24,17 +24,20 @@ namespace MangaRipper.Core
 
         public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
+            progress.Report(0);
             var downloader = new Downloader();
             var parser = new Parser();
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
+            progress.Report(100);
             return chaps;
         }
 
         public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<ChapterProgress> progress, CancellationToken cancellationToken)
         {
+            progress.Report(new ChapterProgress(chapter, 0));
             var downloader = new Downloader();
             var parser = new Parser();
 
@@ -49,9 +52,10 @@ namespace MangaRipper.Core
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, cancellationToken);
+            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>(), cancellationToken);
             var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
 
+            progress.Report(new ChapterProgress(chapter, 100));
             return images;
         }
     }

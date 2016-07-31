@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 using System.IO.IsolatedStorage;
 using MangaRipper.Core;
+using System.Windows.Forms;
 
 namespace MangaRipper
 {
@@ -19,8 +20,8 @@ namespace MangaRipper
         {
             try
             {
-                using (IsolatedStorageFile scope = IsolatedStorageFile.GetUserStoreForApplication())
-                using (var fs = new IsolatedStorageFileStream(fileName, FileMode.Create, scope))
+                string file = Path.Combine(Application.UserAppDataPath, fileName);
+                using (var fs = new FileStream(file, FileMode.Create))
                 {
                     IFormatter formatter = new BinaryFormatter();
                     formatter.Serialize(fs, chapters);
@@ -42,8 +43,8 @@ namespace MangaRipper
             BindingList<Chapter> result = null;
             try
             {
-                using (IsolatedStorageFile scope = IsolatedStorageFile.GetUserStoreForApplication())
-                using (var fs = new IsolatedStorageFileStream(fileName, FileMode.Open, scope))
+                string file = Path.Combine(Application.UserAppDataPath, fileName);
+                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
                 {
                     if (fs.Length != 0)
                     {

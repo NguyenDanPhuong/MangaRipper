@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    public interface IManga
+    public interface IMangaService
     {
         SiteInformation GetInformation();
         bool Of(string link);

@@ -8,15 +8,20 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    public class WorkManager
+    public class Worker
     {
         CancellationTokenSource source;
         SemaphoreSlim sema;
 
-        public WorkManager()
+        public Worker()
         {
             source = new CancellationTokenSource();
-            sema = new SemaphoreSlim(3);
+            sema = new SemaphoreSlim(1);
+        }
+
+        public void Cancel()
+        {
+            source.Cancel();
         }
 
         public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
@@ -29,7 +34,7 @@ namespace MangaRipper.Core
                     chapter.IsBusy = true;
                     await DownloadChapterInternal(chapter, mangaLocalPath, progress);
                 }
-                catch (Exception)
+                 catch (Exception)
                 {
                     throw;
                 }
@@ -63,9 +68,10 @@ namespace MangaRipper.Core
 
         private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<ChapterProgress> progress)
         {
+            progress.Report(new ChapterProgress(chapter, 0));
             // let service find all images of chapter
             var service = Framework.GetService(chapter.Link);
-            var images = await service.FindImanges(chapter, progress, source.Token);
+            var images = await service.FindImanges(chapter, new Progress<ChapterProgress>(), source.Token);
             // create folder to keep images
             var downloader = new Downloader();
             var folderName = chapter.Name.RemoveFileNameInvalidChar();
@@ -79,14 +85,18 @@ namespace MangaRipper.Core
                 string filePath = Path.Combine(destinationPath, Path.GetFileName(image));
                 File.Move(tempFilePath, filePath);
             }
+            progress.Report(new ChapterProgress(chapter, 100));
         }
 
 
         private async Task<IList<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
         {
+            progress.Report(0);
             // let service find all chapters in manga
             var service = Framework.GetService(mangaPath);
-            return await service.FindChapters(mangaPath, progress, source.Token);
+            var chapters = await service.FindChapters(mangaPath, progress, source.Token);
+            progress.Report(100);
+            return chapters;
         }
     }
 }

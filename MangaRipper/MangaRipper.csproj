@@ -99,7 +99,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\Option.cs" />
     <Compile Include="Form\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>

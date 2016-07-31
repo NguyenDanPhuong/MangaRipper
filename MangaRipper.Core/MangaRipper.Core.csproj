@@ -49,18 +49,18 @@
   <ItemGroup>
     <Compile Include="Chapter.cs" />
     <Compile Include="Framework.cs" />
-    <Compile Include="IManga.cs" />
+    <Compile Include="IMangaService.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Helper\ChapterProgress.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="MangaFoxImpl.cs" />
-    <Compile Include="MangaHereImpl.cs" />
-    <Compile Include="MangaReaderImpl.cs" />
-    <Compile Include="MangaShareImpl.cs" />
+    <Compile Include="MangaFoxService.cs" />
+    <Compile Include="MangaHereService.cs" />
+    <Compile Include="MangaReaderService.cs" />
+    <Compile Include="MangaShareService.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteInformation.cs" />
-    <Compile Include="WorkManager.cs" />
+    <Compile Include="Worker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

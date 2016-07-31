@@ -38,9 +38,6 @@
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnRemoveAll = new System.Windows.Forms.Button();
             this.dgvQueueChapter = new System.Windows.Forms.DataGridView();
-            this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnChangeSaveTo = new System.Windows.Forms.Button();
             this.btnOpenFolder = new System.Windows.Forms.Button();
@@ -64,7 +61,9 @@
             this.nudThread = new System.Windows.Forms.NumericUpDown();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -161,34 +160,6 @@
             this.dgvQueueChapter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvQueueChapter.Size = new System.Drawing.Size(549, 507);
             this.dgvQueueChapter.TabIndex = 10;
-            // 
-            // ColChapterName
-            // 
-            this.ColChapterName.DataPropertyName = "Name";
-            this.ColChapterName.HeaderText = "Chapter Name";
-            this.ColChapterName.Name = "ColChapterName";
-            this.ColChapterName.ReadOnly = true;
-            this.ColChapterName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ColChapterName.Width = 200;
-            // 
-            // ColChapterStatus
-            // 
-            this.ColChapterStatus.HeaderText = "%";
-            this.ColChapterStatus.Name = "ColChapterStatus";
-            this.ColChapterStatus.ReadOnly = true;
-            this.ColChapterStatus.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColChapterStatus.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ColChapterStatus.Width = 35;
-            // 
-            // ColChapterUrl
-            // 
-            this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColChapterUrl.DataPropertyName = "Address";
-            this.ColChapterUrl.HeaderText = "Address";
-            this.ColChapterUrl.Name = "ColChapterUrl";
-            this.ColChapterUrl.ReadOnly = true;
-            this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // btnStop
             // 
@@ -459,10 +430,33 @@
             this.txtMessage.Size = new System.Drawing.Size(1004, 22);
             this.txtMessage.TabIndex = 23;
             // 
-            // timer1
+            // ColChapterName
             // 
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.ColChapterName.DataPropertyName = "Name";
+            this.ColChapterName.HeaderText = "Chapter Name";
+            this.ColChapterName.Name = "ColChapterName";
+            this.ColChapterName.ReadOnly = true;
+            this.ColChapterName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ColChapterName.Width = 200;
+            // 
+            // ColChapterStatus
+            // 
+            this.ColChapterStatus.HeaderText = "%";
+            this.ColChapterStatus.Name = "ColChapterStatus";
+            this.ColChapterStatus.ReadOnly = true;
+            this.ColChapterStatus.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColChapterStatus.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ColChapterStatus.Width = 35;
+            // 
+            // ColChapterUrl
+            // 
+            this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColChapterUrl.DataPropertyName = "Link";
+            this.ColChapterUrl.HeaderText = "Address";
+            this.ColChapterUrl.Name = "ColChapterUrl";
+            this.ColChapterUrl.ReadOnly = true;
+            this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // FormMain
             // 
@@ -530,9 +524,6 @@
         private System.Windows.Forms.DataGridView dgvChapter;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewLinkColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
@@ -543,6 +534,8 @@
         private System.Windows.Forms.Button btnAddPrefixCounter;
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.NumericUpDown nudThread;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
     }
 }
