@@ -18,35 +18,45 @@ namespace MangaRipper.Test
         }
 
         [TestMethod]
-        public async Task TestMangaReader_GetChapters()
+        public async Task TestMangaReader_Test()
         {
-            string naruto = "http://www.mangareader.net/naruto";
-            ITitle title = TitleFactory.CreateTitle(naruto);
-            Assert.IsNotNull(title);
-            var chapters = await title.PopulateChapterAsync(new Progress<int>(percent =>
-            {
-                Console.WriteLine(percent);
-            }), new CancellationTokenSource().Token);
-
-            Assert.IsTrue(chapters.Count > 0);
-        }
-
-        [TestMethod]
-        public async Task TestMangaReader_ParseImages()
-        {
-            string naruto_700 = "http://www.mangareader.net/naruto/700";
-            var chap = new ChapterMangaReader("Naruto 700", naruto_700);
-            var webclient = new WebClient();
-            string html = await webclient.DownloadStringTaskAsync(naruto_700);
-            Assert.IsTrue(chap.ImageAddresses == null);
-            await chap.PopulateImageAddress(html);
-            Assert.IsTrue(chap.ImageAddresses.Count > 0);
+            string url = "http://www.mangareader.net/naruto";
+            var service = Framework.GetService(url);
+            var chapters = await service.FindChapters(url);
+            Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
+            var chapter = chapters[0];
+            var images = await service.FindImanges(chapter);
+            Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
         [TestMethod]
         public async Task MangaFox_Test()
         {
             string url = "http://mangafox.me/manga/poputepipikku";
+            var service = Framework.GetService(url);
+            var chapters = await service.FindChapters(url);
+            Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
+            var chapter = chapters[0];
+            var images = await service.FindImanges(chapter);
+            Assert.IsTrue(images.Count > 0, "Cannot find images.");
+        }
+
+        [TestMethod]
+        public async Task TestMangaHere_Test()
+        {
+            string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
+            var service = Framework.GetService(url);
+            var chapters = await service.FindChapters(url);
+            Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
+            var chapter = chapters[0];
+            var images = await service.FindImanges(chapter);
+            Assert.IsTrue(images.Count > 0, "Cannot find images.");
+        }
+
+        [TestMethod]
+        public async Task TestMangaShare_Test()
+        {
+            string url = "http://read.mangashare.com/Beelzebub";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");

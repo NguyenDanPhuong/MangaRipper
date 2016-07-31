@@ -13,6 +13,9 @@ namespace MangaRipper.Core
         public static void Init()
         {
             Register(new MangaFoxImpl());
+            Register(new MangaHereImpl());
+            Register(new MangaReaderImpl());
+            Register(new MangaShareImpl());
         }
 
         public static void Register(IManga manga)

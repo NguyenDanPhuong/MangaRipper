@@ -59,6 +59,9 @@
     <Compile Include="Helper\ChapterProgress.cs" />
     <Compile Include="Helper\Extension.cs" />
     <Compile Include="MangaFoxImpl.cs" />
+    <Compile Include="MangaHereImpl.cs" />
+    <Compile Include="MangaReaderImpl.cs" />
+    <Compile Include="MangaShareImpl.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteInformation.cs" />

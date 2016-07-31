@@ -6,21 +6,8 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    public class MangaFoxImpl : IManga
+    class MangaHereImpl : IManga
     {
-        private string Link { get; set; }
-
-        public SiteInformation GetInformation()
-        {
-            return new SiteInformation("MangaFox", "http://mangafox.me/", "English");
-        }
-
-        public bool Of(string link)
-        {
-            var uri = new Uri(link);
-            return uri.Host.Equals("mangafox.me");
-        }
-
         public async Task<IList<Chapter>> FindChapters(string manga)
         {
             var downloader = new Downloader();
@@ -28,7 +15,7 @@ namespace MangaRipper.Core
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Text>[^<]+)</a>", input, "Name", "Value");
             return chaps;
         }
 
@@ -43,7 +30,7 @@ namespace MangaRipper.Core
 
             // transform pages link
             pages = pages.Select(p => {
-                var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Link), p).AbsoluteUri;
                 return value;
             }).ToList();
 
@@ -52,6 +39,17 @@ namespace MangaRipper.Core
             var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
 
             return images;
+        }
+
+        public SiteInformation GetInformation()
+        {
+            return new SiteInformation("MangaHere", "http://www.mangahere.co/", "English");
+        }
+
+        public bool Of(string link)
+        {
+            var uri = new Uri(link);
+            return uri.Host.Equals("www.mangahere.co");
         }
     }
 }
