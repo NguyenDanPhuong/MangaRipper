@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    public class MangaFoxService : IMangaService
+    class MangaFoxService : IMangaService
     {
-        private string Link { get; set; }
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public SiteInformation GetInformation()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace MangaRipper.Core
 {
     public class Downloader
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private HttpWebRequest CreateRequest(string url)
         {
             var uri = new Uri(url);
@@ -21,9 +24,9 @@ namespace MangaRipper.Core
             return request;
         }
 
-
         public async Task<string> DownloadStringAsync(string url)
         {
+            logger.Info("> DownloadStringAsync: {0}", url);
             var request = CreateRequest(url);
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -37,6 +40,7 @@ namespace MangaRipper.Core
 
         internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
+            logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
             var sb = new StringBuilder();
             int count = 0;
             progress.Report(count);
@@ -53,6 +57,7 @@ namespace MangaRipper.Core
 
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
+            logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
             var request = CreateRequest(url);
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
             {

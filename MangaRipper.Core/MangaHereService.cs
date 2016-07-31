@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace MangaRipper.Core
 {
     class MangaHereService : IMangaService
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();

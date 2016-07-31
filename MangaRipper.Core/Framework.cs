@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,13 @@ namespace MangaRipper.Core
 {
     public class Framework
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static IList<IMangaService> services;
         private static Worker worker;
 
         public static void Init()
         {
+            logger.Info("> Framework.Init()");
             worker = new Worker();
             services = new List<IMangaService>();
             services.Add(new MangaFoxService());
@@ -36,6 +39,7 @@ namespace MangaRipper.Core
             IMangaService service = services.FirstOrDefault(s => s.Of(link));
             if(service == null)
             {
+                logger.Error("Cannot find service for link: {0}", link);
                 throw new Exception("Cannot find service to download from input site!");
             }
             return service;

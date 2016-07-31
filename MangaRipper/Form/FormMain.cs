@@ -9,13 +9,14 @@ using System.Collections.Specialized;
 using MangaRipper.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace MangaRipper
 {
     public partial class FormMain : Form
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         BindingList<Chapter> DownloadQueue;
-
         protected const string FILENAME_ICHAPTER_COLLECTION = "IChapterCollection.bin";
 
         public FormMain()
@@ -37,6 +38,7 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
+                txtMessage.Text = "Download cancelled! Reason: " + ex.Message;
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
@@ -114,6 +116,7 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtMessage.Text = "Download cancelled! Reason: " + ex.Message;
             }
             finally
