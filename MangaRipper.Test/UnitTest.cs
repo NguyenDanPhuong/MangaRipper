@@ -21,7 +21,7 @@ namespace MangaRipper.Test
         }
 
         [TestMethod]
-        public async Task TestMangaReader_Test()
+        public async Task MangaReader_Test()
         {
             string url = "http://www.mangareader.net/naruto";
             var service = Framework.GetService(url);
@@ -35,18 +35,19 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task MangaFox_Test()
         {
-            string url = "http://mangafox.me/manga/poputepipikku";
+            // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
+            // If we test with a licensed manga, this test will failed.
+            string url = "http://mangafox.me/manga/tian_jiang_xian_shu_nan/";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
-            Trace.WriteLine(string.Format("MangaFox_Test - Chapter: [{0}] [{1}]", chapter.Name, chapter.Link));
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
         [TestMethod]
-        public async Task TestMangaHere_Test()
+        public async Task MangaHere_Test()
         {
             string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
             var service = Framework.GetService(url);
@@ -58,7 +59,7 @@ namespace MangaRipper.Test
         }
 
         [TestMethod]
-        public async Task TestMangaShare_Test()
+        public async Task MangaShare_Test()
         {
             string url = "http://read.mangashare.com/Beelzebub";
             var service = Framework.GetService(url);
