@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace MangaRipper.Test
 {
@@ -31,7 +32,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
 
-        //[TestMethod]
+        [TestMethod]
         public async Task MangaFox_Test()
         {
             string url = "http://mangafox.me/manga/poputepipikku";
@@ -39,6 +40,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters[0];
+            Trace.WriteLine(string.Format("MangaFox_Test - Chapter: [{0}] [{1}]", chapter.Name, chapter.Link));
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
         }
