@@ -50,7 +50,6 @@ namespace MangaRipper.Core
                 string input = await DownloadStringAsync(url);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
-                Trace.WriteLine("DownloadStringAsync > Count: " + count);
                 progress.Report(count++);
             }
 
