@@ -45,6 +45,7 @@ namespace MangaRipper.Core
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Link);
+            Trace.WriteLine("FindImanges > Input: " + input);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             Trace.WriteLine("FindImanges > Before Count: " + pages.Count);
             // transform pages link
@@ -60,12 +61,8 @@ namespace MangaRipper.Core
                 pages,
                 new Progress<int>((count) =>
                 {
-                    Trace.WriteLine("FindImanges > Count: " + count);
-                    Trace.WriteLine("FindImanges > Pages.Count: " + pages.Count);
                     var f = (float) count / pages.Count;
-                    Trace.WriteLine("FindImanges > Float: " + f);
                     int i = Convert.ToInt32(f * 100);
-                    Trace.WriteLine("FindImanges > I: " + i);
                     progress.Report(i);
                 }),
                 cancellationToken);
