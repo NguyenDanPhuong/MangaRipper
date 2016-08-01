@@ -47,7 +47,7 @@ namespace MangaRipper.Core
             Trace.WriteLine("FindImanges > DownloadStringAsync: " + chapter.Link);
             string input = await downloader.DownloadStringAsync(chapter.Link);
             Trace.WriteLine("FindImanges > Input Length: " + input.Length);
-            var newInput = input.Substring(1000, 3000);
+            var newInput = input.Substring(4000, 3000);
             Trace.WriteLine(newInput);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             Trace.WriteLine("FindImanges > Before Count: " + pages.Count);
