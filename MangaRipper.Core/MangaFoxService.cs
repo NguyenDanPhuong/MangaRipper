@@ -51,6 +51,7 @@ namespace MangaRipper.Core
             pages = pages.Select(p =>
             {
                 var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
+                Trace.WriteLine("FindImanges > Transform: " + p + " " + value);
                 return value;
             }).ToList();
 
