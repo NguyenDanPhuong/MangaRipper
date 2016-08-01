@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,6 +50,7 @@ namespace MangaRipper.Core
                 string input = await DownloadStringAsync(url);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
+                Trace.WriteLine("DownloadStringAsync > Count: " + count);
                 progress.Report(count++);
             }
 

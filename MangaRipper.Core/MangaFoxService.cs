@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -58,6 +59,7 @@ namespace MangaRipper.Core
                 pages,
                 new Progress<int>((count) =>
                 {
+                    Trace.WriteLine("FindImanges > Count: " + count);
                     var f = (float)count / pages.Count;
                     int i = Convert.ToInt32(f * 100);
                     progress.Report(i);
