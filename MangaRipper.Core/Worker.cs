@@ -20,7 +20,7 @@ namespace MangaRipper.Core
         {
             logger.Info("> Worker()");
             source = new CancellationTokenSource();
-            sema = new SemaphoreSlim(1);
+            sema = new SemaphoreSlim(2);
         }
 
         public void Cancel()
