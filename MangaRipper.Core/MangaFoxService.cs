@@ -60,8 +60,10 @@ namespace MangaRipper.Core
                 new Progress<int>((count) =>
                 {
                     Trace.WriteLine("FindImanges > Count: " + count);
-                    var f = (float)count / pages.Count;
+                    var f = (float) count / pages.Count;
+                    Trace.WriteLine("FindImanges > Float: " + f);
                     int i = Convert.ToInt32(f * 100);
+                    Trace.WriteLine("FindImanges > I: " + i);
                     progress.Report(i);
                 }),
                 cancellationToken);
