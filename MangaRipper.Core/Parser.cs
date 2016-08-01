@@ -21,8 +21,8 @@ namespace MangaRipper.Core
 
             foreach (Match match in matches)
             {
-                var value = match.Groups[valueGroup].Value;
-                string name = match.Groups[nameGroup].Value;
+                var value = match.Groups[valueGroup].Value.Trim();
+                string name = match.Groups[nameGroup].Value.Trim();
                 var chapter = new Chapter(name, value);
                 list.Add(chapter);
             }
@@ -39,7 +39,7 @@ namespace MangaRipper.Core
 
             foreach (Match match in matches)
             {
-                var value = match.Groups[groupName].Value;
+                var value = match.Groups[groupName].Value.Trim();
                 list.Add(value);
             }
 

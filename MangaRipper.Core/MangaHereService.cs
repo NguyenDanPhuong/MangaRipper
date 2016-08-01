@@ -19,7 +19,7 @@ namespace MangaRipper.Core
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Text>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
             progress.Report(100);
             return chaps;
         }
@@ -47,7 +47,7 @@ namespace MangaRipper.Core
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
+            var images = parser.Parse("<img src=\"(?<Value>[^?]+)?[^\"]+\"[ ]+onerror", pageData, "Value");
 
             return images;
         }
