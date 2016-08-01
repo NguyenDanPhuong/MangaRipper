@@ -20,7 +20,8 @@ namespace MangaRipper.Core
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
-
+            // reverse chapters order and remove duplicated chapters in latest setion
+            chaps = chaps.Reverse().GroupBy(x => x.Link).Select(g => g.First()).ToList();
             // transform pages link
             chaps = chaps.Select(c =>
             {

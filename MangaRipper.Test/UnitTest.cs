@@ -6,6 +6,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MangaRipper.Test
 {
@@ -25,11 +26,20 @@ namespace MangaRipper.Test
         {
             string url = "http://www.mangareader.net/naruto";
             var service = Framework.GetService(url);
+            // Test service can find chapters
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
-            var chapter = chapters[0];
-            var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
+            // Test chapters are in correct order.
+            var lastChapter = chapters.Last();
+            Assert.AreEqual("Naruto 1", lastChapter.Name);
+            // Test there're no duplicated chapters.
+            var anyDuplicated = chapters.GroupBy(x => x.Link).Any(g => g.Count() > 1);
+            Assert.IsFalse(anyDuplicated, "There're duplicated chapters.");
+            // Test service can find images.
+            var firstChapter = chapters.First();
+            var images = await service.FindImanges(firstChapter, new Progress<int>(), source.Token);
             Assert.IsTrue(images.Count > 0, "Cannot find images.");
+            
         }
 
         [TestMethod]
