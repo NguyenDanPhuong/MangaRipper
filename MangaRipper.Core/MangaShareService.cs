@@ -35,7 +35,7 @@ namespace MangaRipper.Core
             string regExPages = @"<select name=""pagejump"" class=""page"" onchange=""javascript:window.location='(?<Value>[^']+)'\+this\.value\+'\.html';"">";
             var pageBase = parser.Parse(regExPages, input, "Value").FirstOrDefault();
 
-            var pagesExtend = parser.Parse(@"<option value=""(?<FileName>\d+)"">Page \d+</option>", input, "FileName");
+            var pagesExtend = parser.Parse(@"<option value=""(?<FileName>\d+)""(| selected=""selected"")>Page \d+</option>", input, "FileName");
 
             // transform pages link
             pagesExtend = pagesExtend.Select(p =>
