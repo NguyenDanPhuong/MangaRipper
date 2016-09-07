@@ -42,6 +42,10 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://i10.mangareader.net/naruto/1/naruto-1564773.jpg", images[0]);
             Assert.AreEqual("http://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images[1]);
             Assert.AreEqual("http://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images[52]);
+
+            var downloader = new Downloader();
+            string imageString = await downloader.DownloadStringAsync(images[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
         [TestMethod]
@@ -61,6 +65,10 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q001.jpg", images[0]);
             Assert.AreEqual("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q002.jpg", images[1]);
             Assert.AreEqual("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q015.jpg", images[14]);
+
+            var downloader = new Downloader();
+            string imageString = await downloader.DownloadStringAsync(images[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
         [TestMethod]
@@ -78,23 +86,31 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.01.jpg", images[0]);
             Assert.AreEqual("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.02.jpg", images[1]);
             Assert.AreEqual("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.55.jpg", images[54]);
+
+            var downloader = new Downloader();
+            string imageString = await downloader.DownloadStringAsync(images[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
         [TestMethod]
         public async Task MangaShare_Test()
         {
-            string url = "http://read.mangashare.com/Beelzebub";
+            string url = "http://read.mangashare.com/Gantz";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Count > 0, "Cannot find chapters.");
             var chapter = chapters.Last();
-            Assert.AreEqual("Beelzebub 1", chapter.Name);
-            Assert.AreEqual("http://read.mangashare.com/Beelzebub/chapter-001/page001.html", chapter.Link);
+            Assert.AreEqual("Gantz 1", chapter.Name);
+            Assert.AreEqual("http://read.mangashare.com/Gantz/chapter-001/page001.html", chapter.Link);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
-            Assert.AreEqual(58, images.Count);
-            Assert.AreEqual("http://dl01.mangashare.com/manga/Beelzebub/001/001.jpg", images[0]);
-            Assert.AreEqual("http://dl01.mangashare.com/manga/Beelzebub/001/002.jpg", images[1]);
-            Assert.AreEqual("http://dl01.mangashare.com/manga/Beelzebub/001/058.jpg", images[57]);
+            Assert.AreEqual(43, images.Count);
+            Assert.AreEqual("http://dl01.mangashare.com/manga/Gantz/001/001.jpg", images[0]);
+            Assert.AreEqual("http://dl01.mangashare.com/manga/Gantz/001/002.jpg", images[1]);
+            Assert.AreEqual("http://dl01.mangashare.com/manga/Gantz/001/043.jpg", images[42]);
+
+            var downloader = new Downloader();
+            string imageString = await downloader.DownloadStringAsync(images[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
         }
     }
 }

@@ -21,7 +21,6 @@ namespace MangaRipper.Core
             HttpWebRequest request = WebRequest.CreateHttp(uri);
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             request.Credentials = CredentialCache.DefaultCredentials;
-            request.Referer = uri.AbsoluteUri;
             return request;
         }
 

@@ -87,7 +87,7 @@ namespace MangaRipper.Core
             // create folder to keep images
             var downloader = new Downloader();
             var folderName = chapter.Name.RemoveFileNameInvalidChar();
-            var destinationPath = Path.Combine(mangaLocalPath, folderName); ;
+            var destinationPath = Path.Combine(mangaLocalPath, folderName);
             Directory.CreateDirectory(destinationPath);
             // download images
             int countImage = 0;

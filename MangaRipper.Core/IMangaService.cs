@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// We have many manga services, each service support downloading from one site.
+    /// </summary>
     public interface IMangaService
     {
         SiteInformation GetInformation();
