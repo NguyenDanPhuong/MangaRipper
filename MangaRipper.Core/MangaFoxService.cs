@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// Support find chapters, images from MangaFox
+    /// </summary>
     class MangaFoxService : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();

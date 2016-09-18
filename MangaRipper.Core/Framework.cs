@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// The framework contains all services for this app.
+    /// When the app start, we have to call Init() to initilazation services.
+    /// </summary>
     public class Framework
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static IList<IMangaService> services;
         private static Worker worker;
 
+        /// <summary>
+        /// Initilaztion services.
+        /// </summary>
         public static void Init()
         {
             logger.Info("> Framework.Init()");
@@ -24,16 +31,29 @@ namespace MangaRipper.Core
             services.Add(new MangaShareService());
         }
 
+        /// <summary>
+        /// Get all avaible services
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<IMangaService> GetServices()
         {
             return services.ToList().AsReadOnly();
         }
 
+        /// <summary>
+        /// Get worker to download chapter.
+        /// </summary>
+        /// <returns></returns>
         public static Worker GetWorker()
         {
             return worker;
         }
 
+        /// <summary>
+        /// Find service base on inputed url.
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
         public static IMangaService GetService(string link)
         {
             IMangaService service = services.FirstOrDefault(s => s.Of(link));

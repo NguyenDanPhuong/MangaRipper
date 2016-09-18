@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// Contain information of a manga web site
+    /// </summary>
     public class SiteInformation
     {
         public string Name { get; private set; }

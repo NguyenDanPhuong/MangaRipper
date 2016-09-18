@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// Support download web page to string and image file to folder.
+    /// </summary>
     public class Downloader
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -24,6 +27,11 @@ namespace MangaRipper.Core
             return request;
         }
 
+        /// <summary>
+        /// Download single web page to string.
+        /// </summary>
+        /// <param name="url">The url to download</param>
+        /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
             logger.Info("> DownloadStringAsync: {0}", url);
@@ -38,6 +46,13 @@ namespace MangaRipper.Core
             }
         }
 
+        /// <summary>
+        /// Download a list of web page.
+        /// </summary>
+        /// <param name="urls">List of url</param>
+        /// <param name="progress">Progress report callback</param>
+        /// <param name="cancellationToken">Cancellation control</param>
+        /// <returns></returns>
         internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
             logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
@@ -55,6 +70,13 @@ namespace MangaRipper.Core
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Download file and save to folder
+        /// </summary>
+        /// <param name="url">The url to download</param>
+        /// <param name="fileName">Save to filename</param>
+        /// <param name="cancellationToken">Cancellation control</param>
+        /// <returns></returns>
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
             logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);

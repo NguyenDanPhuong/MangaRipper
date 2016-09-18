@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// Worker support download manga chapters on back ground thread.
+    /// </summary>
     public class Worker
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -23,11 +26,21 @@ namespace MangaRipper.Core
             sema = new SemaphoreSlim(2);
         }
 
+        /// <summary>
+        /// Stop download
+        /// </summary>
         public void Cancel()
         {
             source.Cancel();
         }
 
+        /// <summary>
+        /// Download a manga chapter.
+        /// </summary>
+        /// <param name="chapter">Chapter to download</param>
+        /// <param name="mangaLocalPath">Save chaper to this folder</param>
+        /// <param name="progress">Progress report callback</param>
+        /// <returns></returns>
         public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
         {
             logger.Info("> DownloadChapter: {0} To: {1}", chapter.Link, mangaLocalPath);
@@ -53,6 +66,12 @@ namespace MangaRipper.Core
             });
         }
 
+        /// <summary>
+        /// Find all chapters of a manga
+        /// </summary>
+        /// <param name="mangaPath">The url of manga</param>
+        /// <param name="progress">Progress report callback</param>
+        /// <returns></returns>
         public async Task<IList<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
         {
             logger.Info("> FindChapters: {0}", mangaPath);
