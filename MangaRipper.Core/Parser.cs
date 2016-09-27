@@ -8,10 +8,21 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// Looking for manga/chapter information in html, using regex.
+    /// </summary>
     class Parser
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Looking for chapter information in html code.
+        /// </summary>
+        /// <param name="regExp">The regex with 2 captured groups.</param>
+        /// <param name="input">The html code.</param>
+        /// <param name="nameGroup">The group name that capture chapter name.</param>
+        /// <param name="valueGroup">The group name that capture chapter url.</param>
+        /// <returns></returns>
         public IList<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {
             logger.Info("> ParseGroup: {0}", regExp);
@@ -30,6 +41,13 @@ namespace MangaRipper.Core
             return list.Distinct().ToList();
         }
 
+        /// <summary>
+        /// Using regex to capture a group with input html code.
+        /// </summary>
+        /// <param name="regExp">The regular expression</param>
+        /// <param name="input">HTML string</param>
+        /// <param name="groupName">Name of captured group. It's returned information.</param>
+        /// <returns></returns>
         public IList<string> Parse(string regExp, string input, string groupName)
         {
             logger.Info("> Parse: {0}", regExp);

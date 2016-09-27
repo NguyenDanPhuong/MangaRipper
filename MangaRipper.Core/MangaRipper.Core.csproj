@@ -55,7 +55,6 @@
     <Compile Include="Framework.cs" />
     <Compile Include="IMangaService.cs" />
     <Compile Include="Downloader.cs" />
-    <Compile Include="Helper\ChapterProgress.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="MangaFoxService.cs" />
     <Compile Include="MangaHereService.cs" />
