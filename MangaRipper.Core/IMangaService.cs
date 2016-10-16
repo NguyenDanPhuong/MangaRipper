@@ -33,7 +33,7 @@ namespace MangaRipper.Core
         /// <param name="progress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken);
+        Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken);
 
         /// <summary>
         /// Find all images inside a chapter.
@@ -42,6 +42,6 @@ namespace MangaRipper.Core
         /// <param name="progress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken);
+        Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

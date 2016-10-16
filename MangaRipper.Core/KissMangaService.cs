@@ -12,19 +12,19 @@ namespace MangaRipper.Core
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    class MangaFoxService : IMangaService
+    class KissMangaService : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaFox", "http://mangafox.me", "English");
+            return new SiteInformation("KissManga", "http://kissmanga.com/", "English");
         }
 
         public bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("mangafox.me");
+            return uri.Host.Equals("kissmanga.com");
         }
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
@@ -35,7 +35,12 @@ namespace MangaRipper.Core
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a href=\"(?<Value>/Manga/[^\"]+)\" title=\"[^\"]+\">\r(?<Name>[^<]+)</a>", input, "Name", "Value");
+            chaps = chaps.Select(c =>
+            {
+                var uri = new Uri(new Uri("http://kissmanga.com"), c.Link);
+                return new Chapter(c.Name, uri.AbsoluteUri);
+            });
             progress.Report(100);
             return chaps;
         }
@@ -48,25 +53,13 @@ namespace MangaRipper.Core
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Link);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
+            var images = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             // transform pages link
-            pages = pages.Select(p =>
+            images = images.Select(p =>
             {
                 var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
                 return value;
             }).ToList();
-
-            // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(
-                pages,
-                new Progress<int>((count) =>
-                {
-                    var f = (float) count / pages.Count();
-                    int i = Convert.ToInt32(f * 100);
-                    progress.Report(i);
-                }),
-                cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+onerror", pageData, "Value");
 
             progress.Report(100);
             return images;

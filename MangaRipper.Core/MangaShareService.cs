@@ -16,7 +16,7 @@ namespace MangaRipper.Core
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -29,7 +29,7 @@ namespace MangaRipper.Core
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -52,7 +52,7 @@ namespace MangaRipper.Core
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(pagesExtend, new Progress<int>((count) =>
             {
-                var f = (float)count / pagesExtend.Count;
+                var f = (float)count / pagesExtend.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);

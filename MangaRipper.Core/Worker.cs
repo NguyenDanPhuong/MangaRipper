@@ -72,7 +72,7 @@ namespace MangaRipper.Core
         /// <param name="mangaPath">The url of manga</param>
         /// <param name="progress">Progress report callback</param>
         /// <returns></returns>
-        public async Task<IList<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
+        public async Task<IEnumerable<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
         {
             logger.Info("> FindChapters: {0}", mangaPath);
             return await Task.Run(async () =>
@@ -120,14 +120,14 @@ namespace MangaRipper.Core
                     File.Move(tempFilePath, filePath);
                 }
                 countImage++;
-                int i = Convert.ToInt32((float)countImage / images.Count * 100 / 2);
+                int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
             }
             progress.Report(100);
         }
 
 
-        private async Task<IList<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
+        private async Task<IEnumerable<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
         {
             progress.Report(0);
             // let service find all chapters in manga

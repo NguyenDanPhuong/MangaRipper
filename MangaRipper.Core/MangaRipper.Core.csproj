@@ -56,6 +56,7 @@
     <Compile Include="IMangaService.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Extension.cs" />
+    <Compile Include="KissMangaService.cs" />
     <Compile Include="MangaFoxService.cs" />
     <Compile Include="MangaHereService.cs" />
     <Compile Include="MangaReaderService.cs" />
