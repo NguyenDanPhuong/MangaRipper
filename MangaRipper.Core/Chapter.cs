@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using MangaRipper.Core;
 namespace MangaRipper.Core
 {
     [Serializable]
     public class Chapter
     {
         public string Name { get; private set; }
+        /// <summary>
+        /// Chapter name which safe for using as folder name.
+        /// </summary>
+        public string NomalizeName => Name.RemoveFileNameInvalidChar();
+
         public string Link { get; private set; }
         public bool IsBusy { get; internal set; }
         public Chapter(string name, string link)
@@ -20,7 +25,7 @@ namespace MangaRipper.Core
 
         public void AddPrefix(int prefix)
         {
-            Name = string.Format("[{0:000}] - {1}", prefix, Name);
+            Name = $"[{prefix:000}] - {Name}";
         }
     }
 }

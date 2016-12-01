@@ -6,9 +6,11 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Specialized;
+using System.IO;
 using MangaRipper.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaRipper.Helper;
 using NLog;
 
 namespace MangaRipper
@@ -143,6 +145,7 @@ namespace MangaRipper
                         }
                     }));
 
+                PackageCbz.Create(Path.Combine(txtSaveTo.Text, chapter.NomalizeName), Path.Combine(txtSaveTo.Text, chapter.NomalizeName + ".cbz"));
                 DownloadQueue.Remove(chapter);
             }
         }
