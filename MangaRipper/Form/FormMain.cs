@@ -144,6 +144,7 @@ namespace MangaRipper
                     outputFormats.Add(OutputFormat.CBZ);
                 }
 
+                // TODO Bind DownloadChapterTask to UI instead of Chapter object
                 var task = new DownloadChapterTask(chapter, txtSaveTo.Text, outputFormats);
                 await worker.Run(task, new Progress<int>(c =>
                     {
@@ -157,11 +158,6 @@ namespace MangaRipper
                         }
                     }));
 
-                if (cbSaveCbz.Checked)
-                {
-                    //TODO FIX Reference to txtSaveTo because it may change anytime.
-                    PackageCbz.Create(Path.Combine(txtSaveTo.Text, chapter.NomalizeName), Path.Combine(txtSaveTo.Text, chapter.NomalizeName + ".cbz"));
-                }
                 DownloadQueue.Remove(chapter);
             }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
-namespace MangaRipper.Helper
+namespace MangaRipper.Core
 {
     public class PackageCbz
     {

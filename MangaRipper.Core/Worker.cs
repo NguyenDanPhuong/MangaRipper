@@ -60,12 +60,16 @@ namespace MangaRipper.Core
                 finally
                 {
                     task.Chapter.IsBusy = false;
+                    if (task.Formats.Contains(OutputFormat.CBZ))
+                    {
+                        PackageCbz.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                    }
                     sema.Release();
                 }
             });
         }
 
-      
+
 
         /// <summary>
         /// Find all chapters of a manga
