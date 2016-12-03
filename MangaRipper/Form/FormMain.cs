@@ -145,7 +145,11 @@ namespace MangaRipper
                         }
                     }));
 
-                PackageCbz.Create(Path.Combine(txtSaveTo.Text, chapter.NomalizeName), Path.Combine(txtSaveTo.Text, chapter.NomalizeName + ".cbz"));
+                if (cbSaveCbz.Checked)
+                {
+                    //TODO FIX Reference to txtSaveTo because it may change anytime.
+                    PackageCbz.Create(Path.Combine(txtSaveTo.Text, chapter.NomalizeName), Path.Combine(txtSaveTo.Text, chapter.NomalizeName + ".cbz"));
+                }
                 DownloadQueue.Remove(chapter);
             }
         }
