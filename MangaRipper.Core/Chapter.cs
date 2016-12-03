@@ -16,6 +16,7 @@ namespace MangaRipper.Core
         public string NomalizeName => Name.RemoveFileNameInvalidChar();
 
         public string Link { get; private set; }
+        //TODO Move IsBusy into ChapterDownloadTask class
         public bool IsBusy { get; internal set; }
         public Chapter(string name, string link)
         {

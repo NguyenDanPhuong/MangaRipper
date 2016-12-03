@@ -35,36 +35,37 @@ namespace MangaRipper.Core
         }
 
         /// <summary>
-        /// Download a manga chapter.
+        /// Run task download a chapter
         /// </summary>
-        /// <param name="chapter">Chapter to download</param>
-        /// <param name="mangaLocalPath">Save chaper to this folder</param>
-        /// <param name="progress">Progress report callback</param>
+        /// <param name="task">Contain chapter and save to path</param>
+        /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
+        public async Task Run(DownloadChapterTask task, IProgress<int> progress)
         {
-            logger.Info("> DownloadChapter: {0} To: {1}", chapter.Link, mangaLocalPath);
+            logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Link, task.SaveToFolder);
             await Task.Run(async () =>
             {
                 try
                 {
                     source = new CancellationTokenSource();
                     await sema.WaitAsync();
-                    chapter.IsBusy = true;
-                    await DownloadChapterInternal(chapter, mangaLocalPath, progress);
+                    task.Chapter.IsBusy = true;
+                    await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, "Failed to download chapter: {0}", chapter.Link);
+                    logger.Error(ex, "Failed to download chapter: {0}", task.Chapter.Link);
                     throw;
                 }
                 finally
                 {
-                    chapter.IsBusy = false;
+                    task.Chapter.IsBusy = false;
                     sema.Release();
                 }
             });
         }
+
+      
 
         /// <summary>
         /// Find all chapters of a manga

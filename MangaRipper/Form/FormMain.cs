@@ -133,7 +133,19 @@ namespace MangaRipper
             {
                 var chapter = DownloadQueue.First();
                 var worker = Framework.GetWorker();
-                await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<int>(c =>
+
+                var outputFormats = new List<OutputFormat>();
+                if (cbSaveFolder.Checked)
+                {
+                    outputFormats.Add(OutputFormat.Folder);
+                }
+                if (cbSaveCbz.Checked)
+                {
+                    outputFormats.Add(OutputFormat.CBZ);
+                }
+
+                var task = new DownloadChapterTask(chapter, txtSaveTo.Text, outputFormats);
+                await worker.Run(task, new Progress<int>(c =>
                     {
                         foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         {
