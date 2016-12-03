@@ -10,7 +10,6 @@ using System.IO;
 using MangaRipper.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using MangaRipper.Helper;
 using NLog;
 
 namespace MangaRipper
