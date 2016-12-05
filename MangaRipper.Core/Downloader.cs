@@ -21,9 +21,10 @@ namespace MangaRipper.Core
         private HttpWebRequest CreateRequest(string url)
         {
             var uri = new Uri(url);
-            HttpWebRequest request = WebRequest.CreateHttp(uri);
+            var request = WebRequest.CreateHttp(uri);
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             request.Credentials = CredentialCache.DefaultCredentials;
+            request.Referer = "mangafox.me";
             return request;
         }
 
@@ -36,9 +37,9 @@ namespace MangaRipper.Core
         {
             logger.Info("> DownloadStringAsync: {0}", url);
             var request = CreateRequest(url);
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+            using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
-                using (Stream responseStream = response.GetResponseStream())
+                using (var responseStream = response.GetResponseStream())
                 {
                     var streamReader = new StreamReader(responseStream, Encoding.UTF8);
                     return await streamReader.ReadToEndAsync();
@@ -57,7 +58,7 @@ namespace MangaRipper.Core
         {
             logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
             var sb = new StringBuilder();
-            int count = 0;
+            var count = 0;
             progress.Report(count);
             foreach (var url in urls)
             {
@@ -81,9 +82,9 @@ namespace MangaRipper.Core
         {
             logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
             var request = CreateRequest(url);
-            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+            using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
-                using (Stream responseStream = response.GetResponseStream())
+                using (var responseStream = response.GetResponseStream())
                 using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
                     await responseStream.CopyToAsync(streamReader, 81920, cancellationToken);

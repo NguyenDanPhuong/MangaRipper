@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    /// <summary>
+    /// When chapters added to download list. They are added as tasks.
+    /// A task include a chapter, and download information (percent downloaded, save to location, output format...)
+    /// </summary>
     public class DownloadChapterTask
     {
         public string Name => Chapter.Name;

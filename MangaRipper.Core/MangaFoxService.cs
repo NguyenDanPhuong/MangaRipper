@@ -14,7 +14,7 @@ namespace MangaRipper.Core
     /// </summary>
     class MangaFoxService : IMangaService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SiteInformation GetInformation()
         {
@@ -47,7 +47,7 @@ namespace MangaRipper.Core
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url);
+            var input = await downloader.DownloadStringAsync(chapter.Url);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             // transform pages link
             pages = pages.Select(p =>
@@ -62,7 +62,7 @@ namespace MangaRipper.Core
                 new Progress<int>((count) =>
                 {
                     var f = (float) count / pages.Count();
-                    int i = Convert.ToInt32(f * 100);
+                    var i = Convert.ToInt32(f * 100);
                     progress.Report(i);
                 }),
                 cancellationToken);
