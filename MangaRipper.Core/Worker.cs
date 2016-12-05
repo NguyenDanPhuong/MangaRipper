@@ -49,7 +49,7 @@ namespace MangaRipper.Core
                 {
                     source = new CancellationTokenSource();
                     await sema.WaitAsync();
-                    task.Chapter.IsBusy = true;
+                    task.IsBusy = true;
                     await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
@@ -59,7 +59,7 @@ namespace MangaRipper.Core
                 }
                 finally
                 {
-                    task.Chapter.IsBusy = false;
+                    task.IsBusy = false;
                     if (task.Formats.Contains(OutputFormat.CBZ))
                     {
                         PackageCbz.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
