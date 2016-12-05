@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
-    [Serializable]
     public class DownloadChapterTask
     {
         public string Name => Chapter.Name;
-        public string Link => Chapter.Link;
+        public string Url => Chapter.Url;
         public Chapter Chapter { get; private set; }
         public string SaveToFolder { get; private set; }
         public IEnumerable<OutputFormat> Formats { get; private set; }

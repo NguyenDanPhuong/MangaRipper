@@ -32,9 +32,9 @@ namespace MangaRipper.Test
             // Test chapters are in correct order.
             var chapter = chapters.Last();
             Assert.AreEqual("Naruto 1", chapter.Name);
-            Assert.AreEqual("http://www.mangareader.net/naruto/1", chapter.Link);
+            Assert.AreEqual("http://www.mangareader.net/naruto/1", chapter.Url);
             // Test there're no duplicated chapters.
-            var anyDuplicated = chapters.GroupBy(x => x.Link).Any(g => g.Count() > 1);
+            var anyDuplicated = chapters.GroupBy(x => x.Url).Any(g => g.Count() > 1);
             Assert.IsFalse(anyDuplicated, "There're duplicated chapters.");
             // Test service can find images.
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
@@ -59,7 +59,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Count() > 0, "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Tian Jiang Xian Shu Nan 1", chapter.Name);
-            Assert.AreEqual("http://mangafox.me/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Link);
+            Assert.AreEqual("http://mangafox.me/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(15, images.Count());
             Assert.AreEqual("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
@@ -80,7 +80,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Count() > 0, "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("The God Of High School 1", chapter.Name);
-            Assert.AreEqual("http://www.mangahere.co/manga/the_god_of_high_school/c001/", chapter.Link);
+            Assert.AreEqual("http://www.mangahere.co/manga/the_god_of_high_school/c001/", chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(55, images.Count());
             Assert.AreEqual("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.01.jpg", images.ToArray()[0]);
@@ -101,7 +101,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Count() > 0, "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Gantz 1", chapter.Name);
-            Assert.AreEqual("http://read.mangashare.com/Gantz/chapter-001/page001.html", chapter.Link);
+            Assert.AreEqual("http://read.mangashare.com/Gantz/chapter-001/page001.html", chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(43, images.Count());
             Assert.AreEqual("http://dl01.mangashare.com/manga/Gantz/001/001.jpg", images.ToArray()[0]);
@@ -122,7 +122,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Count() > 0, "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Beelzebub Babu 000", chapter.Name);
-            Assert.AreEqual("http://kissmanga.com/Manga/Beelzebub/Babu-000?id=285306", chapter.Link);
+            Assert.AreEqual("http://kissmanga.com/Manga/Beelzebub/Babu-000?id=285306", chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(49, images.Count());
             Assert.AreEqual("http://2.bp.blogspot.com/-E8XYLQErJFc/Vjg04wA34iI/AAAAAAABEsY/oDSYgrsnCJM/s16000/0000-001.jpg", images.ToArray()[0]);

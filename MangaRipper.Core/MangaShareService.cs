@@ -35,7 +35,7 @@ namespace MangaRipper.Core
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Link);
+            string input = await downloader.DownloadStringAsync(chapter.Url);
             string regExPages = @"<select name=""pagejump"" class=""page"" onchange=""javascript:window.location='(?<Value>[^']+)'\+this\.value\+'\.html';"">";
             var pageBase = parser.Parse(regExPages, input, "Value").FirstOrDefault();
 
@@ -45,7 +45,7 @@ namespace MangaRipper.Core
             pagesExtend = pagesExtend.Select(p =>
             {
                 string baseLink = pageBase + p + ".html";
-                var value = new Uri(new Uri(chapter.Link), baseLink).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), baseLink).AbsoluteUri;
                 return value;
             }).ToList();
 

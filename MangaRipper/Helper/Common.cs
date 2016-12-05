@@ -8,6 +8,9 @@ using System.IO.IsolatedStorage;
 using MangaRipper.Core;
 using System.Windows.Forms;
 using NLog;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
 
 namespace MangaRipper
 {
@@ -20,18 +23,21 @@ namespace MangaRipper
         /// </summary>
         /// <param name="tasks"></param>
         /// <param name="fileName"></param>
-        public static void SaveIChapterCollection(BindingList<DownloadChapterTask> tasks, string fileName)
+        public static void SaveDownloadTasks(BindingList<DownloadChapterTask> tasks, string fileName)
         {
             try
             {
                 string file = Path.Combine(Application.UserAppDataPath, fileName);
-                using (var fs = new FileStream(file, FileMode.Create))
+
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamWriter sw = new StreamWriter(file))
+                using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    IFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(fs, tasks);
+                    serializer.Serialize(writer, tasks);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error(ex);
             }
@@ -42,22 +48,22 @@ namespace MangaRipper
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static BindingList<DownloadChapterTask> LoadIChapterCollection(string fileName)
+        public static BindingList<DownloadChapterTask> LoadDownloadTasks(string fileName)
         {
             BindingList<DownloadChapterTask> result = null;
             try
             {
                 string file = Path.Combine(Application.UserAppDataPath, fileName);
-                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamReader sw = new StreamReader(file))
+                using (JsonReader writer = new JsonTextReader(sw))
                 {
-                    if (fs.Length != 0)
-                    {
-                        IFormatter formatter = new BinaryFormatter();
-                        result = (BindingList<DownloadChapterTask>)formatter.Deserialize(fs);
-                    }
+                    result = serializer.Deserialize<BindingList<DownloadChapterTask>>(writer);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (result == null)
                 {

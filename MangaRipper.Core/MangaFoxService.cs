@@ -47,12 +47,12 @@ namespace MangaRipper.Core
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Link);
+            string input = await downloader.DownloadStringAsync(chapter.Url);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             // transform pages link
             pages = pages.Select(p =>
             {
-                var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), (p + ".html")).AbsoluteUri;
                 return value;
             }).ToList();
 

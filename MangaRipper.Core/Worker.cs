@@ -42,7 +42,7 @@ namespace MangaRipper.Core
         /// <returns></returns>
         public async Task Run(DownloadChapterTask task, IProgress<int> progress)
         {
-            logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Link, task.SaveToFolder);
+            logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Url, task.SaveToFolder);
             await Task.Run(async () =>
             {
                 try
@@ -54,7 +54,7 @@ namespace MangaRipper.Core
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, "Failed to download chapter: {0}", task.Chapter.Link);
+                    logger.Error(ex, "Failed to download chapter: {0}", task.Chapter.Url);
                     throw;
                 }
                 finally
@@ -103,7 +103,7 @@ namespace MangaRipper.Core
         {
             progress.Report(0);
             // let service find all images of chapter
-            var service = Framework.GetService(chapter.Link);
+            var service = Framework.GetService(chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>((count) =>
             {
                 progress.Report(count / 2);

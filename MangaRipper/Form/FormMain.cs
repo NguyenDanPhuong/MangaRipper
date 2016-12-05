@@ -62,7 +62,7 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                if (_downloadQueue.All(r => r.Chapter.Link != item.Link))
+                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
                 {
                     _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
                 }
@@ -79,7 +79,7 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                if (_downloadQueue.All(r => r.Chapter.Link != item.Link))
+                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
                 {
                     _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
                 }
@@ -213,7 +213,7 @@ namespace MangaRipper
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
 
-            _downloadQueue = Common.LoadIChapterCollection(FilenameIchapterCollection);
+            _downloadQueue = Common.LoadDownloadTasks(FilenameIchapterCollection);
             dgvQueueChapter.DataSource = _downloadQueue;
 
             LoadBookmark();
@@ -244,7 +244,7 @@ namespace MangaRipper
             }
 
             Properties.Settings.Default.Save();
-            Common.SaveIChapterCollection(_downloadQueue, FilenameIchapterCollection);
+            Common.SaveDownloadTasks(_downloadQueue, FilenameIchapterCollection);
         }
 
         private void LoadBookmark()

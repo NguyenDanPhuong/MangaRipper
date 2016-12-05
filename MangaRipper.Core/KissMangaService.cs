@@ -38,7 +38,7 @@ namespace MangaRipper.Core
             var chaps = parser.ParseGroup("<a href=\"(?<Value>/Manga/[^\"]+)\" title=\"[^\"]+\">\r(?<Name>[^<]+)</a>", input, "Name", "Value");
             chaps = chaps.Select(c =>
             {
-                var uri = new Uri(new Uri("http://kissmanga.com"), c.Link);
+                var uri = new Uri(new Uri("http://kissmanga.com"), c.Url);
                 return new Chapter(c.Name, uri.AbsoluteUri);
             });
             progress.Report(100);
@@ -52,12 +52,12 @@ namespace MangaRipper.Core
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Link);
+            string input = await downloader.DownloadStringAsync(chapter.Url);
             var images = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
             // transform pages link
             images = images.Select(p =>
             {
-                var value = new Uri(new Uri(chapter.Link), (p + ".html")).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), (p + ".html")).AbsoluteUri;
                 return value;
             }).ToList();
 

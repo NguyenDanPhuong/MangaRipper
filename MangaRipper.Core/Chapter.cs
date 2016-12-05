@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MangaRipper.Core;
 namespace MangaRipper.Core
 {
-    [Serializable]
     public class Chapter
     {
         public string Name { get; private set; }
@@ -15,12 +14,12 @@ namespace MangaRipper.Core
         /// </summary>
         public string NomalizeName => Name.RemoveFileNameInvalidChar();
 
-        public string Link { get; private set; }
-        //TODO Move IsBusy into ChapterDownloadTask class
-        public Chapter(string name, string link)
+        public string Url { get; private set; }
+
+        public Chapter(string name, string url)
         {
             Name = name;
-            Link = link;
+            Url = url;
         }
 
         public void AddPrefix(int prefix)
