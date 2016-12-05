@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -6,11 +7,14 @@ using System.ComponentModel;
 using System.IO.IsolatedStorage;
 using MangaRipper.Core;
 using System.Windows.Forms;
+using NLog;
 
 namespace MangaRipper
 {
     static class Common
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Save BindingList of IChapter to IsolateStorage
         /// </summary>
@@ -27,9 +31,9 @@ namespace MangaRipper
                     formatter.Serialize(fs, tasks);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                // Do nothings
+                _logger.Error(ex);
             }
         }
 
@@ -53,12 +57,13 @@ namespace MangaRipper
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 if (result == null)
                 {
                     result = new BindingList<DownloadChapterTask>();
                 }
+                _logger.Error(ex);
             }
 
             return result;

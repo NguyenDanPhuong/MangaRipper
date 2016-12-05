@@ -62,7 +62,10 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+                if (_downloadQueue.All(r => r.Chapter.Link != item.Link))
+                {
+                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+                }
             }
         }
 
@@ -76,7 +79,10 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+                if (_downloadQueue.All(r => r.Chapter.Link != item.Link))
+                {
+                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+                }
             }
         }
 

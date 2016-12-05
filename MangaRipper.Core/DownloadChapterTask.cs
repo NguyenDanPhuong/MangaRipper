@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core
 {
+    [Serializable]
     public class DownloadChapterTask
     {
         public string Name => Chapter.Name;
