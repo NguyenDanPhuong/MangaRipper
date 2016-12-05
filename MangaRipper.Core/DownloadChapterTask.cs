@@ -17,6 +17,16 @@ namespace MangaRipper.Core
         public Chapter Chapter { get; private set; }
         public string SaveToFolder { get; private set; }
         public IEnumerable<OutputFormat> Formats { get; private set; }
+
+        public string PropFormats
+        {
+            get
+            {
+                var s = Formats.Select(format => format.ToString()).ToList();
+                return string.Join(", ", s);
+            }
+        }
+
         public bool IsBusy { get; set; }
         public int Percent { get; set; }
         public DownloadChapterTask(Chapter chapter, string saveToFolder, IEnumerable<OutputFormat> formats)

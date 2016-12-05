@@ -66,6 +66,7 @@
             this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Formats = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -153,7 +154,8 @@
             this.dgvQueueChapter.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColChapterName,
             this.ColChapterStatus,
-            this.ColChapterUrl});
+            this.ColChapterUrl,
+            this.Formats});
             this.dgvQueueChapter.Location = new System.Drawing.Point(443, 38);
             this.dgvQueueChapter.Name = "dgvQueueChapter";
             this.dgvQueueChapter.ReadOnly = true;
@@ -467,6 +469,13 @@
             this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // Formats
+            // 
+            this.Formats.DataPropertyName = "PropFormats";
+            this.Formats.HeaderText = "Formats";
+            this.Formats.Name = "Formats";
+            this.Formats.ReadOnly = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -546,8 +555,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox cbSaveFolder;
         private System.Windows.Forms.CheckBox cbSaveCbz;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Output;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Formats;
     }
 }
