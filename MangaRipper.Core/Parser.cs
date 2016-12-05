@@ -23,7 +23,7 @@ namespace MangaRipper.Core
         /// <param name="nameGroup">The group name that capture chapter name.</param>
         /// <param name="valueGroup">The group name that capture chapter url.</param>
         /// <returns></returns>
-        public IList<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
+        public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {
             logger.Info("> ParseGroup: {0}", regExp);
             var list = new List<Chapter>();
@@ -48,7 +48,7 @@ namespace MangaRipper.Core
         /// <param name="input">HTML string</param>
         /// <param name="groupName">Name of captured group. It's returned information.</param>
         /// <returns></returns>
-        public IList<string> Parse(string regExp, string input, string groupName)
+        public IEnumerable<string> Parse(string regExp, string input, string groupName)
         {
             logger.Info("> Parse: {0}", regExp);
             var list = new List<string>();

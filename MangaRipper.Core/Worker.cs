@@ -35,36 +35,41 @@ namespace MangaRipper.Core
         }
 
         /// <summary>
-        /// Download a manga chapter.
+        /// Run task download a chapter
         /// </summary>
-        /// <param name="chapter">Chapter to download</param>
-        /// <param name="mangaLocalPath">Save chaper to this folder</param>
-        /// <param name="progress">Progress report callback</param>
+        /// <param name="task">Contain chapter and save to path</param>
+        /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task DownloadChapter(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
+        public async Task Run(DownloadChapterTask task, IProgress<int> progress)
         {
-            logger.Info("> DownloadChapter: {0} To: {1}", chapter.Link, mangaLocalPath);
+            logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Url, task.SaveToFolder);
             await Task.Run(async () =>
             {
                 try
                 {
                     source = new CancellationTokenSource();
                     await sema.WaitAsync();
-                    chapter.IsBusy = true;
-                    await DownloadChapterInternal(chapter, mangaLocalPath, progress);
+                    task.IsBusy = true;
+                    await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, "Failed to download chapter: {0}", chapter.Link);
+                    logger.Error(ex, "Failed to download chapter: {0}", task.Chapter.Url);
                     throw;
                 }
                 finally
                 {
-                    chapter.IsBusy = false;
+                    task.IsBusy = false;
+                    if (task.Formats.Contains(OutputFormat.CBZ))
+                    {
+                        PackageCbz.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                    }
                     sema.Release();
                 }
             });
         }
+
+
 
         /// <summary>
         /// Find all chapters of a manga
@@ -72,7 +77,7 @@ namespace MangaRipper.Core
         /// <param name="mangaPath">The url of manga</param>
         /// <param name="progress">Progress report callback</param>
         /// <returns></returns>
-        public async Task<IList<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
+        public async Task<IEnumerable<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
         {
             logger.Info("> FindChapters: {0}", mangaPath);
             return await Task.Run(async () =>
@@ -98,14 +103,14 @@ namespace MangaRipper.Core
         {
             progress.Report(0);
             // let service find all images of chapter
-            var service = Framework.GetService(chapter.Link);
+            var service = Framework.GetService(chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>((count) =>
             {
                 progress.Report(count / 2);
             }), source.Token);
             // create folder to keep images
             var downloader = new Downloader();
-            var folderName = chapter.Name.RemoveFileNameInvalidChar();
+            var folderName = chapter.NomalizeName;
             var destinationPath = Path.Combine(mangaLocalPath, folderName);
             Directory.CreateDirectory(destinationPath);
             // download images
@@ -120,14 +125,14 @@ namespace MangaRipper.Core
                     File.Move(tempFilePath, filePath);
                 }
                 countImage++;
-                int i = Convert.ToInt32((float)countImage / images.Count * 100 / 2);
+                int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
             }
             progress.Report(100);
         }
 
 
-        private async Task<IList<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
+        private async Task<IEnumerable<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
         {
             progress.Report(0);
             // let service find all chapters in manga

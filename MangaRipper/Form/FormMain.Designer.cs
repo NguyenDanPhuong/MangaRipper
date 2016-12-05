@@ -60,9 +60,13 @@
             this.btnAddPrefixCounter = new System.Windows.Forms.Button();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbSaveFolder = new System.Windows.Forms.CheckBox();
+            this.cbSaveCbz = new System.Windows.Forms.CheckBox();
             this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Formats = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -150,7 +154,8 @@
             this.dgvQueueChapter.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColChapterName,
             this.ColChapterStatus,
-            this.ColChapterUrl});
+            this.ColChapterUrl,
+            this.Formats});
             this.dgvQueueChapter.Location = new System.Drawing.Point(443, 38);
             this.dgvQueueChapter.Name = "dgvQueueChapter";
             this.dgvQueueChapter.ReadOnly = true;
@@ -199,7 +204,7 @@
             this.lbSaveTo.AutoSize = true;
             this.lbSaveTo.Location = new System.Drawing.Point(12, 321);
             this.lbSaveTo.Name = "lbSaveTo";
-            this.lbSaveTo.Size = new System.Drawing.Size(44, 13);
+            this.lbSaveTo.Size = new System.Drawing.Size(45, 13);
             this.lbSaveTo.TabIndex = 11;
             this.lbSaveTo.Text = "Save To";
             // 
@@ -243,13 +248,13 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvSupportedSites.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvSupportedSites.Location = new System.Drawing.Point(12, 346);
+            this.dgvSupportedSites.Location = new System.Drawing.Point(12, 375);
             this.dgvSupportedSites.MultiSelect = false;
             this.dgvSupportedSites.Name = "dgvSupportedSites";
             this.dgvSupportedSites.ReadOnly = true;
             this.dgvSupportedSites.RowHeadersVisible = false;
             this.dgvSupportedSites.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 199);
+            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 170);
             this.dgvSupportedSites.TabIndex = 15;
             this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSupportedSites_CellContentClick);
             // 
@@ -402,6 +407,39 @@
             this.txtMessage.Size = new System.Drawing.Size(1004, 22);
             this.txtMessage.TabIndex = 23;
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 350);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.TabIndex = 26;
+            this.label1.Text = "Save As";
+            // 
+            // cbSaveFolder
+            // 
+            this.cbSaveFolder.AutoSize = true;
+            this.cbSaveFolder.Checked = true;
+            this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSaveFolder.Enabled = false;
+            this.cbSaveFolder.Location = new System.Drawing.Point(66, 349);
+            this.cbSaveFolder.Name = "cbSaveFolder";
+            this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
+            this.cbSaveFolder.TabIndex = 27;
+            this.cbSaveFolder.Text = "Folder";
+            this.cbSaveFolder.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveCbz
+            // 
+            this.cbSaveCbz.AutoSize = true;
+            this.cbSaveCbz.Location = new System.Drawing.Point(131, 349);
+            this.cbSaveCbz.Name = "cbSaveCbz";
+            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
+            this.cbSaveCbz.TabIndex = 28;
+            this.cbSaveCbz.Text = "CBZ";
+            this.cbSaveCbz.UseVisualStyleBackColor = true;
+            // 
             // ColChapterName
             // 
             this.ColChapterName.DataPropertyName = "Name";
@@ -413,6 +451,7 @@
             // 
             // ColChapterStatus
             // 
+            this.ColChapterStatus.DataPropertyName = "Percent";
             this.ColChapterStatus.HeaderText = "%";
             this.ColChapterStatus.Name = "ColChapterStatus";
             this.ColChapterStatus.ReadOnly = true;
@@ -423,18 +462,28 @@
             // ColChapterUrl
             // 
             this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColChapterUrl.DataPropertyName = "Link";
+            this.ColChapterUrl.DataPropertyName = "Url";
             this.ColChapterUrl.HeaderText = "Address";
             this.ColChapterUrl.Name = "ColChapterUrl";
             this.ColChapterUrl.ReadOnly = true;
             this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // Formats
+            // 
+            this.Formats.DataPropertyName = "PropFormats";
+            this.Formats.HeaderText = "Formats";
+            this.Formats.Name = "Formats";
+            this.Formats.ReadOnly = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 606);
+            this.Controls.Add(this.cbSaveCbz);
+            this.Controls.Add(this.cbSaveFolder);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.btnAddPrefixCounter);
             this.Controls.Add(this.btnRemoveBookmark);
@@ -503,8 +552,13 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnAddPrefixCounter;
         private System.Windows.Forms.TextBox txtMessage;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox cbSaveFolder;
+        private System.Windows.Forms.CheckBox cbSaveCbz;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Output;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Formats;
     }
 }

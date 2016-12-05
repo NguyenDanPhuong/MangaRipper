@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -6,30 +7,39 @@ using System.ComponentModel;
 using System.IO.IsolatedStorage;
 using MangaRipper.Core;
 using System.Windows.Forms;
+using NLog;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
 
 namespace MangaRipper
 {
     static class Common
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Save BindingList of IChapter to IsolateStorage
         /// </summary>
-        /// <param name="chapters"></param>
+        /// <param name="tasks"></param>
         /// <param name="fileName"></param>
-        public static void SaveIChapterCollection(BindingList<Chapter> chapters, string fileName)
+        public static void SaveDownloadTasks(BindingList<DownloadChapterTask> tasks, string fileName)
         {
             try
             {
                 string file = Path.Combine(Application.UserAppDataPath, fileName);
-                using (var fs = new FileStream(file, FileMode.Create))
+
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamWriter sw = new StreamWriter(file))
+                using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    IFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(fs, chapters);
+                    serializer.Serialize(writer, tasks);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Do nothings
+                _logger.Error(ex);
             }
         }
 
@@ -38,27 +48,28 @@ namespace MangaRipper
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static BindingList<Chapter> LoadIChapterCollection(string fileName)
+        public static BindingList<DownloadChapterTask> LoadDownloadTasks(string fileName)
         {
-            BindingList<Chapter> result = null;
+            BindingList<DownloadChapterTask> result = null;
             try
             {
                 string file = Path.Combine(Application.UserAppDataPath, fileName);
-                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamReader sw = new StreamReader(file))
+                using (JsonReader writer = new JsonTextReader(sw))
                 {
-                    if (fs.Length != 0)
-                    {
-                        IFormatter formatter = new BinaryFormatter();
-                        result = (BindingList<Chapter>)formatter.Deserialize(fs);
-                    }
+                    result = serializer.Deserialize<BindingList<DownloadChapterTask>>(writer);
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 if (result == null)
                 {
-                    result = new BindingList<Chapter>();
+                    result = new BindingList<DownloadChapterTask>();
                 }
+                _logger.Error(ex);
             }
 
             return result;

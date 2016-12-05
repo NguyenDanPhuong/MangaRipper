@@ -15,7 +15,7 @@ namespace MangaRipper.Core
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -24,36 +24,36 @@ namespace MangaRipper.Core
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
             // reverse chapters order and remove duplicated chapters in latest setion
-            chaps = chaps.Reverse().GroupBy(x => x.Link).Select(g => g.First()).ToList();
+            chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
             // transform pages link
             chaps = chaps.Select(c =>
             {
-                return new Chapter(c.Name, new Uri(new Uri(manga), c.Link).AbsoluteUri);
+                return new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri);
             }).ToList();
             progress.Report(100);
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Link);
+            string input = await downloader.DownloadStringAsync(chapter.Url);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link
             pages = pages.Select(p =>
             {
-                var value = new Uri(new Uri(chapter.Link), p).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
                 return value;
             }).ToList();
 
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
             {
-                var f = (float)count / pages.Count;
+                var f = (float)count / pages.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);

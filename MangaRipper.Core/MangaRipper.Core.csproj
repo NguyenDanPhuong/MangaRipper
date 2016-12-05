@@ -44,6 +44,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,14 +53,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chapter.cs" />
+    <Compile Include="DownloadChapterTask.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="IMangaService.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Extension.cs" />
+    <Compile Include="KissMangaService.cs" />
     <Compile Include="MangaFoxService.cs" />
     <Compile Include="MangaHereService.cs" />
     <Compile Include="MangaReaderService.cs" />
     <Compile Include="MangaShareService.cs" />
+    <Compile Include="OutputFormat.cs" />
+    <Compile Include="PackageCbz.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteInformation.cs" />

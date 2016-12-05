@@ -29,6 +29,7 @@ namespace MangaRipper.Core
             services.Add(new MangaHereService());
             services.Add(new MangaReaderService());
             services.Add(new MangaShareService());
+            //services.Add(new KissMangaService());
         }
 
         /// <summary>

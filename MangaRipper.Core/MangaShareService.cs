@@ -16,7 +16,7 @@ namespace MangaRipper.Core
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IList<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
@@ -29,13 +29,13 @@ namespace MangaRipper.Core
             return chaps;
         }
 
-        public async Task<IList<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new Parser();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Link);
+            string input = await downloader.DownloadStringAsync(chapter.Url);
             string regExPages = @"<select name=""pagejump"" class=""page"" onchange=""javascript:window.location='(?<Value>[^']+)'\+this\.value\+'\.html';"">";
             var pageBase = parser.Parse(regExPages, input, "Value").FirstOrDefault();
 
@@ -45,14 +45,14 @@ namespace MangaRipper.Core
             pagesExtend = pagesExtend.Select(p =>
             {
                 string baseLink = pageBase + p + ".html";
-                var value = new Uri(new Uri(chapter.Link), baseLink).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), baseLink).AbsoluteUri;
                 return value;
             }).ToList();
 
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(pagesExtend, new Progress<int>((count) =>
             {
-                var f = (float)count / pagesExtend.Count;
+                var f = (float)count / pagesExtend.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);

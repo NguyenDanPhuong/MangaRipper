@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Specialized;
+using System.IO;
 using MangaRipper.Core;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace MangaRipper
 {
     public partial class FormMain : Form
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        BindingList<Chapter> DownloadQueue;
-        protected const string FILENAME_ICHAPTER_COLLECTION = "IChapterCollection.bin";
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        BindingList<DownloadChapterTask> _downloadQueue;
+        protected const string FilenameIchapterCollection = "IChapterCollection.bin";
 
         public FormMain()
         {
@@ -38,7 +39,7 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
-                txtMessage.Text = "Download cancelled! Reason: " + ex.Message;
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
@@ -61,9 +62,9 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                if (DownloadQueue.IndexOf(item) < 0)
+                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
                 {
-                    DownloadQueue.Add(item);
+                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
                 }
             }
         }
@@ -78,9 +79,9 @@ namespace MangaRipper
             items.Reverse();
             foreach (Chapter item in items)
             {
-                if (DownloadQueue.IndexOf(item) < 0)
+                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
                 {
-                    DownloadQueue.Add(item);
+                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
                 }
             }
         }
@@ -89,21 +90,21 @@ namespace MangaRipper
         {
             foreach (DataGridViewRow item in dgvQueueChapter.SelectedRows)
             {
-                Chapter chapter = (Chapter)item.DataBoundItem;
+                DownloadChapterTask chapter = (DownloadChapterTask)item.DataBoundItem;
                 if (chapter.IsBusy == false)
                 {
-                    DownloadQueue.Remove(chapter);
+                    _downloadQueue.Remove(chapter);
                 }
             }
         }
 
         private void btnRemoveAll_Click(object sender, EventArgs e)
         {
-            var removeItems = DownloadQueue.Where(r => r.IsBusy == false).ToList();
+            var removeItems = _downloadQueue.Where(r => r.IsBusy == false).ToList();
 
             foreach (var item in removeItems)
             {
-                DownloadQueue.Remove(item);
+                _downloadQueue.Remove(item);
             }
         }
 
@@ -117,7 +118,7 @@ namespace MangaRipper
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtMessage.Text = "Download cancelled! Reason: " + ex.Message;
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
             }
             finally
             {
@@ -127,24 +128,39 @@ namespace MangaRipper
 
         private async Task StartDownload()
         {
-            while (DownloadQueue.Count > 0)
+            while (_downloadQueue.Count > 0)
             {
-                var chapter = DownloadQueue.First();
+                var chapter = _downloadQueue.First();
                 var worker = Framework.GetWorker();
-                await worker.DownloadChapter(chapter, txtSaveTo.Text, new Progress<int>(c =>
+
+                await worker.Run(chapter, new Progress<int>(c =>
                     {
                         foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         {
                             if (chapter == item.DataBoundItem)
                             {
-                                item.Cells[ColChapterStatus.Name].Value = c + "%";
-                                break;
+                                chapter.Percent = c;
+                                dgvQueueChapter.Refresh();
                             }
                         }
                     }));
 
-                DownloadQueue.Remove(chapter);
+                _downloadQueue.Remove(chapter);
             }
+        }
+
+        private IEnumerable<OutputFormat> GetOutputFormats()
+        {
+            var outputFormats = new List<OutputFormat>();
+            if (cbSaveFolder.Checked)
+            {
+                outputFormats.Add(OutputFormat.Folder);
+            }
+            if (cbSaveCbz.Checked)
+            {
+                outputFormats.Add(OutputFormat.CBZ);
+            }
+            return outputFormats;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -184,7 +200,7 @@ namespace MangaRipper
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            Text = string.Format("{0} {1}", Application.ProductName, Application.ProductVersion);
+            Text = $"{Application.ProductName} {Application.ProductVersion}";
 
             foreach (var service in Framework.GetServices())
             {
@@ -197,8 +213,8 @@ namespace MangaRipper
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
 
-            DownloadQueue = Common.LoadIChapterCollection(FILENAME_ICHAPTER_COLLECTION);
-            dgvQueueChapter.DataSource = DownloadQueue;
+            _downloadQueue = Common.LoadDownloadTasks(FilenameIchapterCollection);
+            dgvQueueChapter.DataSource = _downloadQueue;
 
             LoadBookmark();
         }
@@ -228,7 +244,7 @@ namespace MangaRipper
             }
 
             Properties.Settings.Default.Save();
-            Common.SaveIChapterCollection(DownloadQueue, FILENAME_ICHAPTER_COLLECTION);
+            Common.SaveDownloadTasks(_downloadQueue, FilenameIchapterCollection);
         }
 
         private void LoadBookmark()
