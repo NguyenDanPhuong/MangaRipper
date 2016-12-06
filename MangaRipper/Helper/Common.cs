@@ -16,6 +16,7 @@ namespace MangaRipper
 {
     static class Common
     {
+        // TODO: Save CBZ, Folder checkbox settings.
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>

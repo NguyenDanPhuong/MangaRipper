@@ -66,7 +66,8 @@ namespace MangaRipper.Core
                     progress.Report(i);
                 }),
                 cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]{1,}width=", pageData, "Value");
+
+            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+width=", pageData, "Value");
 
             progress.Report(100);
             return images;
