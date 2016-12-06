@@ -118,7 +118,7 @@ namespace MangaRipper.Core
             foreach (var image in images)
             {
                 string tempFilePath = Path.GetTempFileName();
-                string filePath = Path.Combine(destinationPath, Path.GetFileName(image));
+                string filePath = Path.Combine(destinationPath, GetFilenameFromUrl(image));
                 if (!File.Exists(filePath))
                 {
                     await downloader.DownloadFileAsync(image, tempFilePath, source.Token);
@@ -129,6 +129,12 @@ namespace MangaRipper.Core
                 progress.Report(50 + i);
             }
             progress.Report(100);
+        }
+
+        private string GetFilenameFromUrl(string url)
+        {
+            var uri = new Uri(url);
+            return Path.GetFileName(uri.LocalPath);
         }
 
 
