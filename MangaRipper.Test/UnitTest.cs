@@ -14,21 +14,17 @@ namespace MangaRipper.Test
     public class UnitTest
     {
         CancellationTokenSource source;
-        string temp;
 
         [TestInitialize]
         public void Initialize()
         {
             Framework.Init();
             source = new CancellationTokenSource();
-            temp = Path.GetTempPath();
-            Directory.CreateDirectory(temp);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            Directory.Delete(temp, true);
         }
 
         [TestMethod]
