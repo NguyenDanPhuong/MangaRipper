@@ -51,7 +51,7 @@ namespace MangaRipper.Core
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^?]+)?[^\"]+\"[ ]+onerror", pageData, "Value");
+            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\" onload=", pageData, "Value");
 
             return images;
         }
