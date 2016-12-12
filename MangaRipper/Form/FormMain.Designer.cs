@@ -99,7 +99,7 @@
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point(153, 288);
+            this.btnAdd.Location = new System.Drawing.Point(153, 343);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(143, 23);
             this.btnAdd.TabIndex = 8;
@@ -110,7 +110,7 @@
             // btnAddAll
             // 
             this.btnAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddAll.Location = new System.Drawing.Point(302, 288);
+            this.btnAddAll.Location = new System.Drawing.Point(302, 343);
             this.btnAddAll.Name = "btnAddAll";
             this.btnAddAll.Size = new System.Drawing.Size(135, 23);
             this.btnAddAll.TabIndex = 9;
@@ -178,7 +178,7 @@
             // btnChangeSaveTo
             // 
             this.btnChangeSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnChangeSaveTo.Location = new System.Drawing.Point(312, 317);
+            this.btnChangeSaveTo.Location = new System.Drawing.Point(312, 288);
             this.btnChangeSaveTo.Name = "btnChangeSaveTo";
             this.btnChangeSaveTo.Size = new System.Drawing.Size(30, 23);
             this.btnChangeSaveTo.TabIndex = 13;
@@ -190,7 +190,7 @@
             // btnOpenFolder
             // 
             this.btnOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOpenFolder.Location = new System.Drawing.Point(348, 317);
+            this.btnOpenFolder.Location = new System.Drawing.Point(348, 288);
             this.btnOpenFolder.Name = "btnOpenFolder";
             this.btnOpenFolder.Size = new System.Drawing.Size(89, 23);
             this.btnOpenFolder.TabIndex = 14;
@@ -202,9 +202,9 @@
             // 
             this.lbSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbSaveTo.AutoSize = true;
-            this.lbSaveTo.Location = new System.Drawing.Point(12, 321);
+            this.lbSaveTo.Location = new System.Drawing.Point(12, 292);
             this.lbSaveTo.Name = "lbSaveTo";
-            this.lbSaveTo.Size = new System.Drawing.Size(45, 13);
+            this.lbSaveTo.Size = new System.Drawing.Size(44, 13);
             this.lbSaveTo.TabIndex = 11;
             this.lbSaveTo.Text = "Save To";
             // 
@@ -378,7 +378,7 @@
             // btnAddPrefixCounter
             // 
             this.btnAddPrefixCounter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddPrefixCounter.Location = new System.Drawing.Point(12, 288);
+            this.btnAddPrefixCounter.Location = new System.Drawing.Point(12, 343);
             this.btnAddPrefixCounter.Name = "btnAddPrefixCounter";
             this.btnAddPrefixCounter.Size = new System.Drawing.Size(135, 23);
             this.btnAddPrefixCounter.TabIndex = 7;
@@ -391,7 +391,7 @@
             // 
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtSaveTo.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MangaRipper.Properties.Settings.Default, "SaveTo", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.txtSaveTo.Location = new System.Drawing.Point(66, 318);
+            this.txtSaveTo.Location = new System.Drawing.Point(66, 289);
             this.txtSaveTo.Name = "txtSaveTo";
             this.txtSaveTo.ReadOnly = true;
             this.txtSaveTo.Size = new System.Drawing.Size(240, 22);
@@ -411,7 +411,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 350);
+            this.label1.Location = new System.Drawing.Point(12, 321);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 26;
@@ -419,11 +419,12 @@
             // 
             // cbSaveFolder
             // 
+            this.cbSaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbSaveFolder.AutoSize = true;
             this.cbSaveFolder.Checked = true;
             this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSaveFolder.Enabled = false;
-            this.cbSaveFolder.Location = new System.Drawing.Point(66, 349);
+            this.cbSaveFolder.Location = new System.Drawing.Point(66, 320);
             this.cbSaveFolder.Name = "cbSaveFolder";
             this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
             this.cbSaveFolder.TabIndex = 27;
@@ -432,8 +433,9 @@
             // 
             // cbSaveCbz
             // 
+            this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbSaveCbz.AutoSize = true;
-            this.cbSaveCbz.Location = new System.Drawing.Point(131, 349);
+            this.cbSaveCbz.Location = new System.Drawing.Point(131, 320);
             this.cbSaveCbz.Name = "cbSaveCbz";
             this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
             this.cbSaveCbz.TabIndex = 28;
@@ -462,8 +464,8 @@
             // ColChapterUrl
             // 
             this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColChapterUrl.DataPropertyName = "Url";
-            this.ColChapterUrl.HeaderText = "Address";
+            this.ColChapterUrl.DataPropertyName = "SaveToFolder";
+            this.ColChapterUrl.HeaderText = "Save To";
             this.ColChapterUrl.Name = "ColChapterUrl";
             this.ColChapterUrl.ReadOnly = true;
             this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -500,13 +502,13 @@
             this.Controls.Add(this.btnChangeSaveTo);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnOpenFolder);
-            this.Controls.Add(this.dgvQueueChapter);
             this.Controls.Add(this.btnRemoveAll);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnAddAll);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.btnGetChapter);
+            this.Controls.Add(this.dgvQueueChapter);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1020, 644);
