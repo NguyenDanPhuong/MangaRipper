@@ -10,7 +10,7 @@ namespace MangaRipper
             InitializeComponent();
             Text = string.Format("About {0}", Application.ProductName);
             labelProductName.Text = Application.ProductName;
-            labelVersion.Text = string.Format("Version {0}", Application.ProductVersion);
+            labelVersion.Text = $"Version {Application.ProductVersion}";
             labelCopyright.Text = Application.CompanyName;
             labelCompanyName.Text = "Copyright ©  2011";
             textBoxDescription.Text = "";
