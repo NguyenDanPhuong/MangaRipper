@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Collections.Specialized;
 using MangaRipper.Core;
 using System.Threading.Tasks;
+using MangaRipper.Helper;
 using NLog;
 
 namespace MangaRipper
@@ -216,6 +217,24 @@ namespace MangaRipper
             dgvQueueChapter.DataSource = _downloadQueue;
 
             LoadBookmark();
+
+            CheckForUpdate();
+        }
+
+        private async void CheckForUpdate()
+        {
+            if (Application.ProductVersion == "1.0.0.0")
+            {
+                // Debuging, don't check for version.
+                return;
+            }
+            var latestVersion = await UpdateNotification.GetLatestVersion();
+            if (latestVersion != Application.ProductVersion)
+            {
+                Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
+                MessageBox.Show($"There's new version ({latestVersion}). Click OK to open download page.");
+                Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
+            }
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
