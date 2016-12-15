@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Specialized;
-using System.IO;
 using MangaRipper.Core;
-using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 
@@ -16,7 +13,7 @@ namespace MangaRipper
 {
     public partial class FormMain : Form
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         BindingList<DownloadChapterTask> _downloadQueue;
         protected const string FilenameIchapterCollection = "IChapterCollection.bin";
 
@@ -33,12 +30,13 @@ namespace MangaRipper
                 var titleUrl = cbTitleUrl.Text;
 
                 var worker = Framework.GetWorker();
-                var progress_int = new Progress<int>(progress => txtPercent.Text = progress + "%");
-                var chapters = await worker.FindChapters(titleUrl, progress_int);
+                var progressInt = new Progress<int>(progress => txtPercent.Text = progress + "%");
+                var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters;
             }
             catch (Exception ex)
             {
+                Logger.Error(ex);
                 txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -53,7 +51,7 @@ namespace MangaRipper
             var items = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
             {
-                if (row.Selected == true)
+                if (row.Selected)
                 {
                     items.Add((Chapter)row.DataBoundItem);
                 }
@@ -117,6 +115,7 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
+                Logger.Error(ex);
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
             }
@@ -250,7 +249,7 @@ namespace MangaRipper
         private void LoadBookmark()
         {
             cbTitleUrl.Items.Clear();
-            StringCollection sc = Properties.Settings.Default.Bookmark;
+            var sc = Properties.Settings.Default.Bookmark;
             if (sc != null)
             {
                 foreach (string item in sc)
@@ -262,11 +261,7 @@ namespace MangaRipper
 
         private void btnAddBookmark_Click(object sender, EventArgs e)
         {
-            StringCollection sc = Properties.Settings.Default.Bookmark;
-            if (sc == null)
-            {
-                sc = new StringCollection();
-            }
+            var sc = Properties.Settings.Default.Bookmark ?? new StringCollection();
             if (sc.Contains(cbTitleUrl.Text) == false)
             {
                 sc.Add(cbTitleUrl.Text);
@@ -277,7 +272,7 @@ namespace MangaRipper
 
         private void btnRemoveBookmark_Click(object sender, EventArgs e)
         {
-            StringCollection sc = Properties.Settings.Default.Bookmark;
+            var sc = Properties.Settings.Default.Bookmark;
             if (sc != null)
             {
                 sc.Remove(cbTitleUrl.Text);
@@ -291,10 +286,10 @@ namespace MangaRipper
             var chapters = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
             {
-                Chapter chapter = row.DataBoundItem as Chapter;
+                var chapter = row.DataBoundItem as Chapter;
                 chapters.Add(chapter);
             }
-            chapters = Common.CloneIChapterCollection(chapters);
+            chapters = Common.CloneIChapterCollection(chapters).ToList();
 
             chapters.Reverse();
             chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1));

@@ -76,15 +76,11 @@ namespace MangaRipper
             return result;
         }
 
-        public static List<Chapter> CloneIChapterCollection(List<Chapter> chapters)
+        public static IEnumerable<Chapter> CloneIChapterCollection(IEnumerable<Chapter> chapters)
         {
-            using (Stream objectStream = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(objectStream, chapters);
-                objectStream.Seek(0, SeekOrigin.Begin);
-                return (List<Chapter>)formatter.Deserialize(objectStream);
-            }
+
+            var json = JsonConvert.SerializeObject(chapters);
+            return JsonConvert.DeserializeObject<IEnumerable<Chapter>>(json);
         }
     }
 }
