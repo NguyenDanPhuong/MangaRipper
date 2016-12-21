@@ -52,23 +52,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chapter.cs" />
-    <Compile Include="DownloadChapterTask.cs" />
-    <Compile Include="Framework.cs" />
-    <Compile Include="IMangaService.cs" />
-    <Compile Include="Downloader.cs" />
-    <Compile Include="Extension.cs" />
-    <Compile Include="KissMangaService.cs" />
-    <Compile Include="MangaFoxService.cs" />
-    <Compile Include="MangaHereService.cs" />
-    <Compile Include="MangaReaderService.cs" />
-    <Compile Include="MangaShareService.cs" />
-    <Compile Include="OutputFormat.cs" />
-    <Compile Include="PackageCbz.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="Models\Chapter.cs" />
+    <Compile Include="Models\DownloadChapterTask.cs" />
+    <Compile Include="Providers\FrameworkProvider.cs" />
+    <Compile Include="Interfaces\IMangaService.cs" />
+    <Compile Include="Services\DownloadService.cs" />
+    <Compile Include="Extensions\ExtensionClearName.cs" />
+    <Compile Include="Services\WebSites\KissMangaService.cs" />
+    <Compile Include="Services\WebSites\MangaFoxService.cs" />
+    <Compile Include="Services\WebSites\MangaHereService.cs" />
+    <Compile Include="Services\WebSites\MangaReaderService.cs" />
+    <Compile Include="Services\WebSites\MangaShareService.cs" />
+    <Compile Include="DataTypes\OutputFormat.cs" />
+    <Compile Include="Helpers\PackageCbzHelper.cs" />
+    <Compile Include="Helpers\ParserHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SiteInformation.cs" />
-    <Compile Include="Worker.cs" />
+    <Compile Include="Models\SiteInformation.cs" />
+    <Compile Include="Controllers\WorkerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">

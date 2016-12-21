@@ -1,12 +1,14 @@
-﻿using NLog;
+﻿using MangaRipper.Core.Helpers;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Services.WebSites
 {
     /// <summary>
     /// Support find chapters and images from MangaReader
@@ -17,13 +19,13 @@ namespace MangaRipper.Core
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
-            // reverse chapters order and remove duplicated chapters in latest setion
+            // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
             // transform pages link
             chaps = chaps.Select(c =>
@@ -36,8 +38,8 @@ namespace MangaRipper.Core
 
         public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);

@@ -1,6 +1,6 @@
-﻿namespace MangaRipper.Core
+﻿namespace MangaRipper.Core.Extensions
 {
-    public static class Extension
+    public static class ExtensionClearName
     {
         /// <summary>
         /// Remove characters that cannot using to name folder, file.

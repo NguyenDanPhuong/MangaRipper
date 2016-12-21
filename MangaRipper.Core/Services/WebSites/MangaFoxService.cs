@@ -1,13 +1,14 @@
-﻿using NLog;
+﻿using MangaRipper.Core.Helpers;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Services.WebSites
 {
     /// <summary>
     /// Support find chapters, images from MangaFox
@@ -30,8 +31,8 @@ namespace MangaRipper.Core
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
@@ -43,8 +44,8 @@ namespace MangaRipper.Core
         public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
 
             // find all pages in a chapter
             var input = await downloader.DownloadStringAsync(chapter.Url);

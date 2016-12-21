@@ -1,14 +1,13 @@
-﻿using System;
+﻿using MangaRipper.Core.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Interfaces
 {
     /// <summary>
-    /// We have many manga services (web site), each service support finding chapters url and images url.
+    /// We have many manga services (web site), each service support finding chapters URL and images URL.
     /// </summary>
     public interface IMangaService
     {

@@ -1,29 +1,30 @@
-﻿using NLog;
+﻿using MangaRipper.Core.Controllers;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Services.WebSites;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Providers
 {
     /// <summary>
     /// The framework contains all services for this app.
-    /// When the app start, we have to call Init() to initilazation services.
+    /// When the app start, we have to call Init() to initialization services.
     /// </summary>
-    public class Framework
+    public class FrameworkProvider
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static IList<IMangaService> services;
-        private static Worker worker;
+        private static WorkerController worker;
 
         /// <summary>
-        /// Initilaztion services.
+        /// Initialization services.
         /// </summary>
         public static void Init()
         {
             logger.Info("> Framework.Init()");
-            worker = new Worker();
+            worker = new WorkerController();
             services = new List<IMangaService>();
             services.Add(new MangaFoxService());
             services.Add(new MangaHereService());
@@ -33,7 +34,7 @@ namespace MangaRipper.Core
         }
 
         /// <summary>
-        /// Get all avaible services
+        /// Get all available services
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<IMangaService> GetServices()
@@ -45,13 +46,13 @@ namespace MangaRipper.Core
         /// Get worker to download chapter.
         /// </summary>
         /// <returns></returns>
-        public static Worker GetWorker()
+        public static WorkerController GetWorker()
         {
             return worker;
         }
 
         /// <summary>
-        /// Find service base on inputed url.
+        /// Find service base on inputed URL.
         /// </summary>
         /// <param name="link"></param>
         /// <returns></returns>

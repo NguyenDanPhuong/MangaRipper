@@ -1,10 +1,8 @@
-﻿using System;
+﻿using MangaRipper.Core.DataTypes;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Models
 {
     /// <summary>
     /// When chapters added to download list. They are added as tasks.
@@ -12,12 +10,9 @@ namespace MangaRipper.Core
     /// </summary>
     public class DownloadChapterTask
     {
+        #region ToRemove?
         public string Name => Chapter.Name;
         public string Url => Chapter.Url;
-        public Chapter Chapter { get; private set; }
-        public string SaveToFolder { get; private set; }
-        public IEnumerable<OutputFormat> Formats { get; private set; }
-
         public string PropFormats
         {
             get
@@ -26,9 +21,14 @@ namespace MangaRipper.Core
                 return string.Join(", ", s);
             }
         }
+        #endregion
 
+        public Chapter Chapter { get; private set; }
+        public string SaveToFolder { get; private set; }
+        public IEnumerable<OutputFormat> Formats { get; private set; }     
         public bool IsBusy { get; set; }
         public int Percent { get; set; }
+
         public DownloadChapterTask(Chapter chapter, string saveToFolder, IEnumerable<OutputFormat> formats)
         {
             Chapter = chapter;
