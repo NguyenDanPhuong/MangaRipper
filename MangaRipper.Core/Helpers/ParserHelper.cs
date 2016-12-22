@@ -1,17 +1,15 @@
-﻿using NLog;
-using System;
+﻿using MangaRipper.Core.Models;
+using NLog;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Helpers
 {
     /// <summary>
     /// Looking for manga/chapter information in html, using regex.
     /// </summary>
-    class Parser
+    class ParserHelper
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -21,7 +19,7 @@ namespace MangaRipper.Core
         /// <param name="regExp">The regex with 2 captured groups.</param>
         /// <param name="input">The html code.</param>
         /// <param name="nameGroup">The group name that capture chapter name.</param>
-        /// <param name="valueGroup">The group name that capture chapter url.</param>
+        /// <param name="valueGroup">The group name that capture chapter URL.</param>
         /// <returns></returns>
         public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {

@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,12 +8,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Services
 {
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class Downloader
+    public class DownloadService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -31,7 +30,7 @@ namespace MangaRipper.Core
         /// <summary>
         /// Download single web page to string.
         /// </summary>
-        /// <param name="url">The url to download</param>
+        /// <param name="url">The URL to download</param>
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
@@ -50,7 +49,7 @@ namespace MangaRipper.Core
         /// <summary>
         /// Download a list of web page.
         /// </summary>
-        /// <param name="urls">List of url</param>
+        /// <param name="urls">List of URL</param>
         /// <param name="progress">Progress report callback</param>
         /// <param name="cancellationToken">Cancellation control</param>
         /// <returns></returns>
@@ -74,7 +73,7 @@ namespace MangaRipper.Core
         /// <summary>
         /// Download file and save to folder
         /// </summary>
-        /// <param name="url">The url to download</param>
+        /// <param name="url">The URL to download</param>
         /// <param name="fileName">Save to filename</param>
         /// <param name="cancellationToken">Cancellation control</param>
         /// <returns></returns>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MangaRipper.Core
+﻿namespace MangaRipper.Core.Models
 {
     /// <summary>
     /// Contain information of a manga web site
