@@ -202,7 +202,7 @@ namespace MangaRipper
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            Text = $"{Application.ProductName} {Application.ProductVersion}";
+            Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
             foreach (var service in FrameworkProvider.GetServices())
             {

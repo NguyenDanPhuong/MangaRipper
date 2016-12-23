@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using System.Net;
+using System.Text;
 using MangaRipper.Core.Services;
 using MangaRipper.Core.Providers;
 
@@ -117,21 +120,21 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
-        //[TestMethod]
-        public async Task KissManga_Test()
+        [TestMethod]
+        public async Task Batoto_Test()
         {
-            string url = "http://kissmanga.com/Manga/Beelzebub";
+            string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
             var service = FrameworkProvider.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
-            Assert.IsTrue(chapters.Count() > 0, "Cannot find chapters.");
+            Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
-            Assert.AreEqual("Beelzebub Babu 000", chapter.Name);
-            Assert.AreEqual("http://kissmanga.com/Manga/Beelzebub/Babu-000?id=285306", chapter.Url);
+            Assert.AreEqual("Vol.01 Ch.01 Read Online", chapter.Name);
+            Assert.AreEqual("http://bato.to/reader#900d11d96d1466f2", chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(), source.Token);
-            Assert.AreEqual(49, images.Count());
-            Assert.AreEqual("http://2.bp.blogspot.com/-E8XYLQErJFc/Vjg04wA34iI/AAAAAAABEsY/oDSYgrsnCJM/s16000/0000-001.jpg", images.ToArray()[0]);
-            Assert.AreEqual("http://2.bp.blogspot.com/-mSKwfmFrAqU/Vjgwuhxru8I/AAAAAAABDrA/N7pxjd0d_UA/s16000/0000-002.jpg", images.ToArray()[1]);
-            Assert.AreEqual("http://2.bp.blogspot.com/-92zJArhtoVs/VjgyxNnDjtI/AAAAAAABEKg/367AcQpasUU/s16000/0000-049.jpg", images.ToArray()[48]);
+            Assert.AreEqual(31, images.Count());
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000002.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000003.jpg"));
 
             var downloader = new DownloadService();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0]);
