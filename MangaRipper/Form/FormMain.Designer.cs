@@ -61,13 +61,13 @@
             this.btnAddBookmark = new System.Windows.Forms.Button();
             this.btnRemoveBookmark = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxForPrefix = new System.Windows.Forms.CheckBox();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.cbSaveFolder = new System.Windows.Forms.CheckBox();
             this.cbSaveCbz = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBoxForPrefix = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -416,6 +416,18 @@
             this.btnRemoveBookmark.UseVisualStyleBackColor = true;
             this.btnRemoveBookmark.Click += new System.EventHandler(this.btnRemoveBookmark_Click);
             // 
+            // checkBoxForPrefix
+            // 
+            this.checkBoxForPrefix.AutoSize = true;
+            this.checkBoxForPrefix.Location = new System.Drawing.Point(6, 18);
+            this.checkBoxForPrefix.Name = "checkBoxForPrefix";
+            this.checkBoxForPrefix.Size = new System.Drawing.Size(99, 17);
+            this.checkBoxForPrefix.TabIndex = 0;
+            this.checkBoxForPrefix.Text = "Prefix Counter";
+            this.toolTip1.SetToolTip(this.checkBoxForPrefix, "Add prefix to chapters");
+            this.checkBoxForPrefix.UseVisualStyleBackColor = true;
+            this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.checkBoxForPrefix_CheckedChanged);
+            // 
             // txtSaveTo
             // 
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -463,6 +475,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.cbSaveFolder);
             this.groupBox1.Controls.Add(this.cbSaveCbz);
             this.groupBox1.Location = new System.Drawing.Point(15, 317);
@@ -474,6 +487,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.checkBoxForPrefix);
             this.groupBox2.Location = new System.Drawing.Point(139, 317);
             this.groupBox2.Name = "groupBox2";
@@ -481,18 +495,6 @@
             this.groupBox2.TabIndex = 30;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "File manipulation";
-            // 
-            // checkBoxForPrefix
-            // 
-            this.checkBoxForPrefix.AutoSize = true;
-            this.checkBoxForPrefix.Location = new System.Drawing.Point(6, 18);
-            this.checkBoxForPrefix.Name = "checkBoxForPrefix";
-            this.checkBoxForPrefix.Size = new System.Drawing.Size(99, 17);
-            this.checkBoxForPrefix.TabIndex = 0;
-            this.checkBoxForPrefix.Text = "Prefix Counter";
-            this.toolTip1.SetToolTip(this.checkBoxForPrefix, "Add prefix to chapters");
-            this.checkBoxForPrefix.UseVisualStyleBackColor = true;
-            this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.checkBoxForPrefix_CheckedChanged);
             // 
             // FormMain
             // 
