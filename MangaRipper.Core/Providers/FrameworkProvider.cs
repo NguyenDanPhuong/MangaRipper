@@ -14,23 +14,25 @@ namespace MangaRipper.Core.Providers
     /// </summary>
     public class FrameworkProvider
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static IList<IMangaService> services;
-        private static WorkerController worker;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static IList<IMangaService> _services;
+        private static WorkerController _worker;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
         public static void Init()
         {
-            logger.Info("> Framework.Init()");
-            worker = new WorkerController();
-            services = new List<IMangaService>();
-            services.Add(new MangaFoxService());
-            services.Add(new MangaHereService());
-            services.Add(new MangaReaderService());
-            services.Add(new MangaShareService());
-            //services.Add(new KissMangaService());
+            Logger.Info("> Framework.Init()");
+            _worker = new WorkerController();
+            _services = new List<IMangaService>
+            {
+                new MangaFoxService(),
+                new MangaHereService(),
+                new MangaReaderService(),
+                new MangaShareService(),
+                new BatotoService()
+            };
         }
 
         /// <summary>
@@ -39,7 +41,7 @@ namespace MangaRipper.Core.Providers
         /// <returns></returns>
         public static IEnumerable<IMangaService> GetServices()
         {
-            return services.ToList().AsReadOnly();
+            return _services.ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -48,7 +50,7 @@ namespace MangaRipper.Core.Providers
         /// <returns></returns>
         public static WorkerController GetWorker()
         {
-            return worker;
+            return _worker;
         }
 
         /// <summary>
@@ -58,10 +60,10 @@ namespace MangaRipper.Core.Providers
         /// <returns></returns>
         public static IMangaService GetService(string link)
         {
-            IMangaService service = services.FirstOrDefault(s => s.Of(link));
+            IMangaService service = _services.FirstOrDefault(s => s.Of(link));
             if(service == null)
             {
-                logger.Error("Cannot find service for link: {0}", link);
+                Logger.Error("Cannot find service for link: {0}", link);
                 throw new Exception("Cannot find service to download from input site!");
             }
             return service;

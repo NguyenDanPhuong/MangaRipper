@@ -15,7 +15,11 @@ namespace MangaRipper.Core.Services
     /// </summary>
     public class DownloadService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public CookieCollection Cookies { get; set; }
+
+        public string Referer { get; set; }
 
         private HttpWebRequest CreateRequest(string url)
         {
@@ -23,7 +27,12 @@ namespace MangaRipper.Core.Services
             var request = WebRequest.CreateHttp(uri);
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             request.Credentials = CredentialCache.DefaultCredentials;
-            request.Referer = "mangafox.me";
+            request.Referer = Referer;
+            if (Cookies != null)
+            {
+                request.CookieContainer = new CookieContainer();
+                request.CookieContainer.Add(Cookies);
+            }
             return request;
         }
 
@@ -34,7 +43,7 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
-            logger.Info("> DownloadStringAsync: {0}", url);
+            Logger.Info("> DownloadStringAsync: {0}", url);
             var request = CreateRequest(url);
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -55,7 +64,7 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
+            Logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
             var sb = new StringBuilder();
             var count = 0;
             progress.Report(count);
@@ -79,7 +88,7 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
-            logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
+            Logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
             var request = CreateRequest(url);
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {

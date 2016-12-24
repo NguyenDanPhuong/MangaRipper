@@ -58,7 +58,7 @@
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Extensions\ExtensionClearName.cs" />
-    <Compile Include="Services\WebSites\KissMangaService.cs" />
+    <Compile Include="Services\WebSites\BatotoService.cs" />
     <Compile Include="Services\WebSites\MangaFoxService.cs" />
     <Compile Include="Services\WebSites\MangaHereService.cs" />
     <Compile Include="Services\WebSites\MangaReaderService.cs" />

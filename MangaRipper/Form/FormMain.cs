@@ -36,6 +36,9 @@ namespace MangaRipper
                 var progressInt = new Progress<int>(progress => txtPercent.Text = progress + "%");
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters;
+                if (checkBoxForPrefix.Checked)
+                    prefixLogic(); // in case if tick is set
+
             }
             catch (Exception ex)
             {
@@ -202,7 +205,7 @@ namespace MangaRipper
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            Text = $"{Application.ProductName} {Application.ProductVersion}";
+            Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
             foreach (var service in FrameworkProvider.GetServices())
             {
@@ -302,7 +305,12 @@ namespace MangaRipper
             }
         }
 
-        private void btnAddPrefixCounter_Click(object sender, EventArgs e)
+        private void checkBoxForPrefix_CheckedChanged(object sender, EventArgs e)
+        {
+            prefixLogic();
+        }
+
+        private void prefixLogic()
         {
             var chapters = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
@@ -313,11 +321,10 @@ namespace MangaRipper
             chapters = Common.CloneIChapterCollection(chapters).ToList();
 
             chapters.Reverse();
-            chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1));
+            chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));
             chapters.Reverse();
 
             dgvChapter.DataSource = chapters;
         }
-
     }
 }
