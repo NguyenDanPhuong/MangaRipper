@@ -62,7 +62,7 @@ namespace MangaRipper.Core.Services
         /// <param name="progress">Progress report callback</param>
         /// <param name="cancellationToken">Cancellation control</param>
         /// <returns></returns>
-        internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
             Logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
             var sb = new StringBuilder();

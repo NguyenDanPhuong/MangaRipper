@@ -58,6 +58,22 @@
       <Project>{13effe36-dbb8-4573-9260-b601177f66e3}</Project>
       <Name>MangaRipper.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.MangaFox\MangaRipper.MangaFox.csproj">
+      <Project>{f5d529b4-cbb6-46e2-9d32-25cef8365318}</Project>
+      <Name>MangaRipper.MangaFox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.MangaHere\MangaRipper.MangaHere.csproj">
+      <Project>{b7f65da6-a435-46f8-8867-778a48fab8cf}</Project>
+      <Name>MangaRipper.MangaHere</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.MangaReader\MangaRipper.MangaReader.csproj">
+      <Project>{fe632cbc-ebbb-4509-b760-8ca031f87160}</Project>
+      <Name>MangaRipper.MangaReader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.MangaShare\MangaRipper.MangaShare.csproj">
+      <Project>{a156fb0b-1e4a-4db0-b944-d23413ca8d58}</Project>
+      <Name>MangaRipper.MangaShare</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
