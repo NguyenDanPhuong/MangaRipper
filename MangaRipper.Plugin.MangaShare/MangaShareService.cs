@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.MangaShare
+namespace MangaRipper.Plugin.MangaShare
 {
 
     /// <summary>

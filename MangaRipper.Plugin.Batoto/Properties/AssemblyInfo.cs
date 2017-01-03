@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MangaRipper.MangaHere")]
+[assembly: AssemblyTitle("MangaRipper.Plugin.Batoto")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MangaRipper.MangaHere")]
+[assembly: AssemblyProduct("MangaRipper.Plugin.Batoto")]
 [assembly: AssemblyCopyright("Copyright © 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b7f65da6-a435-46f8-8867-778a48fab8cf")]
+[assembly: Guid("0da63c57-4a0f-497e-9322-935af18506b1")]
 
 // Version information for an assembly consists of the following four values:
 //

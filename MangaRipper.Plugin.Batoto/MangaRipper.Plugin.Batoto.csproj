@@ -7,8 +7,8 @@
     <ProjectGuid>{0DA63C57-4A0F-497E-9322-935AF18506B1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MangaRipper.Batoto</RootNamespace>
-    <AssemblyName>MangaRipper.Batoto</AssemblyName>
+    <RootNamespace>MangaRipper.Plugin.Batoto</RootNamespace>
+    <AssemblyName>MangaRipper.Plugin.Batoto</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\MangaRipper\bin\Debug\plugins\</OutputPath>
+    <OutputPath>..\MangaRipper\bin\Debug\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

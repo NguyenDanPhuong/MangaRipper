@@ -7,8 +7,8 @@
     <ProjectGuid>{B7F65DA6-A435-46F8-8867-778A48FAB8CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MangaRipper.MangaHere</RootNamespace>
-    <AssemblyName>MangaRipper.MangaHere</AssemblyName>
+    <RootNamespace>MangaRipper.Plugin.MangaHere</RootNamespace>
+    <AssemblyName>MangaRipper.Plugin.MangaHere</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\MangaRipper\bin\Debug\plugins\</OutputPath>
+    <OutputPath>..\MangaRipper\bin\Debug\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

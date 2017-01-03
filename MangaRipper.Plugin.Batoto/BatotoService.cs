@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Batoto
+namespace MangaRipper.Plugin.Batoto
 {
     /// <summary>
     /// Support find chapters, images from Batoto
