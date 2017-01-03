@@ -11,7 +11,6 @@ using NLog;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Providers;
-using MangaRipper.Core.Services;
 
 namespace MangaRipper
 {

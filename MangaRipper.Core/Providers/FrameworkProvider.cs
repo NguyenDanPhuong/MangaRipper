@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace MangaRipper.Core.Providers
 {
@@ -17,22 +16,22 @@ namespace MangaRipper.Core.Providers
     public class FrameworkProvider
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static IList<IMangaService> _services;
+        private static IEnumerable<IMangaService> _services;
         private static WorkerController _worker;
         private static PluginService _plugins;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public static void Init(string pluginPath)
+        public static void Init(string pluginPath = "")
         {
             Logger.Info("> Framework.Init()");
-            _worker = new WorkerController();            
+            _worker = new WorkerController();
             _plugins = new PluginService();
             // TODO Put the path to plugins into config
-            _services = _plugins.LoadWebPlugins(Environment.CurrentDirectory + pluginPath);
+            _services = _plugins.LoadWebPlugins(Path.Combine(Environment.CurrentDirectory, pluginPath));
         }
-        
+
         /// <summary>
         /// Get all available services
         /// </summary>

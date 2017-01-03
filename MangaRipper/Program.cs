@@ -12,7 +12,7 @@ namespace MangaRipper
         [STAThread]
         static void Main()
         {
-            FrameworkProvider.Init(@"\Plugins");
+            FrameworkProvider.Init("Plugins");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());

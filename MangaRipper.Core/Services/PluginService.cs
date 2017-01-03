@@ -9,52 +9,53 @@ namespace MangaRipper.Core.Services
 {
     public class PluginService
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Load plugins for WebSites
         /// </summary>
         /// <param name="path">path to folder in which dll's are located</param>
         /// <returns>List with all founded Services</returns>
-        public IList<IMangaService> LoadWebPlugins(string path)
+        public IEnumerable<IMangaService> LoadWebPlugins(string path)
         {
-            List<IMangaService> result = new List<IMangaService>();
+            LoadPluginAssemblies(path);
+            return CreateServices();
+        }
 
-            //Go through all the files in the plugin directory
-            foreach (string fileOn in Directory.GetFiles(path))
+        private void LoadPluginAssemblies(string path)
+        {
+            foreach (var fileOn in Directory.GetFiles(path))
             {
                 FileInfo file = new FileInfo(fileOn);
-
-                //Preliminary check, must be .dll
-                if (file.Extension.Equals(".dll"))
+                if (file.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase))
                 {
-                    //Add the 'plugin'
                     Assembly.LoadFrom(fileOn);
                 }
             }
+        }
 
-            //Loop through all opened assemblies
-            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+        private IEnumerable<IMangaService> CreateServices()
+        {
+            IList<IMangaService> result = new List<IMangaService>();
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (Type t in a.GetTypes())
+                foreach (var t in a.GetTypes())
                 {
-                    // We need only "IMangaService"
-                    if (t.GetInterface("IMangaService") != null)
+                    if (t.GetInterface(nameof(IMangaService)) != null)
                     {
                         try
                         {
-                            IMangaService pluginclass = Activator.CreateInstance(t) as IMangaService;
+                            var pluginclass = Activator.CreateInstance(t) as IMangaService;
                             if (pluginclass != null)
                                 result.Add(pluginclass);
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ex);
+                            Logger.Error(ex);
                         }
                     }
                 }
             }
-
             return result;
         }
     }
