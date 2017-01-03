@@ -1,6 +1,7 @@
 ﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Services.WebSites
+namespace MangaRipper.MangaReader
 {
-
     /// <summary>
-    /// Support find chapters, images from MangaShare
+    /// Support find chapters and images from MangaReader
     /// </summary>
-    class MangaShareService : IMangaService
+    public class MangaReaderService : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -25,8 +25,14 @@ namespace MangaRipper.Core.Services.WebSites
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            string regEx = "<td class=\"datarow-0\"><a href=\"(?<Value>[^\"]+)\"><img src=\"http://read.mangashare.com/static/images/dlmanga.gif\" class=\"inlineimg\" border=\"0\" alt=\"(?<Name>[^\"]+)\" /></a></td>";
-            var chaps = parser.ParseGroup(regEx, input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
+            // reverse chapters order and remove duplicated chapters in latest section
+            chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
+            // transform pages link
+            chaps = chaps.Select(c =>
+            {
+                return new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri);
+            }).ToList();
             progress.Report(100);
             return chaps;
         }
@@ -38,40 +44,36 @@ namespace MangaRipper.Core.Services.WebSites
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);
-            string regExPages = @"<select name=""pagejump"" class=""page"" onchange=""javascript:window.location='(?<Value>[^']+)'\+this\.value\+'\.html';"">";
-            var pageBase = parser.Parse(regExPages, input, "Value").FirstOrDefault();
-
-            var pagesExtend = parser.Parse(@"<option value=""(?<FileName>\d+)""(| selected=""selected"")>Page \d+</option>", input, "FileName");
+            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link
-            pagesExtend = pagesExtend.Select(p =>
+            pages = pages.Select(p =>
             {
-                string baseLink = pageBase + p + ".html";
-                var value = new Uri(new Uri(chapter.Url), baseLink).AbsoluteUri;
+                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
                 return value;
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pagesExtend, new Progress<int>((count) =>
+            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
             {
-                var f = (float)count / pagesExtend.Count();
+                var f = (float)count / pages.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse(@"<img src=""(?<Value>[^""]+)"" border=""0"" alt=""[^""]+"" />\n", pageData, "Value");
+            var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
 
             return images;
         }
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaShare", "http://read.mangashare.com", "English");
+            return new SiteInformation("MangaReader", "http://www.mangareader.net", "English");
         }
 
         public bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("read.mangashare.com");
+            return uri.Host.Equals("www.mangareader.net");
         }
     }
 }

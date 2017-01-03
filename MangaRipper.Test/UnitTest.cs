@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
-using System.Net;
-using System.Text;
 using MangaRipper.Core.Services;
 using MangaRipper.Core.Providers;
 
@@ -19,7 +16,7 @@ namespace MangaRipper.Test
         [TestInitialize]
         public void Initialize()
         {
-            FrameworkProvider.Init();
+            FrameworkProvider.Init(@".\");
             source = new CancellationTokenSource();
         }
 

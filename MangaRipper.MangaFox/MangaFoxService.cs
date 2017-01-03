@@ -1,6 +1,7 @@
 ﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Services.WebSites
+namespace MangaRipper.MangaFox
 {
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    class MangaFoxService : IMangaService
+    public class MangaFoxService : IMangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-
+        
         public SiteInformation GetInformation()
         {
             return new SiteInformation("MangaFox", "http://mangafox.me", "English");
