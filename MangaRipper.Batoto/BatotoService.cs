@@ -20,7 +20,7 @@ namespace MangaRipper.Batoto
     public class BatotoService : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string User = "k61150";
+        private const string User = "gufrohepra";
         private const string Password = "123";
         
         public SiteInformation GetInformation()
