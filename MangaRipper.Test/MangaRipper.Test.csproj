@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MangaRipper.Batoto\MangaRipper.Batoto.csproj">
+      <Project>{0da63c57-4a0f-497e-9322-935af18506b1}</Project>
+      <Name>MangaRipper.Batoto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
       <Project>{13effe36-dbb8-4573-9260-b601177f66e3}</Project>
       <Name>MangaRipper.Core</Name>
