@@ -9,7 +9,7 @@ namespace MangaRipper.Core.Helpers
     /// <summary>
     /// Looking for manga/chapter information in html, using regex.
     /// </summary>
-    class ParserHelper
+    public class ParserHelper
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 

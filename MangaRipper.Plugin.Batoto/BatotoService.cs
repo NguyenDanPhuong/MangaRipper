@@ -1,6 +1,7 @@
 ﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -11,17 +12,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Services.WebSites
+namespace MangaRipper.Plugin.Batoto
 {
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    class BatotoService : IMangaService
+    public class BatotoService : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string User = "k61150";
+        private const string User = "gufrohepra";
         private const string Password = "123";
-
+        
         public SiteInformation GetInformation()
         {
             return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");

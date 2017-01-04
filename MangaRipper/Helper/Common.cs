@@ -68,7 +68,8 @@ namespace MangaRipper
                 _logger.Error(ex);
             }
 
-            return result;
+            // Queue should not be a null
+            return result ?? new BindingList<DownloadChapterTask>();
         }
 
         public static IEnumerable<Chapter> CloneIChapterCollection(IEnumerable<Chapter> chapters)

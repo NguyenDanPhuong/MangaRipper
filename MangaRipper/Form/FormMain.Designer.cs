@@ -575,7 +575,6 @@
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.CheckBox cbSaveFolder;
         private System.Windows.Forms.CheckBox cbSaveCbz;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Output;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;

@@ -1,9 +1,10 @@
 ﻿using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Interfaces;
-using MangaRipper.Core.Services.WebSites;
+using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MangaRipper.Core.Providers
@@ -15,24 +16,20 @@ namespace MangaRipper.Core.Providers
     public class FrameworkProvider
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static IList<IMangaService> _services;
+        private static IEnumerable<IMangaService> _services;
         private static WorkerController _worker;
+        private static PluginService _plugins;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public static void Init()
+        public static void Init(string pluginPath = "")
         {
             Logger.Info("> Framework.Init()");
             _worker = new WorkerController();
-            _services = new List<IMangaService>
-            {
-                new MangaFoxService(),
-                new MangaHereService(),
-                new MangaReaderService(),
-                new MangaShareService(),
-                new BatotoService()
-            };
+            _plugins = new PluginService();
+            // TODO Put the path to plugins into config
+            _services = _plugins.LoadWebPlugins(Path.Combine(Environment.CurrentDirectory, pluginPath));
         }
 
         /// <summary>
@@ -61,7 +58,7 @@ namespace MangaRipper.Core.Providers
         public static IMangaService GetService(string link)
         {
             IMangaService service = _services.FirstOrDefault(s => s.Of(link));
-            if(service == null)
+            if (service == null)
             {
                 Logger.Error("Cannot find service for link: {0}", link);
                 throw new Exception("Cannot find service to download from input site!");
