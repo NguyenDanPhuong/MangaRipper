@@ -26,8 +26,12 @@ namespace MangaRipper.Plugin.Batoto
 
         public BatotoService()
         {
-            User = ConfigurationManager.AppSettings["Service.Batoto.Username"].ToString() ?? "";
-            Password = ConfigurationManager.AppSettings["Service.Batoto.Password"].ToString() ?? "";
+            User = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Service.Batoto.Username"]) ? 
+                "" :
+                ConfigurationManager.AppSettings["Service.Batoto.Username"].ToString();
+            Password = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Service.Batoto.Password"]) ? 
+                "" :
+                ConfigurationManager.AppSettings["Service.Batoto.Password"].ToString();
         }
 
         public SiteInformation GetInformation()
