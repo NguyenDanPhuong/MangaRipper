@@ -11,6 +11,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace MangaRipper.Plugin.Batoto
 {
@@ -20,9 +21,15 @@ namespace MangaRipper.Plugin.Batoto
     public class BatotoService : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string User = "gufrohepra";
-        private const string Password = "123";
-        
+        private static string User;
+        private static string Password;
+
+        public BatotoService()
+        {
+            User = ConfigurationManager.AppSettings["Service.Batoto.Username"].ToString() ?? "";
+            Password = ConfigurationManager.AppSettings["Service.Batoto.Password"].ToString() ?? "";
+        }
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");
