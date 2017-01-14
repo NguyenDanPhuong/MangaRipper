@@ -74,5 +74,7 @@ namespace MangaRipper.Plugin.MangaShare
             var uri = new Uri(link);
             return uri.Host.Equals("read.mangashare.com");
         }
+
+        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

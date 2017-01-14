@@ -74,5 +74,7 @@ namespace MangaRipper.Plugin.MangaFox
             progress.Report(100);
             return images;
         }
+
+        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

@@ -69,5 +69,7 @@ namespace MangaRipper.Plugin.MangaHere
             var uri = new Uri(link);
             return uri.Host.Equals("www.mangahere.co");
         }
+
+        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }
