@@ -20,9 +20,9 @@ namespace MangaRipper.Plugin.Batoto
     public class BatotoService : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string User = "gufrohepra";
-        private const string Password = "123";
-        
+        private string _username = "gufrohepra";
+        private string _password = "123";
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");
@@ -39,7 +39,7 @@ namespace MangaRipper.Plugin.Batoto
             progress.Report(0);
             var downloader = new DownloadService
             {
-                Cookies = LoginBatoto(User, Password),
+                Cookies = LoginBatoto(_username, _password),
                 Referer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
@@ -56,7 +56,7 @@ namespace MangaRipper.Plugin.Batoto
             progress.Report(0);
             var downloader = new DownloadService
             {
-                Cookies = LoginBatoto(User, Password),
+                Cookies = LoginBatoto(_username, _password),
                 Referer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
@@ -121,5 +121,7 @@ namespace MangaRipper.Plugin.Batoto
             };
             return $@"http://bato.to/areader?id={id}&p={page}";
         }
+
+        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

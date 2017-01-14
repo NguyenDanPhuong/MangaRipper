@@ -3,7 +3,9 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using MangaRipper.Core.Models;
 
 namespace MangaRipper.Core.Services
 {
@@ -19,7 +21,9 @@ namespace MangaRipper.Core.Services
         public IEnumerable<IMangaService> LoadWebPlugins(string path)
         {
             LoadPluginAssemblies(path);
-            return CreateServices();
+            var services = CreateServices();
+            InjectConfiguration(services);
+            return services;
         }
 
         private void LoadPluginAssemblies(string path)
@@ -57,6 +61,22 @@ namespace MangaRipper.Core.Services
                 }
             }
             return result;
+        }
+
+        private void InjectConfiguration(IEnumerable<IMangaService> services)
+        {
+            foreach (var mangaService in services)
+            {
+                InjectConfiguration(mangaService);
+            }
+        }
+
+        private void InjectConfiguration(IMangaService service)
+        {
+            string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
+            var config = new Configuration();
+            var configItems = config.FindConfigByPrefix(lookupPrefix).ToArray();
+            service.Configuration = configItems;
         }
     }
 }

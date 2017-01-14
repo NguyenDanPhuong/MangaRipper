@@ -75,5 +75,7 @@ namespace MangaRipper.Plugin.MangaReader
             var uri = new Uri(link);
             return uri.Host.Equals("www.mangareader.net");
         }
+
+        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }
