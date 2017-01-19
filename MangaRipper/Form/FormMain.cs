@@ -5,10 +5,12 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Specialized;
-using MangaRipper.Core;
 using System.Threading.Tasks;
 using MangaRipper.Helper;
 using NLog;
+using MangaRipper.Core.Models;
+using MangaRipper.Core.DataTypes;
+using MangaRipper.Core.Providers;
 
 namespace MangaRipper
 {
@@ -30,10 +32,13 @@ namespace MangaRipper
                 btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
 
-                var worker = Framework.GetWorker();
+                var worker = FrameworkProvider.GetWorker();
                 var progressInt = new Progress<int>(progress => txtPercent.Text = progress + "%");
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters;
+                if (checkBoxForPrefix.Checked)
+                    prefixLogic(); // in case if tick is set
+
             }
             catch (Exception ex)
             {
@@ -131,7 +136,7 @@ namespace MangaRipper
             while (_downloadQueue.Count > 0)
             {
                 var chapter = _downloadQueue.First();
-                var worker = Framework.GetWorker();
+                var worker = FrameworkProvider.GetWorker();
 
                 await worker.Run(chapter, new Progress<int>(c =>
                     {
@@ -165,7 +170,7 @@ namespace MangaRipper
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            Framework.GetWorker().Cancel();
+            FrameworkProvider.GetWorker().Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
@@ -200,9 +205,9 @@ namespace MangaRipper
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
-            Text = $"{Application.ProductName} {Application.ProductVersion}";
+            Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
-            foreach (var service in Framework.GetServices())
+            foreach (var service in FrameworkProvider.GetServices())
             {
                 var infor = service.GetInformation();
                 dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
@@ -300,7 +305,12 @@ namespace MangaRipper
             }
         }
 
-        private void btnAddPrefixCounter_Click(object sender, EventArgs e)
+        private void checkBoxForPrefix_CheckedChanged(object sender, EventArgs e)
+        {
+            prefixLogic();
+        }
+
+        private void prefixLogic()
         {
             var chapters = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
@@ -311,11 +321,10 @@ namespace MangaRipper
             chapters = Common.CloneIChapterCollection(chapters).ToList();
 
             chapters.Reverse();
-            chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1));
+            chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));
             chapters.Reverse();
 
             dgvChapter.DataSource = chapters;
         }
-
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MangaRipper.Core;
-namespace MangaRipper.Core
+﻿using MangaRipper.Core.Extensions;
+
+namespace MangaRipper.Core.Models
 {
     public class Chapter
     {
@@ -14,17 +10,20 @@ namespace MangaRipper.Core
         /// </summary>
         public string NomalizeName => Name.RemoveFileNameInvalidChar();
 
+        public string OriginalName;
+
         public string Url { get; private set; }
 
-        public Chapter(string name, string url)
+        public Chapter(string name, string url, string originalName = null)
         {
             Name = name;
             Url = url;
+            OriginalName = originalName ?? name;
         }
 
-        public void AddPrefix(int prefix)
+        public void AddPrefix(int prefix, bool addPrefix)
         {
-            Name = $"[{prefix:000}] - {Name}";
+            Name = (addPrefix) ? $"[{prefix:000}] - {OriginalName}" : OriginalName;
         }
     }
 }

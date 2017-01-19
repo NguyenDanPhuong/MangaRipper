@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,14 +8,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Services
 {
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class Downloader
+    public class DownloadService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public CookieCollection Cookies { get; set; }
+
+        public string Referer { get; set; }
 
         private HttpWebRequest CreateRequest(string url)
         {
@@ -24,18 +27,23 @@ namespace MangaRipper.Core
             var request = WebRequest.CreateHttp(uri);
             request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             request.Credentials = CredentialCache.DefaultCredentials;
-            request.Referer = "mangafox.me";
+            request.Referer = Referer;
+            if (Cookies != null)
+            {
+                request.CookieContainer = new CookieContainer();
+                request.CookieContainer.Add(Cookies);
+            }
             return request;
         }
 
         /// <summary>
         /// Download single web page to string.
         /// </summary>
-        /// <param name="url">The url to download</param>
+        /// <param name="url">The URL to download</param>
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
-            logger.Info("> DownloadStringAsync: {0}", url);
+            Logger.Info("> DownloadStringAsync: {0}", url);
             var request = CreateRequest(url);
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
@@ -50,13 +58,13 @@ namespace MangaRipper.Core
         /// <summary>
         /// Download a list of web page.
         /// </summary>
-        /// <param name="urls">List of url</param>
+        /// <param name="urls">List of URL</param>
         /// <param name="progress">Progress report callback</param>
         /// <param name="cancellationToken">Cancellation control</param>
         /// <returns></returns>
-        internal async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
+            Logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
             var sb = new StringBuilder();
             var count = 0;
             progress.Report(count);
@@ -74,13 +82,13 @@ namespace MangaRipper.Core
         /// <summary>
         /// Download file and save to folder
         /// </summary>
-        /// <param name="url">The url to download</param>
+        /// <param name="url">The URL to download</param>
         /// <param name="fileName">Save to filename</param>
         /// <param name="cancellationToken">Cancellation control</param>
         /// <returns></returns>
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
-            logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
+            Logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
             var request = CreateRequest(url);
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {

@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
-using System.IO.IsolatedStorage;
-using MangaRipper.Core;
 using System.Windows.Forms;
 using NLog;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
-using Newtonsoft.Json.Converters;
+using MangaRipper.Core.Models;
 
 namespace MangaRipper
 {
@@ -73,7 +68,8 @@ namespace MangaRipper
                 _logger.Error(ex);
             }
 
-            return result;
+            // Queue should not be a null
+            return result ?? new BindingList<DownloadChapterTask>();
         }
 
         public static IEnumerable<Chapter> CloneIChapterCollection(IEnumerable<Chapter> chapters)

@@ -1,25 +1,29 @@
-﻿using NLog;
+﻿using MangaRipper.Core.DataTypes;
+using MangaRipper.Core.Helpers;
+using MangaRipper.Core.Models;
+using MangaRipper.Core.Providers;
+using MangaRipper.Core.Services;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Controllers
 {
     /// <summary>
     /// Worker support download manga chapters on back ground thread.
     /// </summary>
-    public class Worker
+    public class WorkerController
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         CancellationTokenSource source;
         SemaphoreSlim sema;
 
-        public Worker()
+        public WorkerController()
         {
             logger.Info("> Worker()");
             source = new CancellationTokenSource();
@@ -62,7 +66,7 @@ namespace MangaRipper.Core
                     task.IsBusy = false;
                     if (task.Formats.Contains(OutputFormat.CBZ))
                     {
-                        PackageCbz.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                        PackageCbzHelper.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
                     }
                     sema.Release();
                 }
@@ -74,7 +78,7 @@ namespace MangaRipper.Core
         /// <summary>
         /// Find all chapters of a manga
         /// </summary>
-        /// <param name="mangaPath">The url of manga</param>
+        /// <param name="mangaPath">The URL of manga</param>
         /// <param name="progress">Progress report callback</param>
         /// <returns></returns>
         public async Task<IEnumerable<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
@@ -103,13 +107,13 @@ namespace MangaRipper.Core
         {
             progress.Report(0);
             // let service find all images of chapter
-            var service = Framework.GetService(chapter.Url);
+            var service = FrameworkProvider.GetService(chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>((count) =>
             {
                 progress.Report(count / 2);
             }), source.Token);
             // create folder to keep images
-            var downloader = new Downloader();
+            var downloader = new DownloadService();
             var folderName = chapter.NomalizeName;
             var destinationPath = Path.Combine(mangaLocalPath, folderName);
             Directory.CreateDirectory(destinationPath);
@@ -142,7 +146,7 @@ namespace MangaRipper.Core
         {
             progress.Report(0);
             // let service find all chapters in manga
-            var service = Framework.GetService(mangaPath);
+            var service = FrameworkProvider.GetService(mangaPath);
             var chapters = await service.FindChapters(mangaPath, progress, source.Token);
             progress.Report(100);
             return chapters;

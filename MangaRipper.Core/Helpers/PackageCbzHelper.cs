@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO.Compression;
-namespace MangaRipper.Core
+﻿using System.IO.Compression;
+namespace MangaRipper.Core.Helpers
 {
-    public class PackageCbz
+    public class PackageCbzHelper
     {
-
         /// <summary>
         /// Create cbz file
         /// </summary>

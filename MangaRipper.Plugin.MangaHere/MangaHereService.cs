@@ -1,25 +1,28 @@
-﻿using NLog;
+﻿using MangaRipper.Core.Helpers;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Models;
+using MangaRipper.Core.Services;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Plugin.MangaHere
 {
 
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    class MangaHereService : IMangaService
+    public class MangaHereService : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
@@ -30,8 +33,8 @@ namespace MangaRipper.Core
 
         public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new Parser();
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);
@@ -54,6 +57,10 @@ namespace MangaRipper.Core
             var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\" onload=", pageData, "Value");
 
             return images;
+        }
+
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
         }
 
         public SiteInformation GetInformation()
