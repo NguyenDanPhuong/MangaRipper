@@ -25,6 +25,20 @@ namespace MangaRipper.Plugin.Batoto
 
         void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
+            var settingCollection = settings.ToArray();
+            if (settingCollection.Any(i => i.Key.Equals("Username")))
+            {
+                var user = settingCollection.First(i => i.Key.Equals("Username"));
+                Logger.Info($@"Current Username: {_username}. New Username: {user}");
+                _username = user.Value as string;
+            }
+
+            if (settingCollection.Any(i => i.Key.Equals("Password")))
+            {
+                var pass = settingCollection.First(i => i.Key.Equals("Password"));
+                Logger.Info($@"Current Password: {pass}. New Password: {pass}");
+                _password = pass.Value as string;
+            }
         }
 
         public SiteInformation GetInformation()

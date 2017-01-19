@@ -75,8 +75,14 @@ namespace MangaRipper.Core.Services
         {
             string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
             var config = new Configuration();
-            var configItems = config.FindConfigByPrefix(lookupPrefix).ToArray();
+            var configItems = config.FindConfigByPrefix(lookupPrefix);
+            configItems = RemovePrefix(configItems, lookupPrefix);
             service.Configuration(configItems);
+        }
+
+        private IEnumerable<KeyValuePair<string, object>> RemovePrefix(IEnumerable<KeyValuePair<string, object>> configItems, string prefix)
+        {
+            return configItems.ToArray().Select(i => new KeyValuePair<string, object>(i.Key.Remove(0, prefix.Length), i.Value));
         }
     }
 }
