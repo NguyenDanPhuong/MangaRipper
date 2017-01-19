@@ -64,6 +64,10 @@ namespace MangaRipper.Plugin.MangaShare
             return images;
         }
 
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+        }
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("MangaShare", "http://read.mangashare.com", "English");
@@ -74,7 +78,5 @@ namespace MangaRipper.Plugin.MangaShare
             var uri = new Uri(link);
             return uri.Host.Equals("read.mangashare.com");
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace MangaRipper.Core.Services
         public IEnumerable<IMangaService> LoadWebPlugins(string path)
         {
             LoadPluginAssemblies(path);
-            var services = CreateServices();
+            var services = CreateServices().ToArray();
             InjectConfiguration(services);
             return services;
         }
@@ -76,7 +76,7 @@ namespace MangaRipper.Core.Services
             string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
             var config = new Configuration();
             var configItems = config.FindConfigByPrefix(lookupPrefix).ToArray();
-            service.Configuration = configItems;
+            service.Configuration(configItems);
         }
     }
 }

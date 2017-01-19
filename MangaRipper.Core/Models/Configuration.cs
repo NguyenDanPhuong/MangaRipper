@@ -27,10 +27,10 @@ namespace MangaRipper.Core.Models
             ConfigFile = Path.Combine(Environment.CurrentDirectory, "application.json");
         }
 
-        public IEnumerable<KeyValuePair<string, string>> FindConfigByPrefix(string prefix)
+        public IEnumerable<KeyValuePair<string, object>> FindConfigByPrefix(string prefix)
         {
             var json = File.ReadAllText(ConfigFile);
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             return dict.Where(i => i.Key.StartsWith(prefix));
         }
     }

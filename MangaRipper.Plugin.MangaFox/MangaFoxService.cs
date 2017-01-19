@@ -17,7 +17,11 @@ namespace MangaRipper.Plugin.MangaFox
     public class MangaFoxService : IMangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        
+
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+        }
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("MangaFox", "http://mangafox.me", "English");
@@ -74,7 +78,5 @@ namespace MangaRipper.Plugin.MangaFox
             progress.Report(100);
             return images;
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

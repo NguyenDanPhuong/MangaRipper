@@ -23,6 +23,10 @@ namespace MangaRipper.Plugin.Batoto
         private string _username = "gufrohepra";
         private string _password = "123";
 
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+        }
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");
@@ -121,7 +125,5 @@ namespace MangaRipper.Plugin.Batoto
             };
             return $@"http://bato.to/areader?id={id}&p={page}";
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

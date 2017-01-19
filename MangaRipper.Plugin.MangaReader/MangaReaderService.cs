@@ -65,6 +65,10 @@ namespace MangaRipper.Plugin.MangaReader
             return images;
         }
 
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+        }
+
         public SiteInformation GetInformation()
         {
             return new SiteInformation("MangaReader", "http://www.mangareader.net", "English");
@@ -75,7 +79,5 @@ namespace MangaRipper.Plugin.MangaReader
             var uri = new Uri(link);
             return uri.Host.Equals("www.mangareader.net");
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }
