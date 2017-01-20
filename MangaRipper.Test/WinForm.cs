@@ -23,7 +23,7 @@ namespace MangaRipper.Test
         public void UpdateNotificationTest()
         {
             var buildNumber = UpdateNotification.GetLatestBuildNumber("1.2.333");
-            Assert.AreEqual("333", buildNumber);
+            Assert.AreEqual(333, buildNumber);
         }
     }
 }

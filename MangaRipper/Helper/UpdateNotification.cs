@@ -13,9 +13,9 @@ namespace MangaRipper.Helper
             return release.TagName;
         }
 
-        public static string GetLatestBuildNumber(string version)
+        public static long GetLatestBuildNumber(string version)
         {
-            return version.Remove(0, version.LastIndexOf(".", StringComparison.Ordinal) + 1);
+            return Convert.ToInt64(version.Remove(0, version.LastIndexOf(".", StringComparison.Ordinal) + 1));
         }
     }
 }
