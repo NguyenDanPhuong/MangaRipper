@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -43,12 +44,13 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
-            Logger.Info("> DownloadStringAsync: {0}", url);
+            Logger.Info("> DownloadStringAsync(String): {0}", url);
             var request = CreateRequest(url);
             using (var response = (HttpWebResponse)await request.GetResponseAsync())
             {
                 using (var responseStream = response.GetResponseStream())
                 {
+                    Debug.Assert(responseStream != null, "responseStream != null");
                     var streamReader = new StreamReader(responseStream, Encoding.UTF8);
                     return await streamReader.ReadToEndAsync();
                 }
@@ -64,13 +66,14 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            Logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
+            var inputUrls = urls.ToArray();
+            Logger.Info("> DownloadStringAsync(IEnumerable) - Total: {0}", inputUrls.Count());
             var sb = new StringBuilder();
             var count = 0;
             progress.Report(count);
-            foreach (var url in urls)
+            foreach (var url in inputUrls)
             {
-                string input = await DownloadStringAsync(url);
+                var input = await DownloadStringAsync(url);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
                 progress.Report(count++);
@@ -95,6 +98,7 @@ namespace MangaRipper.Core.Services
                 using (var responseStream = response.GetResponseStream())
                 using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
+                    Debug.Assert(responseStream != null, "responseStream != null");
                     await responseStream.CopyToAsync(streamReader, 81920, cancellationToken);
                 }
             }

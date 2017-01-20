@@ -3,6 +3,7 @@ using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MangaRipper.Core.CustomException;
 
 namespace MangaRipper.Core.Helpers
 {
@@ -49,15 +50,15 @@ namespace MangaRipper.Core.Helpers
         public IEnumerable<string> Parse(string regExp, string input, string groupName)
         {
             logger.Info("> Parse: {0}", regExp);
-            var list = new List<string>();
-            Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
-            MatchCollection matches = reg.Matches(input);
+            var reg = new Regex(regExp, RegexOptions.IgnoreCase);
+            var matches = reg.Matches(input);
 
-            foreach (Match match in matches)
+            if (matches.Count == 0)
             {
-                var value = match.Groups[groupName].Value.Trim();
-                list.Add(value);
+                throw new MangaRipperException("Parse content failed!");
             }
+
+            var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
 
             return list.Distinct().ToList();
         }
