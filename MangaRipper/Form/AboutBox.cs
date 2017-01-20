@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace MangaRipper
 {
-    sealed partial class AboutBox : Form
+    internal sealed partial class AboutBox : Form
     {
         public AboutBox()
         {
@@ -18,7 +19,7 @@ namespace MangaRipper
 
         private void button2_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/NguyenDanPhuong/MangaRipper");
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper");
         }
     }
 }

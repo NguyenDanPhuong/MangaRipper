@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
-using NLog;
-using Newtonsoft.Json;
 using MangaRipper.Core.Models;
+using Newtonsoft.Json;
+using NLog;
 
 namespace MangaRipper
 {
-    static class Common
+    internal static class Common
     {
         // TODO: Save CBZ, Folder checkbox settings.
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Save BindingList of IChapter to IsolateStorage
+        ///     Save BindingList of IChapter to IsolateStorage
         /// </summary>
         /// <param name="tasks"></param>
         /// <param name="fileName"></param>
@@ -23,11 +23,11 @@ namespace MangaRipper
         {
             try
             {
-                string file = Path.Combine(Application.UserAppDataPath, fileName);
+                var file = Path.Combine(Application.UserAppDataPath, fileName);
 
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
 
-                using (StreamWriter sw = new StreamWriter(file))
+                using (var sw = new StreamWriter(file))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, tasks);
@@ -40,7 +40,7 @@ namespace MangaRipper
         }
 
         /// <summary>
-        /// Load BindingList of IChapter from IsolateStorage
+        ///     Load BindingList of IChapter from IsolateStorage
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
@@ -49,11 +49,11 @@ namespace MangaRipper
             BindingList<DownloadChapterTask> result = null;
             try
             {
-                string file = Path.Combine(Application.UserAppDataPath, fileName);
+                var file = Path.Combine(Application.UserAppDataPath, fileName);
 
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
 
-                using (StreamReader sw = new StreamReader(file))
+                using (var sw = new StreamReader(file))
                 using (JsonReader writer = new JsonTextReader(sw))
                 {
                     result = serializer.Deserialize<BindingList<DownloadChapterTask>>(writer);
@@ -62,9 +62,7 @@ namespace MangaRipper
             catch (Exception ex)
             {
                 if (result == null)
-                {
                     result = new BindingList<DownloadChapterTask>();
-                }
                 _logger.Error(ex);
             }
 
@@ -74,7 +72,6 @@ namespace MangaRipper
 
         public static IEnumerable<Chapter> CloneIChapterCollection(IEnumerable<Chapter> chapters)
         {
-
             var json = JsonConvert.SerializeObject(chapters);
             return JsonConvert.DeserializeObject<IEnumerable<Chapter>>(json);
         }
