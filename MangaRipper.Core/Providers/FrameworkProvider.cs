@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MangaRipper.Core.CustomException;
 
 namespace MangaRipper.Core.Providers
 {
@@ -61,7 +62,7 @@ namespace MangaRipper.Core.Providers
             if (service == null)
             {
                 Logger.Error("Cannot find service for link: {0}", link);
-                throw new Exception("Cannot find service to download from input site!");
+                throw new MangaRipperException("Cannot find service to download from input site!");
             }
             return service;
         }

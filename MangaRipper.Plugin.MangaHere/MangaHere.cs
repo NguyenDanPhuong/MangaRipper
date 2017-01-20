@@ -15,7 +15,7 @@ namespace MangaRipper.Plugin.MangaHere
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    public class MangaHereService : IMangaService
+    public class MangaHere : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -65,7 +65,7 @@ namespace MangaRipper.Plugin.MangaHere
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaHere", "http://www.mangahere.co", "English");
+            return new SiteInformation(nameof(MangaHere), "http://www.mangahere.co", "English");
         }
 
         public bool Of(string link)
