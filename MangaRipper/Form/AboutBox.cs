@@ -3,16 +3,16 @@ using System.Windows.Forms;
 
 namespace MangaRipper
 {
-    partial class AboutBox : Form
+    sealed partial class AboutBox : Form
     {
         public AboutBox()
         {
             InitializeComponent();
-            Text = string.Format("About {0}", Application.ProductName);
+            Text = $"About {Application.ProductName}";
             labelProductName.Text = Application.ProductName;
             labelVersion.Text = $"Version {Application.ProductVersion}";
             labelCopyright.Text = Application.CompanyName;
-            labelCompanyName.Text = "Copyright ©  2011";
+            labelCompanyName.Text = @"Copyright © 2011";
             textBoxDescription.Text = "";
         }
 

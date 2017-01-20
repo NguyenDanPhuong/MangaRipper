@@ -50,8 +50,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinForm.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
@@ -77,6 +78,10 @@
     <ProjectReference Include="..\MangaRipper.Plugin.MangaShare\MangaRipper.Plugin.MangaShare.csproj">
       <Project>{a156fb0b-1e4a-4db0-b944-d23413ca8d58}</Project>
       <Name>MangaRipper.Plugin.MangaShare</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper\MangaRipper.csproj">
+      <Project>{e4c5d602-ed1e-4c04-b845-74ec5a58530d}</Project>
+      <Name>MangaRipper</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

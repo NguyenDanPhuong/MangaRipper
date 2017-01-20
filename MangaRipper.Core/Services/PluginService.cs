@@ -28,6 +28,13 @@ namespace MangaRipper.Core.Services
 
         private void LoadPluginAssemblies(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                var error = $"The plugins path: `{path}` is not exist!";
+                Logger.Error(error);
+                throw new DirectoryNotFoundException(error);
+            }
+
             foreach (var fileOn in Directory.GetFiles(path))
             {
                 FileInfo file = new FileInfo(fileOn);

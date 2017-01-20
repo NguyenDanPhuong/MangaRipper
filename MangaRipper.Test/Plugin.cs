@@ -9,7 +9,7 @@ using MangaRipper.Core.Providers;
 namespace MangaRipper.Test
 {
     [TestClass]
-    public class UnitTest
+    public class Plugin
     {
         CancellationTokenSource _source;
 
