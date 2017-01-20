@@ -234,7 +234,7 @@ namespace MangaRipper
                 return;
             }
             var latestVersion = await UpdateNotification.GetLatestVersion();
-            if (latestVersion != Application.ProductVersion)
+            if (UpdateNotification.GetLatestBuildNumber(latestVersion) != UpdateNotification.GetLatestBuildNumber(Application.ProductVersion))
             {
                 Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
                 MessageBox.Show($"There's new version ({latestVersion}). Click OK to open download page.");
