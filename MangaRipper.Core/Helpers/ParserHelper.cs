@@ -12,7 +12,7 @@ namespace MangaRipper.Core.Helpers
     /// </summary>
     public class ParserHelper
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Looking for chapter information in html code.
@@ -24,20 +24,25 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {
-            logger.Info("> ParseGroup: {0}", regExp);
+            Logger.Info("> ParseGroup: {0}", regExp);
             var list = new List<Chapter>();
-            Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
-            MatchCollection matches = reg.Matches(input);
+            var reg = new Regex(regExp, RegexOptions.IgnoreCase);
+            var matches = reg.Matches(input);
+
+            if (matches.Count == 0)
+            {
+                throw new MangaRipperException("Parse content failed!");
+            }
 
             foreach (Match match in matches)
             {
                 var value = match.Groups[valueGroup].Value.Trim();
-                string name = match.Groups[nameGroup].Value.Trim();
+                var name = match.Groups[nameGroup].Value.Trim();
                 var chapter = new Chapter(name, value);
                 list.Add(chapter);
             }
 
-            return list.Distinct().ToList();
+            return list.Distinct();
         }
 
         /// <summary>
@@ -49,7 +54,7 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<string> Parse(string regExp, string input, string groupName)
         {
-            logger.Info("> Parse: {0}", regExp);
+            Logger.Info("> Parse: {0}", regExp);
             var reg = new Regex(regExp, RegexOptions.IgnoreCase);
             var matches = reg.Matches(input);
 
@@ -60,7 +65,7 @@ namespace MangaRipper.Core.Helpers
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
 
-            return list.Distinct().ToList();
+            return list.Distinct();
         }
     }
 }
