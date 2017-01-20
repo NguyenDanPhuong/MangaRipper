@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Providers;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using NLog;
 
@@ -18,7 +19,7 @@ namespace MangaRipper
             Logger.Info("> Main()");
             var appDomain = AppDomain.CurrentDomain;
             appDomain.UnhandledException += AppDomain_UnhandledException;
-            FrameworkProvider.Init("Plugins");
+            FrameworkProvider.Init(Path.Combine(Environment.CurrentDirectory, "Plugins"), Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());

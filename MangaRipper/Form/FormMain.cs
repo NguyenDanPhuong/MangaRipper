@@ -35,7 +35,7 @@ namespace MangaRipper
                 var worker = FrameworkProvider.GetWorker();
                 var progressInt = new Progress<int>(progress => txtPercent.Text = progress + "%");
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
-                dgvChapter.DataSource = chapters;
+                dgvChapter.DataSource = chapters.ToList();
                 if (checkBoxForPrefix.Checked)
                     prefixLogic(); // in case if tick is set
 
