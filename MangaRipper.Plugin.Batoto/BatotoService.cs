@@ -28,16 +28,16 @@ namespace MangaRipper.Plugin.Batoto
             var settingCollection = settings.ToArray();
             if (settingCollection.Any(i => i.Key.Equals("Username")))
             {
-                var user = settingCollection.First(i => i.Key.Equals("Username"));
+                var user = settingCollection.First(i => i.Key.Equals("Username")).Value;
                 Logger.Info($@"Current Username: {_username}. New Username: {user}");
-                _username = user.Value as string;
+                _username = user as string;
             }
 
             if (settingCollection.Any(i => i.Key.Equals("Password")))
             {
-                var pass = settingCollection.First(i => i.Key.Equals("Password"));
-                Logger.Info($@"Current Password: {pass}. New Password: {pass}");
-                _password = pass.Value as string;
+                var pass = settingCollection.First(i => i.Key.Equals("Password")).Value;
+                Logger.Info($@"Current Password: {_password}. New Password: {pass}");
+                _password = pass as string;
             }
         }
 
