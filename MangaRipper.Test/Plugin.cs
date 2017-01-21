@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
@@ -16,7 +17,7 @@ namespace MangaRipper.Test
         [TestInitialize]
         public void Initialize()
         {
-            FrameworkProvider.Init();
+            FrameworkProvider.Init(Environment.CurrentDirectory, Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             _source = new CancellationTokenSource();
         }
 

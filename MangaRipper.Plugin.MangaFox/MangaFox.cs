@@ -14,7 +14,7 @@ namespace MangaRipper.Plugin.MangaFox
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    public class MangaFoxService : IMangaService
+    public class MangaFox : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -24,7 +24,7 @@ namespace MangaRipper.Plugin.MangaFox
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("MangaFox", "http://mangafox.me", "English");
+            return new SiteInformation(nameof(MangaFox), "http://mangafox.me", "English");
         }
 
         public bool Of(string link)

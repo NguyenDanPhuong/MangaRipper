@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Models;
 
 namespace MangaRipper.Core.Providers
 {
@@ -19,17 +21,18 @@ namespace MangaRipper.Core.Providers
         private static IEnumerable<IMangaService> _services;
         private static WorkerController _worker;
         private static PluginService _plugins;
+        private static Configuration _config;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public static void Init(string pluginPath = "")
+        public static void Init(string pluginPath, string configFile)
         {
             Logger.Info("> Framework.Init()");
             _worker = new WorkerController();
-            _plugins = new PluginService();
-            // TODO Put the path to plugins into config
-            _services = _plugins.LoadWebPlugins(Path.Combine(Environment.CurrentDirectory, pluginPath));
+            _config = new Configuration(configFile);
+            _plugins = new PluginService(pluginPath, _config);
+            _services = _plugins.LoadWebPlugins();
         }
 
         /// <summary>
@@ -61,7 +64,7 @@ namespace MangaRipper.Core.Providers
             if (service == null)
             {
                 Logger.Error("Cannot find service for link: {0}", link);
-                throw new Exception("Cannot find service to download from input site!");
+                throw new MangaRipperException("Cannot find service to download from input site!");
             }
             return service;
         }

@@ -17,7 +17,7 @@ namespace MangaRipper.Plugin.Batoto
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    public class BatotoService : IMangaService
+    public class Batoto : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _username = "gufrohepra";
@@ -43,7 +43,7 @@ namespace MangaRipper.Plugin.Batoto
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");
+            return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
         }
 
         public bool Of(string link)
