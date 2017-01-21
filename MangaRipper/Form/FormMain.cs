@@ -19,7 +19,7 @@ namespace MangaRipper
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private BindingList<DownloadChapterTask> _downloadQueue;
-        private Common com = new Common();
+        private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         public FormMain()
         {
@@ -38,7 +38,9 @@ namespace MangaRipper
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters.ToList();
                 if (checkBoxForPrefix.Checked)
-                    prefixLogic(); // in case if tick is set
+                {
+                    PrefixLogic(); // in case if tick is set
+                }
             }
             catch (Exception ex)
             {
@@ -57,7 +59,7 @@ namespace MangaRipper
             var items = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
                 if (row.Selected)
-                    items.Add((Chapter) row.DataBoundItem);
+                    items.Add((Chapter)row.DataBoundItem);
 
             items.Reverse();
             foreach (var item in items)
@@ -69,7 +71,7 @@ namespace MangaRipper
         {
             var items = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
-                items.Add((Chapter) row.DataBoundItem);
+                items.Add((Chapter)row.DataBoundItem);
             items.Reverse();
             foreach (var item in items)
                 if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
@@ -80,7 +82,7 @@ namespace MangaRipper
         {
             foreach (DataGridViewRow item in dgvQueueChapter.SelectedRows)
             {
-                var chapter = (DownloadChapterTask) item.DataBoundItem;
+                var chapter = (DownloadChapterTask)item.DataBoundItem;
                 if (chapter.IsBusy == false)
                     _downloadQueue.Remove(chapter);
             }
@@ -188,7 +190,7 @@ namespace MangaRipper
             if (string.IsNullOrEmpty(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            _downloadQueue = com.LoadDownloadTasks();
+            _downloadQueue = _appConf.LoadDownloadChapterTasks();
             dgvQueueChapter.DataSource = _downloadQueue;
 
             LoadBookmark();
@@ -235,7 +237,7 @@ namespace MangaRipper
             }
 
             Settings.Default.Save();
-            com.SaveDownloadTasks(_downloadQueue);
+            _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
 
         private void LoadBookmark()
@@ -271,10 +273,10 @@ namespace MangaRipper
 
         private void checkBoxForPrefix_CheckedChanged(object sender, EventArgs e)
         {
-            prefixLogic();
+            PrefixLogic();
         }
 
-        private void prefixLogic()
+        private void PrefixLogic()
         {
             var chapters = new List<Chapter>();
             foreach (DataGridViewRow row in dgvChapter.Rows)
@@ -282,12 +284,10 @@ namespace MangaRipper
                 var chapter = row.DataBoundItem as Chapter;
                 chapters.Add(chapter);
             }
-            chapters = Common.CloneIChapterCollection(chapters).ToList();
-
+            chapters = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(chapters).ToList();
             chapters.Reverse();
             chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));
             chapters.Reverse();
-
             dgvChapter.DataSource = chapters;
         }
     }

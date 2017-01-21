@@ -124,7 +124,7 @@
     <Compile Include="Form\AboutBox.designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper\Common.cs" />
+    <Compile Include="Helper\ApplicationConfiguration.cs" />
     <Compile Include="Helper\UpdateNotification.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
