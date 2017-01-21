@@ -31,6 +31,8 @@ namespace MangaRipper.Core.Helpers
 
             if (matches.Count == 0)
             {
+                Logger.Error("Cannot parse below content.");
+                Logger.Error(input);
                 throw new MangaRipperException("Parse content failed!");
             }
 
@@ -41,8 +43,9 @@ namespace MangaRipper.Core.Helpers
                 var chapter = new Chapter(name, value);
                 list.Add(chapter);
             }
-
-            return list.Distinct();
+            var result = list.Distinct().ToList();
+            Logger.Info($@"Parse success. There's {result.Count()} item(s).");
+            return result;
         }
 
         /// <summary>
@@ -60,12 +63,15 @@ namespace MangaRipper.Core.Helpers
 
             if (matches.Count == 0)
             {
+                Logger.Error("Cannot parse below content.");
+                Logger.Error(input);
                 throw new MangaRipperException("Parse content failed!");
             }
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
-
-            return list.Distinct();
+            var result = list.Distinct().ToList();
+            Logger.Info($@"Parse success. There's {result.Count()} item(s).");
+            return result;
         }
     }
 }
