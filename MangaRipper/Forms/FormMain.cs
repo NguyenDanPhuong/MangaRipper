@@ -234,7 +234,7 @@ namespace MangaRipper.Forms
                 Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
                                 
                 if (MessageBox.Show(
-                    $"There's new version ({latestVersion}). Click OK to open download page.",
+                    $"There's a new version: ({latestVersion}) - Click OK to open download page.",
                     Application.ProductName,
                     MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
