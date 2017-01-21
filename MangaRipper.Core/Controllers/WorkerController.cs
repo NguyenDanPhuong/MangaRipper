@@ -55,6 +55,10 @@ namespace MangaRipper.Core.Controllers
                     await _sema.WaitAsync();
                     task.IsBusy = true;
                     await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
+                    if (task.Formats.Contains(OutputFormat.CBZ))
+                    {
+                        PackageCbzHelper.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -64,10 +68,6 @@ namespace MangaRipper.Core.Controllers
                 finally
                 {
                     task.IsBusy = false;
-                    if (task.Formats.Contains(OutputFormat.CBZ))
-                    {
-                        PackageCbzHelper.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
-                    }
                     _sema.Release();
                 }
             });
