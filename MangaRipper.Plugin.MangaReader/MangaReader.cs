@@ -29,10 +29,7 @@ namespace MangaRipper.Plugin.MangaReader
             // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
             // transform pages link
-            chaps = chaps.Select(c =>
-            {
-                return new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri);
-            }).ToList();
+            chaps = chaps.Select(c => new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri)).ToList();
             progress.Report(100);
             return chaps;
         }

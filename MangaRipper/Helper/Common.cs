@@ -9,25 +9,34 @@ using NLog;
 
 namespace MangaRipper
 {
-    internal static class Common
+    internal class Common
     {
         // TODO: Save CBZ, Folder checkbox settings.
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public readonly string AppDataPath;
+
+        public readonly string DownloadChapterTasksFile;
+
+        public Common()
+        {
+            AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "MangaRipper", "Data");
+            Directory.CreateDirectory(AppDataPath);
+            DownloadChapterTasksFile = Path.Combine(AppDataPath,
+            "DownloadChapterTasks.json");
+        }
         /// <summary>
         ///     Save BindingList of IChapter to IsolateStorage
         /// </summary>
         /// <param name="tasks"></param>
-        /// <param name="fileName"></param>
-        public static void SaveDownloadTasks(BindingList<DownloadChapterTask> tasks, string fileName)
+        public void SaveDownloadTasks(BindingList<DownloadChapterTask> tasks)
         {
             try
             {
-                var file = Path.Combine(Application.UserAppDataPath, fileName);
-
+                Logger.Info("> SaveDownloadTasks(): " + DownloadChapterTasksFile);
                 var serializer = new JsonSerializer();
-
-                using (var sw = new StreamWriter(file))
+                using (var sw = new StreamWriter(DownloadChapterTasksFile))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, tasks);
@@ -35,25 +44,24 @@ namespace MangaRipper
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                Logger.Error(ex);
             }
         }
 
         /// <summary>
         ///     Load BindingList of IChapter from IsolateStorage
         /// </summary>
-        /// <param name="fileName"></param>
         /// <returns></returns>
-        public static BindingList<DownloadChapterTask> LoadDownloadTasks(string fileName)
+        public BindingList<DownloadChapterTask> LoadDownloadTasks()
         {
             BindingList<DownloadChapterTask> result = null;
             try
             {
-                var file = Path.Combine(Application.UserAppDataPath, fileName);
+                Logger.Info("> LoadDownloadTasks(): " + DownloadChapterTasksFile);
 
                 var serializer = new JsonSerializer();
 
-                using (var sw = new StreamReader(file))
+                using (var sw = new StreamReader(DownloadChapterTasksFile))
                 using (JsonReader writer = new JsonTextReader(sw))
                 {
                     result = serializer.Deserialize<BindingList<DownloadChapterTask>>(writer);
@@ -63,10 +71,9 @@ namespace MangaRipper
             {
                 if (result == null)
                     result = new BindingList<DownloadChapterTask>();
-                _logger.Error(ex);
+                Logger.Error(ex);
             }
 
-            // Queue should not be a null
             return result ?? new BindingList<DownloadChapterTask>();
         }
 

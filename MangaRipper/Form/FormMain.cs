@@ -17,9 +17,9 @@ namespace MangaRipper
 {
     public partial class FormMain : Form
     {
-        protected const string FilenameIchapterCollection = "IChapterCollection.bin";
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private BindingList<DownloadChapterTask> _downloadQueue;
+        private Common com = new Common();
 
         public FormMain()
         {
@@ -188,7 +188,7 @@ namespace MangaRipper
             if (string.IsNullOrEmpty(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            _downloadQueue = Common.LoadDownloadTasks(FilenameIchapterCollection);
+            _downloadQueue = com.LoadDownloadTasks();
             dgvQueueChapter.DataSource = _downloadQueue;
 
             LoadBookmark();
@@ -235,7 +235,7 @@ namespace MangaRipper
             }
 
             Settings.Default.Save();
-            Common.SaveDownloadTasks(_downloadQueue, FilenameIchapterCollection);
+            com.SaveDownloadTasks(_downloadQueue);
         }
 
         private void LoadBookmark()
