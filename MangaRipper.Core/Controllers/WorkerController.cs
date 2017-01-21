@@ -105,7 +105,7 @@ namespace MangaRipper.Core.Controllers
             var chapter = task.Chapter;
             progress.Report(0);
             var service = FrameworkProvider.GetService(chapter.Url);
-            var images = await service.FindImanges(chapter, new Progress<int>(count =>
+            var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
             }), _source.Token);

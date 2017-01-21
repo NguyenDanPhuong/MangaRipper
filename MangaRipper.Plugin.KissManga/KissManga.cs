@@ -32,7 +32,7 @@ namespace MangaRipper.Plugin.KissManga
             return chaps;
         }
 
-        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();

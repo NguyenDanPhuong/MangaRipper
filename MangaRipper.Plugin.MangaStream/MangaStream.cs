@@ -33,7 +33,7 @@ namespace MangaRipper.Plugin.MangaStream
             return chaps;
         }
 
-        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress,
+        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
