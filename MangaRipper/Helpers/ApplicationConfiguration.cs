@@ -10,13 +10,12 @@ namespace MangaRipper.Helpers
 {
     internal class ApplicationConfiguration
     {
-        // TODO: Save CBZ, Folder checkbox settings.
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public readonly string AppDataPath;
 
         public readonly string DownloadChapterTasksFile;
-        public readonly string WorkSessionFile;
+        public readonly string CommonSettingsFile;
         public readonly string BookmarksFile;
 
         public ApplicationConfiguration()
@@ -24,7 +23,7 @@ namespace MangaRipper.Helpers
             AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MangaRipper", "Data");
             Directory.CreateDirectory(AppDataPath);
             DownloadChapterTasksFile = Path.Combine(AppDataPath, "DownloadChapterTasks.json");
-            WorkSessionFile = Path.Combine(AppDataPath, "WindowState.json");
+            CommonSettingsFile = Path.Combine(AppDataPath, "CommonSettings.json");
             BookmarksFile = Path.Combine(AppDataPath, "Bookmarks.json");
         }
 
@@ -38,14 +37,14 @@ namespace MangaRipper.Helpers
             SaveObject(bookmarks, BookmarksFile);
         }
 
-        public WorkSession LoadWorkSession()
+        public CommonSettings LoadCommonSettings()
         {
-            return LoadObject<WorkSession>(WorkSessionFile);
+            return LoadObject<CommonSettings>(CommonSettingsFile);
         }
 
-        public void SaveWorkSession(WorkSession workSession)
+        public void SaveCommonSettings(CommonSettings commonSettings)
         {
-            SaveObject(workSession, WorkSessionFile);
+            SaveObject(commonSettings, CommonSettingsFile);
         }
 
         public void SaveDownloadChapterTasks(BindingList<DownloadChapterTask> tasks)
@@ -61,14 +60,14 @@ namespace MangaRipper.Helpers
         /// <summary>
         ///     Save object to a JSON file.
         /// </summary>
-        /// <param name="tasks"></param>
+        /// <param name="objectToStore"></param>
         /// <param name="fileName"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        private void SaveObject<T>(T tasks, string fileName)
+        private void SaveObject<T>(T objectToStore, string fileName)
         {
-            if (tasks == null)
+            if (objectToStore == null)
             {
-                throw new ArgumentNullException("Cannot serialize null object!");
+                throw new ArgumentNullException(nameof(objectToStore));
             }
 
             Logger.Info("> SaveObject(): " + fileName);
@@ -76,7 +75,8 @@ namespace MangaRipper.Helpers
             using (var sw = new StreamWriter(fileName))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                serializer.Serialize(writer, tasks);
+                writer.Formatting = Formatting.Indented;
+                serializer.Serialize(writer, objectToStore);
             }
         }
 

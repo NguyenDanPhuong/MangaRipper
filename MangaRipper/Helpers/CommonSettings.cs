@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace MangaRipper.Helpers
 {
-    public class WorkSession
+    public class CommonSettings
     {
         public string SaveTo { get; set; }
         public string Url { get; set; }

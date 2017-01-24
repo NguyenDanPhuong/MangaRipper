@@ -184,7 +184,7 @@ namespace MangaRipper.Forms
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            var state = _appConf.LoadWorkSession();
+            var state = _appConf.LoadCommonSettings();
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
@@ -242,7 +242,7 @@ namespace MangaRipper.Forms
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var appConfig = _appConf.LoadWorkSession();
+            var appConfig = _appConf.LoadCommonSettings();
             switch (WindowState)
             {
                 case FormWindowState.Normal:
@@ -263,7 +263,7 @@ namespace MangaRipper.Forms
             appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
-            _appConf.SaveWorkSession(appConfig);
+            _appConf.SaveCommonSettings(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
 
