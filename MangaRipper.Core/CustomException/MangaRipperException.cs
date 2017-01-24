@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core.CustomException
 {
-    class MangaRipperException : Exception
+    public class MangaRipperException : Exception
     {
         public MangaRipperException(string message)
         : base(message)

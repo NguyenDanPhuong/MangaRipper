@@ -450,7 +450,6 @@
             this.cbSaveFolder.AutoSize = true;
             this.cbSaveFolder.Checked = true;
             this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveFolder.Enabled = false;
             this.cbSaveFolder.Location = new System.Drawing.Point(4, 18);
             this.cbSaveFolder.Name = "cbSaveFolder";
             this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MangaRipper.Core.CustomException;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
@@ -58,26 +59,31 @@ namespace MangaRipper.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var items = new List<Chapter>();
-            foreach (DataGridViewRow row in dgvChapter.Rows)
-                if (row.Selected)
-                    items.Add((Chapter)row.DataBoundItem);
-
+            var formats = GetOutputFormats().ToArray();
+            if (formats.Length == 0)
+            {
+                MessageBox.Show("Please select at least one output formats (Folder, Cbz...)");
+                return;
+            }
+            var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as Chapter).ToList();
             items.Reverse();
-            foreach (var item in items)
-                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
-                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
         {
-            var items = new List<Chapter>();
-            foreach (DataGridViewRow row in dgvChapter.Rows)
-                items.Add((Chapter)row.DataBoundItem);
+            var formats = GetOutputFormats().ToArray();
+            if (formats.Length == 0)
+            {
+                MessageBox.Show("Please select at least one output formats (Folder, Cbz...)");
+                return;
+            }
+          
+            var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter) row.DataBoundItem).ToList();
             items.Reverse();
-            foreach (var item in items)
-                if (_downloadQueue.All(r => r.Chapter.Url != item.Url))
-                    _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, GetOutputFormats()));
+            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
