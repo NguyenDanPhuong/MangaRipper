@@ -16,7 +16,7 @@ namespace MangaRipper.Helpers
         public readonly string AppDataPath;
 
         public readonly string DownloadChapterTasksFile;
-        public readonly string WindowStateFile;
+        public readonly string WorkSessionFile;
         public readonly string BookmarksFile;
 
         public ApplicationConfiguration()
@@ -24,7 +24,7 @@ namespace MangaRipper.Helpers
             AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MangaRipper", "Data");
             Directory.CreateDirectory(AppDataPath);
             DownloadChapterTasksFile = Path.Combine(AppDataPath, "DownloadChapterTasks.json");
-            WindowStateFile = Path.Combine(AppDataPath, "WindowState.json");
+            WorkSessionFile = Path.Combine(AppDataPath, "WindowState.json");
             BookmarksFile = Path.Combine(AppDataPath, "Bookmarks.json");
         }
 
@@ -38,14 +38,14 @@ namespace MangaRipper.Helpers
             SaveObject(bookmarks, BookmarksFile);
         }
 
-        public State LoadAppConfig()
+        public WorkSession LoadWorkSession()
         {
-            return LoadObject<State>(WindowStateFile);
+            return LoadObject<WorkSession>(WorkSessionFile);
         }
 
-        public void SaveAppConfig(State state)
+        public void SaveWorkSession(WorkSession workSession)
         {
-            SaveObject(state, WindowStateFile);
+            SaveObject(workSession, WorkSessionFile);
         }
 
         public void SaveDownloadChapterTasks(BindingList<DownloadChapterTask> tasks)

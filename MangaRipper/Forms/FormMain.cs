@@ -170,12 +170,14 @@ namespace MangaRipper.Forms
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            var state = _appConf.LoadAppConfig();
+            var state = _appConf.LoadWorkSession();
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
             txtSaveTo.Text = state.SaveTo;
             cbTitleUrl.Text = state.Url;
+            cbSaveCbz.Checked = state.CbzChecked;
+            checkBoxForPrefix.Checked = state.PrefixChecked;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
@@ -226,7 +228,7 @@ namespace MangaRipper.Forms
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var appConfig = _appConf.LoadAppConfig();
+            var appConfig = _appConf.LoadWorkSession();
             switch (WindowState)
             {
                 case FormWindowState.Normal:
@@ -245,8 +247,9 @@ namespace MangaRipper.Forms
 
             appConfig.Url = cbTitleUrl.Text;
             appConfig.SaveTo = txtSaveTo.Text;
-
-            _appConf.SaveAppConfig(appConfig);
+            appConfig.CbzChecked = cbSaveCbz.Checked;
+            appConfig.PrefixChecked = checkBoxForPrefix.Checked;
+            _appConf.SaveWorkSession(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
 
