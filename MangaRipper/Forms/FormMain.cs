@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -229,16 +230,6 @@ namespace MangaRipper.Forms
             }
         }
 
-        private void btnAbout_Click(object sender, EventArgs e)
-        {
-            var about = new AboutBox();
-            about.ShowDialog(this);
-        }
-
-        private void btnHowToUse_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki");
-        }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -309,6 +300,34 @@ namespace MangaRipper.Forms
             chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));
             chapters.Reverse();
             dgvChapter.DataSource = chapters;
+        }
+
+        private void dataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "MangaRipper", "Data"));
+        }
+
+        private void logsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "MangaRipper", "Logs"));
+        }
+
+        private void wikiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki");
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var about = new AboutBox();
+            about.ShowDialog(this);
+        }
+
+        private void bugReportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
         }
     }
 }

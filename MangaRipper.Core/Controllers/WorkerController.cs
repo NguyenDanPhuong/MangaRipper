@@ -54,11 +54,7 @@ namespace MangaRipper.Core.Controllers
                     _source = new CancellationTokenSource();
                     await _sema.WaitAsync();
                     task.IsBusy = true;
-                    await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
-                    if (task.Formats.Contains(OutputFormat.CBZ))
-                    {
-                        PackageCbzHelper.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
-                    }
+                    await DownloadChapterInternal(task, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
                 {
@@ -103,8 +99,9 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
-        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
+        private async Task DownloadChapterInternal(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
         {
+            var chapter = task.Chapter;
             progress.Report(0);
             var service = FrameworkProvider.GetService(chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(count =>
@@ -119,7 +116,16 @@ namespace MangaRipper.Core.Controllers
 
             var folderName = chapter.NomalizeName;
             var finalFolder = Path.Combine(mangaLocalPath, folderName);
-            Directory.Move(tempFolder, finalFolder);
+
+            if (task.Formats.Contains(OutputFormat.Folder))
+            {
+                Directory.Move(tempFolder, finalFolder);
+            }
+            if (task.Formats.Contains(OutputFormat.CBZ))
+            {
+                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+            }
+
             progress.Report(100);
         }
 

@@ -37,7 +37,7 @@ namespace MangaRipper.Core.Services
         {
             if (!Directory.Exists(path))
             {
-                var error = $"The plugins pluginsPath: `{path}` is not exist!";
+                var error = $"The plugins path: `{path}` is not exist!";
                 Logger.Error(error);
                 throw new DirectoryNotFoundException(error);
             }
@@ -47,6 +47,7 @@ namespace MangaRipper.Core.Services
                 FileInfo file = new FileInfo(fileOn);
                 if (file.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase))
                 {
+                    Logger.Info($@"Load plugin from file: {fileOn}");
                     Assembly.LoadFrom(fileOn);
                 }
             }
