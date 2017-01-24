@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace MangaRipper
+namespace MangaRipper.Forms
 {
     internal sealed partial class AboutBox : Form
     {

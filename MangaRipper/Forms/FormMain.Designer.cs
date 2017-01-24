@@ -1,4 +1,4 @@
-﻿namespace MangaRipper
+﻿namespace MangaRipper.Forms
 {
     partial class FormMain
     {

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using MangaRipper.Core.Providers;
+using MangaRipper.Forms;
 using NLog;
 
 namespace MangaRipper

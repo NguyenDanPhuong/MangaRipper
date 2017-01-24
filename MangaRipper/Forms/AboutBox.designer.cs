@@ -1,4 +1,4 @@
-﻿namespace MangaRipper
+﻿namespace MangaRipper.Forms
 {
     sealed partial class AboutBox
     {

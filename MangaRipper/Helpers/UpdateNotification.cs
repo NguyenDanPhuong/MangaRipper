@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Octokit;
 
-namespace MangaRipper.Helper
+namespace MangaRipper.Helpers
 {
     public class UpdateNotification
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,11 +8,10 @@ using System.Windows.Forms;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
-using MangaRipper.Helper;
-using MangaRipper.Properties;
+using MangaRipper.Helpers;
 using NLog;
 
-namespace MangaRipper
+namespace MangaRipper.Forms
 {
     public partial class FormMain : Form
     {
@@ -229,15 +227,20 @@ namespace MangaRipper
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             var appConfig = _appConf.LoadAppConfig();
-            if (WindowState == FormWindowState.Normal)
+            switch (WindowState)
             {
-                appConfig.WindowSize = Size;
-                appConfig.Location = Location;
-                appConfig.WindowState = WindowState;
-            }
-            else if (WindowState == FormWindowState.Maximized)
-            {
-                appConfig.WindowState = WindowState;
+                case FormWindowState.Normal:
+                    appConfig.WindowSize = Size;
+                    appConfig.Location = Location;
+                    appConfig.WindowState = WindowState;
+                    break;
+                case FormWindowState.Maximized:
+                    appConfig.WindowState = WindowState;
+                    break;
+                case FormWindowState.Minimized:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             appConfig.Url = cbTitleUrl.Text;

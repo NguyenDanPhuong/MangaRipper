@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
 using MangaRipper.Core.Models;
-using MangaRipper.Helper;
 using Newtonsoft.Json;
 using NLog;
 
-namespace MangaRipper
+namespace MangaRipper.Helpers
 {
     internal class ApplicationConfiguration
     {
@@ -66,6 +63,7 @@ namespace MangaRipper
         /// </summary>
         /// <param name="tasks"></param>
         /// <param name="fileName"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         private void SaveObject<T>(T tasks, string fileName)
         {
             if (tasks == null)
