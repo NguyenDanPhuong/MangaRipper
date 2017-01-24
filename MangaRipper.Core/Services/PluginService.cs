@@ -24,7 +24,6 @@ namespace MangaRipper.Core.Services
         /// <summary>
         /// Load plugins for WebSites
         /// </summary>
-        /// <param name="path">pluginsPath to folder in which dll's are located</param>
         /// <returns>List with all founded Services</returns>
         public IEnumerable<IMangaService> LoadWebPlugins()
         {
@@ -89,7 +88,6 @@ namespace MangaRipper.Core.Services
         private void InjectConfiguration(IMangaService service)
         {
             string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
-            ;
             var configItems = Config.FindConfigByPrefix(lookupPrefix);
             configItems = RemovePrefix(configItems, lookupPrefix);
             service.Configuration(configItems);

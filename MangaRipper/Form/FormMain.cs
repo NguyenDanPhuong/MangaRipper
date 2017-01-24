@@ -172,9 +172,10 @@ namespace MangaRipper
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            Size = Settings.Default.Size;
-            Location = Settings.Default.Location;
-            WindowState = Settings.Default.WindowState;
+            var state = _appConf.LoadAppConfig();
+            Size = state.WindowSize;
+            Location = state.Location;
+            WindowState = state.WindowState;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
@@ -225,48 +226,50 @@ namespace MangaRipper
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            var appConfig = _appConf.LoadAppConfig();
             if (WindowState == FormWindowState.Normal)
             {
-                Settings.Default.Size = Size;
-                Settings.Default.Location = Location;
-                Settings.Default.WindowState = WindowState;
+                appConfig.WindowSize = Size;
+                appConfig.Location = Location;
+                appConfig.WindowState = WindowState;
             }
             else if (WindowState == FormWindowState.Maximized)
             {
-                Settings.Default.WindowState = WindowState;
+                appConfig.WindowState = WindowState;
             }
 
-            Settings.Default.Save();
+            _appConf.SaveAppConfig(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
 
         private void LoadBookmark()
         {
+            var bookmarks = _appConf.LoadBookMarks();
             cbTitleUrl.Items.Clear();
-            var sc = Settings.Default.Bookmark;
-            if (sc != null)
-                foreach (var item in sc)
-                    cbTitleUrl.Items.Add(item);
+            var sc = bookmarks;
+            if (sc == null) return;
+            foreach (var item in sc)
+                cbTitleUrl.Items.Add(item);
         }
 
         private void btnAddBookmark_Click(object sender, EventArgs e)
         {
-            var sc = Settings.Default.Bookmark ?? new StringCollection();
+            var sc = _appConf.LoadBookMarks().ToList();
             if (sc.Contains(cbTitleUrl.Text) == false)
             {
                 sc.Add(cbTitleUrl.Text);
-                Settings.Default.Bookmark = sc;
+                _appConf.SaveBookmarks(sc);
                 LoadBookmark();
             }
         }
 
         private void btnRemoveBookmark_Click(object sender, EventArgs e)
         {
-            var sc = Settings.Default.Bookmark;
+            var sc = _appConf.LoadBookMarks().ToList();
             if (sc != null)
             {
                 sc.Remove(cbTitleUrl.Text);
-                Settings.Default.Bookmark = sc;
+                _appConf.SaveBookmarks(sc);
                 LoadBookmark();
             }
         }

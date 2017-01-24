@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using MangaRipper.Core.Models;
+using MangaRipper.Helper;
 using Newtonsoft.Json;
 using NLog;
 
@@ -18,16 +19,37 @@ namespace MangaRipper
         public readonly string AppDataPath;
 
         public readonly string DownloadChapterTasksFile;
+        public readonly string WindowStateFile;
+        public readonly string BookmarksFile;
 
         public ApplicationConfiguration()
         {
-            AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "MangaRipper", "Data");
+            AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MangaRipper", "Data");
             Directory.CreateDirectory(AppDataPath);
-            DownloadChapterTasksFile = Path.Combine(AppDataPath,
-            "DownloadChapterTasks.json");
+            DownloadChapterTasksFile = Path.Combine(AppDataPath, "DownloadChapterTasks.json");
+            WindowStateFile = Path.Combine(AppDataPath, "WindowState.json");
+            BookmarksFile = Path.Combine(AppDataPath, "Bookmarks.json");
         }
 
+        public IEnumerable<string> LoadBookMarks()
+        {
+            return LoadObject<List<string>>(BookmarksFile);
+        }
+
+        public void SaveBookmarks(IEnumerable<string> bookmarks)
+        {
+            SaveObject(bookmarks, BookmarksFile);
+        }
+
+        public State LoadAppConfig()
+        {
+            return LoadObject<State>(WindowStateFile);
+        }
+
+        public void SaveAppConfig(State state)
+        {
+            SaveObject(state, WindowStateFile);
+        }
 
         public void SaveDownloadChapterTasks(BindingList<DownloadChapterTask> tasks)
         {

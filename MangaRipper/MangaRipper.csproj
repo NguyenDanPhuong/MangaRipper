@@ -125,6 +125,7 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper\ApplicationConfiguration.cs" />
+    <Compile Include="Helper\State.cs" />
     <Compile Include="Helper\UpdateNotification.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -245,7 +245,7 @@
             this.lbSaveTo.AutoSize = true;
             this.lbSaveTo.Location = new System.Drawing.Point(12, 292);
             this.lbSaveTo.Name = "lbSaveTo";
-            this.lbSaveTo.Size = new System.Drawing.Size(44, 13);
+            this.lbSaveTo.Size = new System.Drawing.Size(45, 13);
             this.lbSaveTo.TabIndex = 11;
             this.lbSaveTo.Text = "Save To";
             // 
@@ -385,12 +385,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTitleUrl.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
             this.cbTitleUrl.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cbTitleUrl.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MangaRipper.Properties.Settings.Default, "Url", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.cbTitleUrl.Location = new System.Drawing.Point(40, 11);
             this.cbTitleUrl.Name = "cbTitleUrl";
             this.cbTitleUrl.Size = new System.Drawing.Size(729, 21);
             this.cbTitleUrl.TabIndex = 1;
-            this.cbTitleUrl.Text = global::MangaRipper.Properties.Settings.Default.Url;
             // 
             // btnAddBookmark
             // 
@@ -431,13 +429,11 @@
             // txtSaveTo
             // 
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtSaveTo.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MangaRipper.Properties.Settings.Default, "SaveTo", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.txtSaveTo.Location = new System.Drawing.Point(66, 289);
             this.txtSaveTo.Name = "txtSaveTo";
             this.txtSaveTo.ReadOnly = true;
             this.txtSaveTo.Size = new System.Drawing.Size(240, 22);
             this.txtSaveTo.TabIndex = 12;
-            this.txtSaveTo.Text = global::MangaRipper.Properties.Settings.Default.SaveTo;
             // 
             // txtMessage
             // 
