@@ -34,7 +34,7 @@ namespace MangaRipper
                 var titleUrl = cbTitleUrl.Text;
 
                 var worker = FrameworkProvider.GetWorker();
-                var progressInt = new Progress<int>(progress => txtPercent.Text = progress + "%");
+                var progressInt = new Progress<int>(progress => txtPercent.Text = progress + @"%");
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters.ToList();
                 if (checkBoxForPrefix.Checked)
@@ -176,13 +176,15 @@ namespace MangaRipper
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
+            txtSaveTo.Text = state.SaveTo;
+            cbTitleUrl.Text = state.Url;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
 
             Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
-            foreach (var service in FrameworkProvider.GetServices())
+            foreach (var service in FrameworkProvider.GetMangaServices())
             {
                 var infor = service.GetInformation();
                 dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
@@ -238,6 +240,9 @@ namespace MangaRipper
                 appConfig.WindowState = WindowState;
             }
 
+            appConfig.Url = cbTitleUrl.Text;
+            appConfig.SaveTo = txtSaveTo.Text;
+
             _appConf.SaveAppConfig(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
@@ -266,12 +271,9 @@ namespace MangaRipper
         private void btnRemoveBookmark_Click(object sender, EventArgs e)
         {
             var sc = _appConf.LoadBookMarks().ToList();
-            if (sc != null)
-            {
-                sc.Remove(cbTitleUrl.Text);
-                _appConf.SaveBookmarks(sc);
-                LoadBookmark();
-            }
+            sc.Remove(cbTitleUrl.Text);
+            _appConf.SaveBookmarks(sc);
+            LoadBookmark();
         }
 
         private void checkBoxForPrefix_CheckedChanged(object sender, EventArgs e)
@@ -281,12 +283,7 @@ namespace MangaRipper
 
         private void PrefixLogic()
         {
-            var chapters = new List<Chapter>();
-            foreach (DataGridViewRow row in dgvChapter.Rows)
-            {
-                var chapter = row.DataBoundItem as Chapter;
-                chapters.Add(chapter);
-            }
+            var chapters = (from DataGridViewRow row in dgvChapter.Rows select row.DataBoundItem as Chapter).ToList();
             chapters = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(chapters).ToList();
             chapters.Reverse();
             chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));

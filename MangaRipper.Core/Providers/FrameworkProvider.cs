@@ -39,7 +39,7 @@ namespace MangaRipper.Core.Providers
         /// Get all available services
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<IMangaService> GetServices()
+        public static IEnumerable<IMangaService> GetMangaServices()
         {
             return _services.ToList().AsReadOnly();
         }
