@@ -40,6 +40,10 @@ namespace MangaRipper.Forms
                     PrefixLogic(); // in case if tick is set
                 }
             }
+            catch (OperationCanceledException ex)
+            {
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
+            }
             catch (Exception ex)
             {
                 Logger.Error(ex);
@@ -101,6 +105,10 @@ namespace MangaRipper.Forms
                 btnDownload.Enabled = false;
                 await StartDownload();
             }
+            catch (OperationCanceledException ex)
+            {
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
+            }
             catch (Exception ex)
             {
                 Logger.Error(ex);
@@ -120,7 +128,7 @@ namespace MangaRipper.Forms
                 var chapter = _downloadQueue.First();
                 var worker = FrameworkProvider.GetWorker();
 
-                await worker.Run(chapter, new Progress<int>(c =>
+                await worker.DownloadChapter(chapter, new Progress<int>(c =>
                 {
                     foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         if (chapter == item.DataBoundItem)
