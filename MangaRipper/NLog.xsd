@@ -1111,7 +1111,7 @@
         </xs:attribute>
         <xs:attribute name="archiveFileKind" type="NLog.Targets.FilePathKind">
           <xs:annotation>
-            <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
+            <xs:documentation>Is the  an absolute or relative pluginsPath?</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="cleanupFileName" type="xs:boolean">
@@ -1121,7 +1121,7 @@
         </xs:attribute>
         <xs:attribute name="fileNameKind" type="NLog.Targets.FilePathKind">
           <xs:annotation>
-            <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
+            <xs:documentation>Is the  an absolute or relative pluginsPath?</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="forceMutexConcurrentWrites" type="xs:boolean">
