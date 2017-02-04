@@ -70,9 +70,7 @@ namespace MangaRipper.Plugin.KissManga
             pageLink = new Uri(link);
             return pageLink.Host.Equals("kissmanga.com");
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
-
+        
         public Chapter NameResolver(string name, string value, Uri adress)
         {
             var urle = new Uri(adress, value);
@@ -85,6 +83,11 @@ namespace MangaRipper.Plugin.KissManga
             }
 
             return new Chapter(name, urle.AbsoluteUri.ToString());
+        }
+
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+            throw new NotImplementedException();
         }
     }
 }
