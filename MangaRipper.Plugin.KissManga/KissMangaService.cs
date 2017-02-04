@@ -6,6 +6,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace MangaRipper.Plugin.KissManga
     public class KissMangaService : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private Uri pageLink;
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -25,7 +27,7 @@ namespace MangaRipper.Plugin.KissManga
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<td>\n<a href=\"(?=/Manga/)(?<Value>.[^\"]*)\" title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<td>\n<a href=\"(?=/Manga/)(?<Value>.[^\"]*)\" title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value", pageLink, NameResolver);
             progress.Report(100);
             return chaps;
         }
@@ -65,10 +67,24 @@ namespace MangaRipper.Plugin.KissManga
 
         public bool Of(string link)
         {
-            var uri = new Uri(link);
-            return uri.Host.Equals("kissmanga.com");
+            pageLink = new Uri(link);
+            return pageLink.Host.Equals("kissmanga.com");
         }
 
         public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
+
+        public Chapter NameResolver(string name, string value, Uri adress)
+        {
+            var urle = new Uri(adress, value);
+            
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = System.Net.WebUtility.HtmlDecode(name);
+                name = Regex.Replace(name, "^Read\\s+|\\s+online$|:", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                name = Regex.Replace(name, "\\s+Read\\s+Online$", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            }
+
+            return new Chapter(name, urle.AbsoluteUri.ToString());
+        }
     }
 }

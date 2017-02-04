@@ -20,7 +20,7 @@ namespace MangaRipper.Core.Services
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        // variables for passing JS challenge
+        // variables for passing CloudFlare challenge
         private const string CloudFlareServerName = "cloudflare-nginx";
         private const string ClearanceCookieName = "cf_clearance";
         private const string IdCookieName = "__cfduid";
@@ -41,22 +41,16 @@ namespace MangaRipper.Core.Services
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Referer = Referer;
 
-            request.AllowAutoRedirect = false;
             // Add the Headers for "User Agent"
             request.UserAgent = new ProductInfoHeaderValue("Client", "1.0").ToString();
-
-            // Search for cookies. Both cookies should be presented.
-            //request.CookieContainer = ((Cookies != null) || (CookiesCollection != null)) ? new CookieContainer() : null;
-            if (Cookies != null)
+            request.AllowAutoRedirect = false;
+                        
+            if (Cookies != null || CookiesCollection != null)
             {
-                request.CookieContainer = new CookieContainer();
-                request.CookieContainer.Add(Cookies);
+                request.CookieContainer = CookiesCollection ?? new CookieContainer();
+                if (Cookies != null)
+                    request.CookieContainer.Add(Cookies);
             }
-            if (CookiesCollection != null)
-            {
-                request.CookieContainer = CookiesCollection;
-            }
-
 
             return request;
         }
@@ -155,14 +149,14 @@ namespace MangaRipper.Core.Services
                 using (var streamReader = new StreamReader(response.GetResponseStream()))
                     html = streamReader.ReadToEnd();
 
-                // if we can't access server, and in Headers we found "cloudflare-nginx" - it's our client
+                // if we can't access server, and in Headers we found "cloudflare-nginx" - Solve the challenge
                 if (response.Headers["Server"] == CloudFlareServerName)
                 {
-                    while (MaxRetries < 0 || retries <= MaxRetries)
+                    while ((MaxRetries < 0 || retries <= MaxRetries) && CookiesCollection == null)
                     {
                         await SolverCloudFlare(response, html);
                         retries++;
-                        var res = await WorkWithStreams(url, fileName, cancellationToken);
+                        html = await WorkWithStreams(url, fileName, cancellationToken);
                     }
                 }
 
@@ -170,9 +164,16 @@ namespace MangaRipper.Core.Services
             }
         }
 
+        #region CloudFlare
+
+        /// <summary>
+        /// Solve the CloudFlare challenge
+        /// </summary>
+        /// <param name="response">Response from the site</param>
+        /// <param name="html">HTML text of response</param>
+        /// <returns></returns>
         private async Task SolverCloudFlare(HttpWebResponse response, string html)
         {
-            // Solve the CloudFlare challenge
             var scheme = response.ResponseUri.Scheme;
             var host = response.ResponseUri.Host;
             var port = response.ResponseUri.Port;
@@ -181,55 +182,25 @@ namespace MangaRipper.Core.Services
 
             // Save the cookies from response
             SetTheCookie(response.Headers["Set-Cookie"]);
-            //CookiesCollection = CookiesCollection ?? new CookieContainer();
-
-            //if (response.Headers["Set-Cookie"] != null)
-            //{
-            //    var cookies = response.Headers["Set-Cookie"].Split(';');
-            //    //[0]: "__cfduid=d797194a284bbc5fb1e45f2403156f0641485695919"
-            //    //[1]: " expires=Mon, 29-Jan-18 13:18:39 GMT"
-            //    //[2]: " path=/"
-            //    //[3]: " domain=.kissmanga.com"
-            //    //[4]: " HttpOnly"
-            //    string name = cookies[0].Split('=')[0];
-            //    if (name.Trim() == IdCookieName)
-            //    {
-            //        string value = cookies[0].Substring(name.Length + 1);
-            //        string path = cookies[2].Split('=')[1];
-            //        string domain = cookies[3].Split('=')[1];
-            //        CookiesCollection.Add(new Cookie(name.Trim(), value.Trim(), path, domain));
-            //    }
-            //}
 
             await Task.Delay(5000);
 
             // Make the request to specific URL which should be solved
             var request = CreateRequest(clearanceUri);
-            //var request = WebRequest.CreateHttp(clearanceUri);
-            //request.Method = WebRequestMethods.Http.Get;
 
             request.CookieContainer = null;
-            try
-            {
-                // This one should return the ClearanceCookieName. Use them for new request
-                using (HttpWebResponse clearanceResponse = (HttpWebResponse)request.GetResponse())
-                {
-                    //var newcookies = responsedouble.Cookies;
-                    SetTheCookie(clearanceResponse.Headers["Set-Cookie"]);
-                }
-            }
-            catch (WebException ex) // Maybe we do not need them
-            {
-                if (ex.Response == null)
-                    throw new HttpRequestException(ex.Message, ex);
 
-                response = (HttpWebResponse)ex.Response;
-                using (var streamReader = new StreamReader(response.GetResponseStream()))
-                    html = streamReader.ReadToEnd();
+            // This one should return the ClearanceCookieName. Use them for new request
+            using (HttpWebResponse clearanceResponse = (HttpWebResponse)request.GetResponse())
+            {
+                SetTheCookie(clearanceResponse.Headers["Set-Cookie"]);
             }
-            //var clearanceRequest = new HttpRequestMessage(HttpMethod.Get, clearanceUri);            
         }
 
+        /// <summary>
+        /// Get the cookies from the string by "split", "substring" operations
+        /// </summary>
+        /// <param name="cookies">cookies from response</param>
         private void SetTheCookie(string cookies)
         {
             if (cookies != null)
@@ -240,6 +211,7 @@ namespace MangaRipper.Core.Services
                 while (cookies.Length > 0)
                 {
                     var position = cookies.IndexOf("HttpOnly");
+
                     var cookie = cookies.Substring(0, position).Split(';');
 
                     //[0]: "__cfduid=d797194a284bbc5fb1e45f2403156f0641485695919"
@@ -248,12 +220,12 @@ namespace MangaRipper.Core.Services
                     //[2]: " path=/"
                     //[3]: " domain=.kissmanga.com"
                     //[4]: " HttpOnly"
-                    string name = cookie[0].Split('=')[0];
+                    var name = cookie[0].Split('=')[0];
                     if (name.Trim() == IdCookieName || name.Trim() == ClearanceCookieName)
                     {
-                        string value = cookie[0].Substring(name.Length + 1);
-                        string path = cookie[2].Split('=')[1];
-                        string domain = cookie[3].Split('=')[1];
+                        var value = cookie[0].Substring(name.Length + 1);
+                        var path = cookie[2].Split('=')[1];
+                        var domain = cookie[3].Split('=')[1];
                         CookiesCollection.Add(new Cookie(name.Trim(), value.Trim(), path, domain));
                     }
 
@@ -262,8 +234,14 @@ namespace MangaRipper.Core.Services
                         break;
                     cookies = cookies.Substring(position, cookies.Length - position);
                 }
+
+                // wait for "__cfduid" and "cf_clearance" to be complete
+                if (CookiesCollection.Count < 2)
+                    CookiesCollection = null;
             }
         }
+
+        #endregion
 
 
     }
