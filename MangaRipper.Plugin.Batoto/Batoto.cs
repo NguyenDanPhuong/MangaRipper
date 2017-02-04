@@ -17,15 +17,33 @@ namespace MangaRipper.Plugin.Batoto
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    public class BatotoService : IMangaService
+    public class Batoto : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _username = "gufrohepra";
         private string _password = "123";
 
+        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+            var settingCollection = settings.ToArray();
+            if (settingCollection.Any(i => i.Key.Equals("Username")))
+            {
+                var user = settingCollection.First(i => i.Key.Equals("Username")).Value;
+                Logger.Info($@"Current Username: {_username}. New Username: {user}");
+                _username = user as string;
+            }
+
+            if (settingCollection.Any(i => i.Key.Equals("Password")))
+            {
+                var pass = settingCollection.First(i => i.Key.Equals("Password")).Value;
+                Logger.Info($@"Current Password: {_password}. New Password: {pass}");
+                _password = pass as string;
+            }
+        }
+
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("Batoto", "http://bato.to", "Multiple Languages");
+            return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
         }
 
         public bool Of(string link)
@@ -67,14 +85,14 @@ namespace MangaRipper.Plugin.Batoto
             var pages = parser.Parse(@"<option value=""(?<Value>http://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
 
             // transform pages link
-            pages = pages.Select(TransformChapterUrl).ToList();
+            var transformedPages = pages.Select(TransformChapterUrl).ToList();
 
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(
-                pages,
+                transformedPages,
                 new Progress<int>((count) =>
                 {
-                    var f = (float)count / pages.Count();
+                    var f = (float)count / transformedPages.Count();
                     var i = Convert.ToInt32(f * 100);
                     progress.Report(i);
                 }),
@@ -121,7 +139,5 @@ namespace MangaRipper.Plugin.Batoto
             };
             return $@"http://bato.to/areader?id={id}&p={page}";
         }
-
-        public IEnumerable<KeyValuePair<string, string>> Configuration { get; set; }
     }
 }

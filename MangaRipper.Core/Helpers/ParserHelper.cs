@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MangaRipper.Core.CustomException;
 
 namespace MangaRipper.Core.Helpers
 {
@@ -12,7 +13,7 @@ namespace MangaRipper.Core.Helpers
     /// </summary>
     public class ParserHelper
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public delegate Chapter ChapterResolverHandler(string name, string value, Uri adress);
 
@@ -26,15 +27,22 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup, Uri pageLink = null, ChapterResolverHandler chapterResolver = null)
         {
-            logger.Info("> ParseGroup: {0}", regExp);
+            Logger.Info("> ParseGroup: {0}", regExp);
             var list = new List<Chapter>();
-            Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
-            MatchCollection matches = reg.Matches(input);
+            var reg = new Regex(regExp, RegexOptions.IgnoreCase);
+            var matches = reg.Matches(input);
+
+            if (matches.Count == 0)
+            {
+                Logger.Error("Cannot parse below content.");
+                Logger.Error(input);
+                throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser.");
+            }
 
             foreach (Match match in matches)
             {
                 var value = match.Groups[valueGroup].Value.Trim();
-                string name = match.Groups[nameGroup].Value.Trim();
+                var name = match.Groups[nameGroup].Value.Trim();
                 var chapter = new Chapter(name, value);
 
                 if (chapterResolver != null && pageLink != null)
@@ -42,8 +50,9 @@ namespace MangaRipper.Core.Helpers
 
                 list.Add(chapter);
             }
-
-            return list.Distinct().ToList();
+            var result = list.Distinct().ToList();
+            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            return result;
         }
 
         /// <summary>
@@ -55,18 +64,22 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<string> Parse(string regExp, string input, string groupName)
         {
-            logger.Info("> Parse: {0}", regExp);
-            var list = new List<string>();
-            Regex reg = new Regex(regExp, RegexOptions.IgnoreCase);
-            MatchCollection matches = reg.Matches(input);
+            Logger.Info("> Parse: {0}", regExp);
+            var reg = new Regex(regExp, RegexOptions.IgnoreCase);
+            var matches = reg.Matches(input);
 
-            foreach (Match match in matches)
+            if (matches.Count == 0)
             {
-                var value = match.Groups[groupName].Value.Trim();
-                list.Add(value);
+                Logger.Error("Cannot parse below content.");
+                Logger.Error(input);
+                throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser.");
             }
 
-            return list.Distinct().ToList();
+            var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
+            var result = list.Distinct().ToList();
+            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            return result;
         }
+      
     }
 }

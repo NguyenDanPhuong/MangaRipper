@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -76,13 +77,14 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            Logger.Info("> DownloadStringAsync - Total: {0}", urls.Count());
+            var inputUrls = urls.ToArray();
+            Logger.Info("> DownloadStringAsync(IEnumerable) - Total: {0}", inputUrls.Count());
             var sb = new StringBuilder();
             var count = 0;
             progress.Report(count);
-            foreach (var url in urls)
+            foreach (var url in inputUrls)
             {
-                string input = await DownloadStringAsync(url);
+                var input = await DownloadStringAsync(url);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
                 progress.Report(count++);
