@@ -199,10 +199,17 @@ namespace MangaRipper.Forms
 
             Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
-            foreach (var service in FrameworkProvider.GetMangaServices())
+            try
             {
-                var infor = service.GetInformation();
-                dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
+                foreach (var service in FrameworkProvider.GetMangaServices())
+                {
+                    var infor = service.GetInformation();
+                    dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
             }
 
             if (string.IsNullOrEmpty(txtSaveTo.Text))

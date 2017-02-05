@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.DataTypes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MangaRipper.Core.Models
 {
@@ -9,6 +10,17 @@ namespace MangaRipper.Core.Models
     /// </summary>
     public class DownloadChapterTask
     {
+        public string Name => Chapter.Name;
+        public string Url => Chapter.Url;
+        public string PropFormats
+        {
+            get
+            {
+                var s = Formats.Select(format => format.ToString()).ToList();
+                return string.Join(", ", s);
+            }
+        }
+
         public Chapter Chapter { get; private set; }
         public string SaveToFolder { get; private set; }
         public IEnumerable<OutputFormat> Formats { get; private set; }     

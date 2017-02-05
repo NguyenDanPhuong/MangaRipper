@@ -15,7 +15,7 @@ namespace MangaRipper.Plugin.KissManga
     /// <summary>
     /// Support find chapters and images from KissManga
     /// </summary>
-    public class KissMangaService : IMangaService
+    public class KissManga : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private Uri pageLink;
@@ -47,17 +47,8 @@ namespace MangaRipper.Plugin.KissManga
                 var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
                 return value;
             }).ToList();
-
-            // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
-            {
-                var f = (float)count / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
-            }), cancellationToken);
-            var images = parser.Parse("<option value=\"(Ch-.[^\"]*)\" selected", pageData, "Value");
-
-            return images;
+            
+            return pages;
         }
 
         public SiteInformation GetInformation()
@@ -87,7 +78,6 @@ namespace MangaRipper.Plugin.KissManga
 
         void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
-            throw new NotImplementedException();
         }
     }
 }

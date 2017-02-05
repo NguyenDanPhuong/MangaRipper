@@ -2,6 +2,7 @@
 
 namespace MangaRipper.Core.CustomException
 {
+    [Serializable]
     public class MangaRipperException : Exception
     {
         public MangaRipperException(string message)
