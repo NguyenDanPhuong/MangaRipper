@@ -15,11 +15,11 @@ namespace MangaRipper.Plugin.MangaHere
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    public class MangaHere : IMangaService
+    public class MangaHere : MangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -31,7 +31,7 @@ namespace MangaRipper.Plugin.MangaHere
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -59,16 +59,12 @@ namespace MangaRipper.Plugin.MangaHere
             return images;
         }
 
-        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
-        {
-        }
-
-        public SiteInformation GetInformation()
+        public override SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(MangaHere), "http://www.mangahere.co", "English");
         }
 
-        public bool Of(string link)
+        public override bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("www.mangahere.co");

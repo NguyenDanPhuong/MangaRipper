@@ -15,11 +15,11 @@ namespace MangaRipper.Plugin.KissManga
     /// <summary>
     /// Support find chapters and images from KissManga
     /// </summary>
-    public class KissManga : IMangaService
+    public class KissManga : MangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -32,7 +32,7 @@ namespace MangaRipper.Plugin.KissManga
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -47,24 +47,24 @@ namespace MangaRipper.Plugin.KissManga
                 var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
                 return value;
             }).ToList();
-            
+
             return pages;
         }
 
-        public SiteInformation GetInformation()
+        public override SiteInformation GetInformation()
         {
             return new SiteInformation("KissManga", "http://kissmanga.com/", "English");
         }
 
-        public bool Of(string link)
+        public override bool Of(string link)
         {
             return new Uri(link).Host.Equals("kissmanga.com");
         }
-        
+
         private Chapter NameResolver(string name, string value, Uri adress)
         {
             var urle = new Uri(adress, value);
-            
+
             if (!string.IsNullOrWhiteSpace(name))
             {
                 name = System.Net.WebUtility.HtmlDecode(name);
@@ -73,10 +73,6 @@ namespace MangaRipper.Plugin.KissManga
             }
 
             return new Chapter(name, urle.AbsoluteUri);
-        }
-
-        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
-        {
         }
     }
 }
