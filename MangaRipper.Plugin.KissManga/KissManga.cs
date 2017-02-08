@@ -17,8 +17,7 @@ namespace MangaRipper.Plugin.KissManga
     /// </summary>
     public class KissManga : IMangaService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private Uri pageLink;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -27,7 +26,8 @@ namespace MangaRipper.Plugin.KissManga
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<td>\n<a href=\"(?=/Manga/)(?<Value>.[^\"]*)\" title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value", pageLink, NameResolver);
+            var chaps = parser.ParseGroup("<td>\n<a href=\"(?=/Manga/)(?<Value>.[^\"]*)\" title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value");
+            chaps = chaps.Select(c => NameResolver(c.Name, c.Url, new Uri(manga)));
             progress.Report(100);
             return chaps;
         }
@@ -58,11 +58,10 @@ namespace MangaRipper.Plugin.KissManga
 
         public bool Of(string link)
         {
-            pageLink = new Uri(link);
-            return pageLink.Host.Equals("kissmanga.com");
+            return new Uri(link).Host.Equals("kissmanga.com");
         }
         
-        public Chapter NameResolver(string name, string value, Uri adress)
+        private Chapter NameResolver(string name, string value, Uri adress)
         {
             var urle = new Uri(adress, value);
             
@@ -73,7 +72,7 @@ namespace MangaRipper.Plugin.KissManga
                 name = Regex.Replace(name, "\\s+Read\\s+Online$", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             }
 
-            return new Chapter(name, urle.AbsoluteUri.ToString());
+            return new Chapter(name, urle.AbsoluteUri);
         }
 
         void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
