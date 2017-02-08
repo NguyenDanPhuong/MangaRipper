@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Models;
+using NLog;
 
 namespace MangaRipper.Core.Interfaces
 {
     public abstract class MangaService : IMangaService
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public virtual void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
-            
+            Logger.Info("The plugin has no configuration");
         }
 
         public abstract SiteInformation GetInformation();
