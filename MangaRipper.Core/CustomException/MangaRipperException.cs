@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MangaRipper.Core.CustomException
 {
-    class MangaRipperException : Exception
+    [Serializable]
+    public class MangaRipperException : Exception
     {
         public MangaRipperException(string message)
         : base(message)

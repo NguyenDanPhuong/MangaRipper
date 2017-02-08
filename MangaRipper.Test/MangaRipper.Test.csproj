@@ -63,6 +63,10 @@
       <Project>{0da63c57-4a0f-497e-9322-935af18506b1}</Project>
       <Name>MangaRipper.Plugin.Batoto</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Plugin.KissManga\MangaRipper.Plugin.KissManga.csproj">
+      <Project>{ce21343f-3c7f-4161-94a5-3a7ccdd9cf01}</Project>
+      <Name>MangaRipper.Plugin.KissManga</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MangaRipper.Plugin.MangaFox\MangaRipper.Plugin.MangaFox.csproj">
       <Project>{f5d529b4-cbb6-46e2-9d32-25cef8365318}</Project>
       <Name>MangaRipper.Plugin.MangaFox</Name>

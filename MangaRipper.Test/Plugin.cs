@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
@@ -16,7 +17,7 @@ namespace MangaRipper.Test
         [TestInitialize]
         public void Initialize()
         {
-            FrameworkProvider.Init();
+            FrameworkProvider.Init(Environment.CurrentDirectory, Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             _source = new CancellationTokenSource();
         }
 
@@ -132,6 +133,28 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000001.jpg"));
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000002.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000003.jpg"));
+
+            var downloader = new DownloadService();
+            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
+        }
+
+        [TestMethod]
+        [Ignore]
+        public async Task KissManga_Test()
+        {
+            string url = "http://kissmanga.com/Manga/Onepunch-Man";
+            var service = FrameworkProvider.GetService(url);
+            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
+            Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
+            var chapter = chapters.Last();
+            Assert.AreEqual("Onepunch-Man _vol.001 ch.001", chapter.Name);
+            Assert.AreEqual("http://kissmanga.com/Manga/Onepunch-Man/vol-001-ch-001?id=313725", chapter.Url);
+            var images = await service.FindImanges(chapter, new Progress<int>(), _source.Token);
+            Assert.AreEqual(19, images.Count());
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f2.jpg&imgmax=30000"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f3.jpg&imgmax=30000"));
 
             var downloader = new DownloadService();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0]);

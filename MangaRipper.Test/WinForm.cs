@@ -1,4 +1,4 @@
-﻿using MangaRipper.Helper;
+﻿using MangaRipper.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MangaRipper.Test

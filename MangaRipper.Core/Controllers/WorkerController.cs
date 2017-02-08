@@ -23,6 +23,8 @@ namespace MangaRipper.Core.Controllers
         CancellationTokenSource _source;
         readonly SemaphoreSlim _sema;
 
+        private enum ImageExtensions { jpeg, jpg, png, gif };
+
         public WorkerController()
         {
             Logger.Info("> Worker()");
@@ -44,7 +46,7 @@ namespace MangaRipper.Core.Controllers
         /// <param name="task">Contain chapter and save to path</param>
         /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task Run(DownloadChapterTask task, IProgress<int> progress)
+        public async Task DownloadChapter(DownloadChapterTask task, IProgress<int> progress)
         {
             Logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Url, task.SaveToFolder);
             await Task.Run(async () =>
@@ -54,7 +56,7 @@ namespace MangaRipper.Core.Controllers
                     _source = new CancellationTokenSource();
                     await _sema.WaitAsync();
                     task.IsBusy = true;
-                    await DownloadChapterInternal(task.Chapter, task.SaveToFolder, progress);
+                    await DownloadChapterInternal(task, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
                 {
@@ -64,16 +66,10 @@ namespace MangaRipper.Core.Controllers
                 finally
                 {
                     task.IsBusy = false;
-                    if (task.Formats.Contains(OutputFormat.CBZ))
-                    {
-                        PackageCbzHelper.Create(Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName), Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
-                    }
                     _sema.Release();
                 }
             });
         }
-
-
 
         /// <summary>
         /// Find all chapters of a manga
@@ -103,42 +99,93 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
-        private async Task DownloadChapterInternal(Chapter chapter, string mangaLocalPath, IProgress<int> progress)
+        private async Task DownloadChapterInternal(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
         {
+            var chapter = task.Chapter;
             progress.Report(0);
-            // let service find all images of chapter
             var service = FrameworkProvider.GetService(chapter.Url);
             var images = await service.FindImanges(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
             }), _source.Token);
-            // create folder to keep images
-            var downloader = new DownloadService();
+
+            var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempFolder);
+
+            await DownloadImages(images, tempFolder, progress);
+
             var folderName = chapter.NomalizeName;
-            var destinationPath = Path.Combine(mangaLocalPath, folderName);
-            Directory.CreateDirectory(destinationPath);
-            // download images
+            var finalFolder = Path.Combine(mangaLocalPath, folderName);
+
+            if (task.Formats.Contains(OutputFormat.Folder))
+            {
+                Directory.Move(tempFolder, finalFolder);
+            }
+            if (task.Formats.Contains(OutputFormat.CBZ))
+            {
+                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+            }
+
+            progress.Report(100);
+        }
+
+        private async Task DownloadImages(IEnumerable<string> inputImages, string destination, IProgress<int> progress)
+        {
+            var images = inputImages.ToArray();
+            Logger.Info($@"Download {images.Length} images into {destination}");
+
             var countImage = 0;
             foreach (var image in images)
             {
-                string tempFilePath = Path.GetTempFileName();
-                string filePath = Path.Combine(destinationPath, GetFilenameFromUrl(image));
-                if (!File.Exists(filePath))
-                {
-                    await downloader.DownloadFileAsync(image, tempFilePath, _source.Token);
-                    File.Move(tempFilePath, filePath);
-                }
+                await DownloadImage(image, destination, countImage);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
             }
-            progress.Report(100);
         }
 
-        private string GetFilenameFromUrl(string url)
+        private async Task DownloadImage(string image, string destination, int imageNum)
+        {
+            var downloader = new DownloadService();
+            string tempFilePath = Path.GetTempFileName();
+            string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
+            if (!File.Exists(filePath))
+            {
+                await downloader.DownloadFileAsync(image, tempFilePath, _source.Token);
+                File.Move(tempFilePath, filePath);
+            }
+        }
+
+        /// <summary>
+        /// Use the name from URL, or use the numbers if name is unappropriated
+        /// </summary>
+        /// <param name="url">Image URL</param>
+        /// <param name="imageNum">image's order</param>
+        /// <returns></returns>
+        private string GetFilenameFromUrl(string url, int imageNum)
         {
             var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
+            var path = Path.GetFileName(uri.LocalPath);
+            var nameInParam = false;
+
+            // if everything in parameters and path is incorrect
+            // e.g. https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000
+            string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x));
+            if (extension == null)
+            {
+                nameInParam = !nameInParam;
+                extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x));
+            }
+
+            // Some names - just a gibberish text which is TOO LONG
+            // e.g. MG09qjYxsb3sFsrMt_lTn7f9ulfgcbusQjS5wypyy0aGn0sjL7hZHQhXuS-dXZNn0tuWvdBgKICQ8WI9RFGAgNNpdYglvFdwhJZC7qiClhvEd9toNLpLky19HRRZmSFbv3zq5lw=s0?title=000_1485859774.png
+            if (uri.LocalPath.Length > 50 || nameInParam)
+            {
+                imageNum++;
+                path = imageNum.ToString("0000") + "." + extension;
+            }
+
+            return path;
         }
 
 

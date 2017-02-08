@@ -9,18 +9,25 @@ using MangaRipper.Core.Models;
 
 namespace MangaRipper.Core.Services
 {
-    public class PluginService
+    class PluginService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private string PluginsPath { get; set; }
+        private Configuration Config { get; set; }
+        public PluginService(string pluginsPath, Configuration config)
+        {
+            PluginsPath = pluginsPath;
+            Config = config;
+        }
 
         /// <summary>
         /// Load plugins for WebSites
         /// </summary>
-        /// <param name="path">path to folder in which dll's are located</param>
         /// <returns>List with all founded Services</returns>
-        public IEnumerable<IMangaService> LoadWebPlugins(string path)
+        public IEnumerable<IMangaService> LoadWebPlugins()
         {
-            LoadPluginAssemblies(path);
+            LoadPluginAssemblies(PluginsPath);
             var services = CreateServices().ToArray();
             InjectConfiguration(services);
             return services;
@@ -40,6 +47,7 @@ namespace MangaRipper.Core.Services
                 FileInfo file = new FileInfo(fileOn);
                 if (file.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase))
                 {
+                    Logger.Info($@"Load plugin from file: {fileOn}");
                     Assembly.LoadFrom(fileOn);
                 }
             }
@@ -47,7 +55,7 @@ namespace MangaRipper.Core.Services
 
         private IEnumerable<IMangaService> CreateServices()
         {
-            IList<IMangaService> result = new List<IMangaService>();
+            var result = new List<IMangaService>();
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var t in a.GetTypes())
@@ -81,8 +89,7 @@ namespace MangaRipper.Core.Services
         private void InjectConfiguration(IMangaService service)
         {
             string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
-            var config = new Configuration();
-            var configItems = config.FindConfigByPrefix(lookupPrefix);
+            var configItems = Config.FindConfigByPrefix(lookupPrefix);
             configItems = RemovePrefix(configItems, lookupPrefix);
             service.Configuration(configItems);
         }

@@ -15,11 +15,11 @@ namespace MangaRipper.Plugin.MangaShare
     /// <summary>
     /// Support find chapters, images from MangaShare
     /// </summary>
-    public class MangaShareService : IMangaService
+    public class MangaShare : MangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -32,7 +32,7 @@ namespace MangaRipper.Plugin.MangaShare
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
@@ -64,16 +64,12 @@ namespace MangaRipper.Plugin.MangaShare
             return images;
         }
 
-        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        public override SiteInformation GetInformation()
         {
+            return new SiteInformation(nameof(MangaShare), "http://read.mangashare.com", "English");
         }
 
-        public SiteInformation GetInformation()
-        {
-            return new SiteInformation("MangaShare", "http://read.mangashare.com", "English");
-        }
-
-        public bool Of(string link)
+        public override bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("read.mangashare.com");

@@ -1,4 +1,4 @@
-﻿namespace MangaRipper
+﻿namespace MangaRipper.Forms
 {
     partial class FormMain
     {
@@ -52,8 +52,6 @@
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewLinkColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnHowToUse = new System.Windows.Forms.Button();
-            this.btnAbout = new System.Windows.Forms.Button();
             this.dgvChapter = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -68,17 +66,26 @@
             this.cbSaveCbz = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.locationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.documentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wikiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bugReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnGetChapter
             // 
             this.btnGetChapter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGetChapter.Location = new System.Drawing.Point(876, 10);
+            this.btnGetChapter.Location = new System.Drawing.Point(876, 27);
             this.btnGetChapter.Name = "btnGetChapter";
             this.btnGetChapter.Size = new System.Drawing.Size(116, 23);
             this.btnGetChapter.TabIndex = 5;
@@ -101,24 +108,24 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point(443, 93);
+            this.btnAdd.Font = new System.Drawing.Font("Webdings", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.btnAdd.Location = new System.Drawing.Point(443, 55);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(62, 23);
+            this.btnAdd.Size = new System.Drawing.Size(62, 33);
             this.btnAdd.TabIndex = 8;
-            this.btnAdd.Text = ">>>";
+            this.btnAdd.Text = "4";
             this.toolTip1.SetToolTip(this.btnAdd, "Add selected chapters");
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnAddAll
             // 
-            this.btnAddAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddAll.Location = new System.Drawing.Point(443, 122);
+            this.btnAddAll.Font = new System.Drawing.Font("Webdings", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.btnAddAll.Location = new System.Drawing.Point(443, 94);
             this.btnAddAll.Name = "btnAddAll";
-            this.btnAddAll.Size = new System.Drawing.Size(62, 23);
+            this.btnAddAll.Size = new System.Drawing.Size(62, 32);
             this.btnAddAll.TabIndex = 9;
-            this.btnAddAll.Text = "All >>>";
+            this.btnAddAll.Text = "8";
             this.toolTip1.SetToolTip(this.btnAddAll, "Add all chapters");
             this.btnAddAll.UseVisualStyleBackColor = true;
             this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
@@ -161,12 +168,12 @@
             this.ColChapterStatus,
             this.ColChapterUrl,
             this.Formats});
-            this.dgvQueueChapter.Location = new System.Drawing.Point(511, 38);
+            this.dgvQueueChapter.Location = new System.Drawing.Point(511, 55);
             this.dgvQueueChapter.Name = "dgvQueueChapter";
             this.dgvQueueChapter.ReadOnly = true;
             this.dgvQueueChapter.RowHeadersVisible = false;
             this.dgvQueueChapter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvQueueChapter.Size = new System.Drawing.Size(481, 507);
+            this.dgvQueueChapter.Size = new System.Drawing.Size(481, 490);
             this.dgvQueueChapter.TabIndex = 10;
             // 
             // ColChapterName
@@ -252,7 +259,7 @@
             // lblUrl
             // 
             this.lblUrl.AutoSize = true;
-            this.lblUrl.Location = new System.Drawing.Point(12, 14);
+            this.lblUrl.Location = new System.Drawing.Point(12, 31);
             this.lblUrl.Name = "lblUrl";
             this.lblUrl.Size = new System.Drawing.Size(22, 13);
             this.lblUrl.TabIndex = 0;
@@ -262,7 +269,7 @@
             // 
             this.txtPercent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPercent.Enabled = false;
-            this.txtPercent.Location = new System.Drawing.Point(835, 11);
+            this.txtPercent.Location = new System.Drawing.Point(835, 28);
             this.txtPercent.Name = "txtPercent";
             this.txtPercent.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.txtPercent.Size = new System.Drawing.Size(35, 22);
@@ -295,7 +302,7 @@
             this.dgvSupportedSites.ReadOnly = true;
             this.dgvSupportedSites.RowHeadersVisible = false;
             this.dgvSupportedSites.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 170);
+            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 199);
             this.dgvSupportedSites.TabIndex = 15;
             this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSupportedSites_CellContentClick);
             // 
@@ -327,28 +334,6 @@
             this.Column1.ReadOnly = true;
             this.Column1.Width = 90;
             // 
-            // btnHowToUse
-            // 
-            this.btnHowToUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnHowToUse.Location = new System.Drawing.Point(15, 551);
-            this.btnHowToUse.Name = "btnHowToUse";
-            this.btnHowToUse.Size = new System.Drawing.Size(273, 23);
-            this.btnHowToUse.TabIndex = 21;
-            this.btnHowToUse.Text = "How To Use && F.A.Q.";
-            this.btnHowToUse.UseVisualStyleBackColor = true;
-            this.btnHowToUse.Click += new System.EventHandler(this.btnHowToUse_Click);
-            // 
-            // btnAbout
-            // 
-            this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAbout.Location = new System.Drawing.Point(294, 551);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(143, 23);
-            this.btnAbout.TabIndex = 22;
-            this.btnAbout.Text = "About";
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-            // 
             // dgvChapter
             // 
             this.dgvChapter.AllowUserToAddRows = false;
@@ -361,12 +346,12 @@
             this.dgvChapter.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvChapter.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn4});
-            this.dgvChapter.Location = new System.Drawing.Point(12, 38);
+            this.dgvChapter.Location = new System.Drawing.Point(12, 55);
             this.dgvChapter.Name = "dgvChapter";
             this.dgvChapter.ReadOnly = true;
             this.dgvChapter.RowHeadersVisible = false;
             this.dgvChapter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvChapter.Size = new System.Drawing.Size(425, 244);
+            this.dgvChapter.Size = new System.Drawing.Size(425, 227);
             this.dgvChapter.TabIndex = 6;
             // 
             // dataGridViewTextBoxColumn4
@@ -385,17 +370,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbTitleUrl.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
             this.cbTitleUrl.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cbTitleUrl.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MangaRipper.Properties.Settings.Default, "Url", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.cbTitleUrl.Location = new System.Drawing.Point(40, 11);
+            this.cbTitleUrl.Location = new System.Drawing.Point(40, 28);
             this.cbTitleUrl.Name = "cbTitleUrl";
             this.cbTitleUrl.Size = new System.Drawing.Size(729, 21);
             this.cbTitleUrl.TabIndex = 1;
-            this.cbTitleUrl.Text = global::MangaRipper.Properties.Settings.Default.Url;
             // 
             // btnAddBookmark
             // 
             this.btnAddBookmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddBookmark.Location = new System.Drawing.Point(775, 10);
+            this.btnAddBookmark.Location = new System.Drawing.Point(775, 27);
             this.btnAddBookmark.Name = "btnAddBookmark";
             this.btnAddBookmark.Size = new System.Drawing.Size(24, 23);
             this.btnAddBookmark.TabIndex = 2;
@@ -407,7 +390,7 @@
             // btnRemoveBookmark
             // 
             this.btnRemoveBookmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRemoveBookmark.Location = new System.Drawing.Point(805, 10);
+            this.btnRemoveBookmark.Location = new System.Drawing.Point(805, 27);
             this.btnRemoveBookmark.Name = "btnRemoveBookmark";
             this.btnRemoveBookmark.Size = new System.Drawing.Size(24, 23);
             this.btnRemoveBookmark.TabIndex = 3;
@@ -431,13 +414,11 @@
             // txtSaveTo
             // 
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtSaveTo.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MangaRipper.Properties.Settings.Default, "SaveTo", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.txtSaveTo.Location = new System.Drawing.Point(66, 289);
             this.txtSaveTo.Name = "txtSaveTo";
             this.txtSaveTo.ReadOnly = true;
             this.txtSaveTo.Size = new System.Drawing.Size(240, 22);
             this.txtSaveTo.TabIndex = 12;
-            this.txtSaveTo.Text = global::MangaRipper.Properties.Settings.Default.SaveTo;
             // 
             // txtMessage
             // 
@@ -454,7 +435,6 @@
             this.cbSaveFolder.AutoSize = true;
             this.cbSaveFolder.Checked = true;
             this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveFolder.Enabled = false;
             this.cbSaveFolder.Location = new System.Drawing.Point(4, 18);
             this.cbSaveFolder.Name = "cbSaveFolder";
             this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
@@ -496,6 +476,72 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "File manipulation";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.locationToolStripMenuItem,
+            this.documentsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.menuStrip1.Size = new System.Drawing.Size(1004, 24);
+            this.menuStrip1.TabIndex = 31;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // locationToolStripMenuItem
+            // 
+            this.locationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dataToolStripMenuItem,
+            this.logsToolStripMenuItem});
+            this.locationToolStripMenuItem.Name = "locationToolStripMenuItem";
+            this.locationToolStripMenuItem.Size = new System.Drawing.Size(70, 20);
+            this.locationToolStripMenuItem.Text = "Locations";
+            // 
+            // dataToolStripMenuItem
+            // 
+            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dataToolStripMenuItem.Text = "Data";
+            this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
+            // 
+            // logsToolStripMenuItem
+            // 
+            this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
+            this.logsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.logsToolStripMenuItem.Text = "Logs";
+            this.logsToolStripMenuItem.Click += new System.EventHandler(this.logsToolStripMenuItem_Click);
+            // 
+            // documentsToolStripMenuItem
+            // 
+            this.documentsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.wikiToolStripMenuItem,
+            this.bugReportToolStripMenuItem});
+            this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+            this.documentsToolStripMenuItem.Text = "Documents";
+            // 
+            // wikiToolStripMenuItem
+            // 
+            this.wikiToolStripMenuItem.Name = "wikiToolStripMenuItem";
+            this.wikiToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.wikiToolStripMenuItem.Text = "Wiki";
+            this.wikiToolStripMenuItem.Click += new System.EventHandler(this.wikiToolStripMenuItem_Click);
+            // 
+            // bugReportToolStripMenuItem
+            // 
+            this.bugReportToolStripMenuItem.Name = "bugReportToolStripMenuItem";
+            this.bugReportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bugReportToolStripMenuItem.Text = "Bug Report";
+            this.bugReportToolStripMenuItem.Click += new System.EventHandler(this.bugReportToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -508,8 +554,6 @@
             this.Controls.Add(this.btnAddBookmark);
             this.Controls.Add(this.cbTitleUrl);
             this.Controls.Add(this.dgvChapter);
-            this.Controls.Add(this.btnAbout);
-            this.Controls.Add(this.btnHowToUse);
             this.Controls.Add(this.dgvSupportedSites);
             this.Controls.Add(this.txtPercent);
             this.Controls.Add(this.lblUrl);
@@ -525,8 +569,10 @@
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.btnGetChapter);
             this.Controls.Add(this.dgvQueueChapter);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(1020, 644);
             this.Name = "FormMain";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -538,6 +584,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -560,8 +608,6 @@
         private System.Windows.Forms.Label lblUrl;
         private System.Windows.Forms.TextBox txtPercent;
         private System.Windows.Forms.DataGridView dgvSupportedSites;
-        private System.Windows.Forms.Button btnHowToUse;
-        private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.DataGridView dgvChapter;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
@@ -582,5 +628,13 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkBoxForPrefix;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem locationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem documentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wikiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bugReportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }

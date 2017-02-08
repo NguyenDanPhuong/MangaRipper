@@ -9,36 +9,39 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Plugin.MangaHere
+namespace MangaRipper.Plugin.MangaReader
 {
-
     /// <summary>
-    /// Support find chapters and images from MangaHere
+    /// Support find chapters and images from MangaReader
     /// </summary>
-    public class MangaHereService : IMangaService
+    public class MangaReader : MangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
+            // reverse chapters order and remove duplicated chapters in latest section
+            chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
+            // transform pages link
+            chaps = chaps.Select(c => new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri)).ToList();
             progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
+            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link
             pages = pages.Select(p =>
@@ -54,24 +57,21 @@ namespace MangaRipper.Plugin.MangaHere
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\" onload=", pageData, "Value");
+            var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
 
             return images;
         }
 
-        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+
+        public override SiteInformation GetInformation()
         {
+            return new SiteInformation(nameof(MangaReader), "http://www.mangareader.net", "English");
         }
 
-        public SiteInformation GetInformation()
-        {
-            return new SiteInformation("MangaHere", "http://www.mangahere.co", "English");
-        }
-
-        public bool Of(string link)
+        public override bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("www.mangahere.co");
+            return uri.Host.Equals("www.mangareader.net");
         }
     }
 }
