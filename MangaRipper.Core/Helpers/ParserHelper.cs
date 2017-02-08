@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Models;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,6 +15,8 @@ namespace MangaRipper.Core.Helpers
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public delegate Chapter ChapterResolverHandler(string name, string value, Uri adress);
+
         /// <summary>
         /// Looking for chapter information in html code.
         /// </summary>
@@ -21,8 +24,10 @@ namespace MangaRipper.Core.Helpers
         /// <param name="input">The html code.</param>
         /// <param name="nameGroup">The group name that capture chapter name.</param>
         /// <param name="valueGroup">The group name that capture chapter URL.</param>
+        /// <param name="pageLink">Link to page where chapters are found</param>
+        /// <param name="chapterResolver">Method which make additional transformations on chapters</param>
         /// <returns></returns>
-        public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
+        public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup, Uri pageLink = null, ChapterResolverHandler chapterResolver = null)
         {
             Logger.Info("> ParseGroup: {0}", regExp);
             var list = new List<Chapter>();
@@ -41,10 +46,15 @@ namespace MangaRipper.Core.Helpers
                 var value = match.Groups[valueGroup].Value.Trim();
                 var name = match.Groups[nameGroup].Value.Trim();
                 var chapter = new Chapter(name, value);
+
+
+                if (chapterResolver != null && pageLink != null)
+                    chapter = chapterResolver(name, value, pageLink);
+
                 list.Add(chapter);
             }
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
             return result;
         }
 
@@ -70,7 +80,7 @@ namespace MangaRipper.Core.Helpers
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
             return result;
         }
       

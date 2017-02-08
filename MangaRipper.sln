@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaRea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaShare", "MangaRipper.Plugin.MangaShare\MangaRipper.Plugin.MangaShare.csproj", "{A156FB0B-1E4A-4DB0-B944-D23413CA8D58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.KissManga", "MangaRipper.Plugin.KissManga\MangaRipper.Plugin.KissManga.csproj", "{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA38E249-11BB-4145-A06C-F51D281497F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,9 +132,29 @@ Global
 		{A156FB0B-1E4A-4DB0-B944-D23413CA8D58}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A156FB0B-1E4A-4DB0-B944-D23413CA8D58}.Release|x86.ActiveCfg = Release|Any CPU
 		{A156FB0B-1E4A-4DB0-B944-D23413CA8D58}.Release|x86.Build.0 = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F5D529B4-CBB6-46E2-9D32-25CEF8365318} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{0DA63C57-4A0F-497E-9322-935AF18506B1} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{B7F65DA6-A435-46F8-8867-778A48FAB8CF} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{FE632CBC-EBBB-4509-B760-8CA031F87160} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{A156FB0B-1E4A-4DB0-B944-D23413CA8D58} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = MangaRipper.vsmdi
