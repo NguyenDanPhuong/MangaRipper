@@ -139,6 +139,29 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
+
+        [TestMethod]
+        public async Task MangaStream_Test()
+        {
+            string url = "http://mangastream.com/manga/dragon_ball_super";
+            var service = FrameworkProvider.GetService(url);
+            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
+            Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
+            var chapter = chapters.Last();
+            Assert.AreEqual("001 - The God of Destruction's Prophetic Dream", chapter.Name);
+            Assert.AreEqual("http://mangastream.com/r/dragon_ball_super/001/2831/1", chapter.Url);
+            var images = await service.FindImanges(chapter, new Progress<int>(), _source.Token);
+            Assert.AreEqual(17, images.Count());
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/002.png"));
+
+            var downloader = new DownloadService();
+            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0]);
+            Assert.IsNotNull(imageString, "Cannot download image!");
+        }
+
+
         [TestMethod]
         [Ignore]
         public async Task KissManga_Test()

@@ -83,6 +83,10 @@
       <Project>{a156fb0b-1e4a-4db0-b944-d23413ca8d58}</Project>
       <Name>MangaRipper.Plugin.MangaShare</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Plugin.MangaStream\MangaRipper.Plugin.MangaStream.csproj">
+      <Project>{746524a7-e0ee-4240-a9a2-dd7bccbccf5b}</Project>
+      <Name>MangaRipper.Plugin.MangaStream</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MangaRipper\MangaRipper.csproj">
       <Project>{e4c5d602-ed1e-4c04-b845-74ec5a58530d}</Project>
       <Name>MangaRipper</Name>
