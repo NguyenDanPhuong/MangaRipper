@@ -58,21 +58,19 @@ namespace MangaRipper.Core.Services
             var result = new List<IMangaService>();
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var t in a.GetTypes())
+                var pluginTypes = a.GetTypes().Where(t => t.IsSubclassOf(typeof(MangaService)));
+                try
                 {
-                    if (t.GetInterface(nameof(IMangaService)) != null)
+                    foreach (var pluginType in pluginTypes)
                     {
-                        try
-                        {
-                            var pluginclass = Activator.CreateInstance(t) as IMangaService;
-                            if (pluginclass != null)
-                                result.Add(pluginclass);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
+                        var pluginclass = Activator.CreateInstance(pluginType) as IMangaService;
+                        if (pluginclass != null)
+                            result.Add(pluginclass);
                     }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
                 }
             }
             return result;
