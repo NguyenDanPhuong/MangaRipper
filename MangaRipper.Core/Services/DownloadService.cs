@@ -2,7 +2,6 @@
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -26,7 +25,7 @@ namespace MangaRipper.Core.Services
         private const string ClearanceCookieName = "cf_clearance";
         private const string IdCookieName = "__cfduid";
         private const int MaxRetries = 3;
-        private int retries;
+        private int _retries;
 
         public CookieCollection Cookies { get; set; }
 
@@ -64,7 +63,7 @@ namespace MangaRipper.Core.Services
         public async Task<string> DownloadStringAsync(string url)
         {
             Logger.Info("> DownloadStringAsync: {0}", url);
-            retries = 0;
+            _retries = 0;
             return await WorkWithStreams(url);
         }
 
@@ -103,7 +102,7 @@ namespace MangaRipper.Core.Services
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
             Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
-            retries = 0;
+            _retries = 0;
             var result = await WorkWithStreams(url, fileName, cancellationToken);
             Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
         }
@@ -154,10 +153,10 @@ namespace MangaRipper.Core.Services
                 // if we can't access server, and in Headers we found "cloudflare-nginx" - Solve the challenge
                 if (response.Headers["Server"] == CloudFlareServerName)
                 {
-                    while ((MaxRetries < 0 || retries <= MaxRetries) && CookiesCollection == null)
+                    while ((_retries <= MaxRetries) && CookiesCollection == null)
                     {
                         await SolverCloudFlare(response, html);
-                        retries++;
+                        _retries++;
                         html = await WorkWithStreams(url, fileName, cancellationToken);
                     }
                 }
@@ -242,9 +241,6 @@ namespace MangaRipper.Core.Services
                     CookiesCollection = null;
             }
         }
-
         #endregion
-
-
     }
 }

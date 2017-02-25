@@ -76,7 +76,7 @@
     <Compile Include="Providers\FrameworkProvider.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\DownloadService.cs" />
-    <Compile Include="Extensions\ExtensionClearName.cs" />
+    <Compile Include="Extensions\ExtensionHelper.cs" />
     <Compile Include="Services\PluginService.cs" />
     <Compile Include="DataTypes\OutputFormat.cs" />
     <Compile Include="Helpers\PackageCbzHelper.cs" />

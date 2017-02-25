@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaRipper.Core.Extensions;
 
 namespace MangaRipper.Core.Controllers
 {
@@ -23,7 +24,7 @@ namespace MangaRipper.Core.Controllers
         CancellationTokenSource _source;
         readonly SemaphoreSlim _sema;
 
-        private enum ImageExtensions { jpeg, jpg, png, gif };
+        private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
         public WorkerController()
         {
@@ -119,7 +120,11 @@ namespace MangaRipper.Core.Controllers
 
             if (task.Formats.Contains(OutputFormat.Folder))
             {
-                Directory.Move(tempFolder, finalFolder);
+                if (!Directory.Exists(finalFolder))
+                {
+                    Directory.CreateDirectory(finalFolder);
+                }
+                ExtensionHelper.SuperMove(tempFolder, finalFolder);
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
@@ -170,11 +175,11 @@ namespace MangaRipper.Core.Controllers
 
             // if everything in parameters and path is incorrect
             // e.g. https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000
-            string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x));
+            string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
             if (extension == null)
             {
                 nameInParam = !nameInParam;
-                extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x));
+                extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
             }
 
             // Some names - just a gibberish text which is TOO LONG
