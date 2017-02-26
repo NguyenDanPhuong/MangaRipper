@@ -1,29 +1,23 @@
-﻿using MangaRipper.Core.Extensions;
+﻿using System;
+using MangaRipper.Core.Extensions;
 
 namespace MangaRipper.Core.Models
 {
     public class Chapter
     {
-        public string Name { get; private set; }
-        /// <summary>
-        /// Chapter name which safe for using as folder name.
-        /// </summary>
-        public string NomalizeName => Name.RemoveFileNameInvalidChar();
 
-        public string OriginalName;
+        public string OriginalName { get; }
+        public int Prefix { get; set; }
 
-        public string Url { get; private set; }
+        public string Name => Prefix > 0 ? $"[{Prefix:000}] - {OriginalName.RemoveFileNameInvalidChar()}" : OriginalName.RemoveFileNameInvalidChar();
 
-        public Chapter(string name, string url, string originalName = null)
+        public string Url { get;}
+
+        public Chapter(string name, string url)
         {
-            Name = name;
+            OriginalName = name;
             Url = url;
-            OriginalName = originalName ?? name;
         }
 
-        public void AddPrefix(int prefix, bool addPrefix)
-        {
-            Name = (addPrefix) ? $"[{prefix:000}] - {OriginalName}" : OriginalName;
-        }
     }
 }
