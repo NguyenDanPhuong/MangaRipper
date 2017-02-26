@@ -58,7 +58,7 @@ namespace MangaRipper.Plugin.Batoto
             var downloader = new DownloadService
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referer = "http://bato.to/reader"
+                Referrer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
 
@@ -75,7 +75,7 @@ namespace MangaRipper.Plugin.Batoto
             var downloader = new DownloadService
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referer = "http://bato.to/reader"
+                Referrer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
 

@@ -24,6 +24,7 @@ namespace MangaRipper.Test
         [TestCleanup]
         public void Cleanup()
         {
+
         }
 
         [TestMethod]
@@ -161,9 +162,10 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
-
         [TestMethod]
-        //[Ignore]
+#if !DEBUG
+        [Ignore]
+#endif
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
