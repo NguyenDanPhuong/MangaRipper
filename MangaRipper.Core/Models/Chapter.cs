@@ -9,13 +9,13 @@ namespace MangaRipper.Core.Models
         public string OriginalName { get; }
         public int Prefix { get; set; }
 
-        public string Name => Prefix > 0 ? $"[{Prefix:000}] - {OriginalName.RemoveFileNameInvalidChar()}" : OriginalName.RemoveFileNameInvalidChar();
+        public string Name => Prefix > 0 ? $"[{Prefix:000}] {OriginalName.RemoveFileNameInvalidChar()}" : OriginalName.RemoveFileNameInvalidChar();
 
         public string Url { get;}
 
-        public Chapter(string name, string url)
+        public Chapter(string originalName, string url)
         {
-            OriginalName = name;
+            OriginalName = originalName;
             Url = url;
         }
 
