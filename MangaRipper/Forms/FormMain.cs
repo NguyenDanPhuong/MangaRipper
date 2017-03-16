@@ -226,13 +226,21 @@ namespace MangaRipper.Forms
         {
             if (Application.ProductVersion == "1.0.0.0")
                 return;
+
             var latestVersion = await UpdateNotification.GetLatestVersion();
             if (UpdateNotification.GetLatestBuildNumber(latestVersion) >
                 UpdateNotification.GetLatestBuildNumber(Application.ProductVersion))
             {
                 Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
-                MessageBox.Show($"There's new version ({latestVersion}). Click OK to open download page.");
-                Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
+                                
+                if (MessageBox.Show(
+                    $"There's a new version: ({latestVersion}) - Click OK to open download page.",
+                    Application.ProductName,
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                {
+                    Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
+                }
             }
         }
 

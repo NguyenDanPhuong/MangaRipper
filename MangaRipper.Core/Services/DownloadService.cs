@@ -22,7 +22,7 @@ namespace MangaRipper.Core.Services
         public CookieCollection Cookies { get; set; }
 
         public string Referrer { get; set; }
-
+        
         private HttpClient CreateRequest()
         {
             var firstHandle = new HttpClientHandler

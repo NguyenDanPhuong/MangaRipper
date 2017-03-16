@@ -34,6 +34,7 @@ namespace MangaRipper.Plugin.MangaFox
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
             var downloader = new DownloadService();
+
             var parser = new ParserHelper();
 
             // find all chapters in a manga
@@ -42,8 +43,8 @@ namespace MangaRipper.Plugin.MangaFox
             progress.Report(100);
             return chaps;
         }
-
-        public override async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        
+        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new DownloadService();
