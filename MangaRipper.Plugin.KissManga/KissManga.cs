@@ -9,15 +9,31 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.PhantomJS;
+using OpenQA.Selenium.Support.Extensions;
+using OpenQA.Selenium.Support.UI;
 
 namespace MangaRipper.Plugin.KissManga
 {
     /// <summary>
     /// Support find chapters and images from KissManga
     /// </summary>
-    public class KissManga : MangaService
+    public class KissManga : MangaService, IDisposable
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private IWebDriver WebDriver;
+        private WebDriverWait Wait;
+
+        public KissManga()
+        {
+            var serviceJs = PhantomJSDriverService.CreateDefaultService();
+            serviceJs.HideCommandPromptWindow = true;
+            WebDriver = new PhantomJSDriver(serviceJs);
+            WebDriver.Navigate().GoToUrl("http://kissmanga.com/");
+            Wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(15));
+            Wait.Until(ExpectedConditions.TitleContains("KissManga"));
+        }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -34,21 +50,17 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
-            var parser = new ParserHelper();
-
-            // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url);
-            var pages = parser.Parse("lstImages.push\\(\"(?<Value>.[^\"]*)\"\\)", input, "Value");
-
-            // transform pages link
-            pages = pages.Select(p =>
-            {
-                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
-                return value;
-            }).ToList();
-
-            return pages;
+            progress.Report(0);
+            WebDriver.Navigate().GoToUrl(chapter.Url);
+            Wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//select[@id='selectReadType']")));
+            progress.Report(50);
+            var selectTag = WebDriver.FindElement(By.XPath("//select[@id='selectReadType']"));
+            var s = new SelectElement(selectTag);
+            s.SelectByText("All pages");
+            Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@id='divImage']")));
+            var images = WebDriver.FindElements(By.XPath("//p/img[@onload][@src]"));
+            progress.Report(100);
+            return images.Select(i => i.GetAttribute("src"));
         }
 
         public override SiteInformation GetInformation()
@@ -73,6 +85,11 @@ namespace MangaRipper.Plugin.KissManga
             }
 
             return new Chapter(name, urle.AbsoluteUri);
+        }
+
+        public void Dispose()
+        {
+            WebDriver.Quit();
         }
     }
 }
