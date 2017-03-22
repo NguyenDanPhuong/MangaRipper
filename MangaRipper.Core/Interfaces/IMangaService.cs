@@ -20,7 +20,7 @@ namespace MangaRipper.Core.Interfaces
 
         /// <summary>
         /// Is a link is from this service.
-        /// If it's. We can use this service to fetch chapters and download
+        /// If it is. We can use this service to fetch chapters and download
         /// </summary>
         /// <param name="link"></param>
         /// <returns></returns>
@@ -42,6 +42,6 @@ namespace MangaRipper.Core.Interfaces
         /// <param name="progress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken);
+        Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

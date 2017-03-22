@@ -1,10 +1,11 @@
-﻿using NLog;
+﻿using CloudFlareUtilities;
+using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,20 +21,27 @@ namespace MangaRipper.Core.Services
 
         public CookieCollection Cookies { get; set; }
 
-        public string Referer { get; set; }
-
-        private HttpWebRequest CreateRequest(string url)
+        public string Referrer { get; set; }
+        
+        private HttpClient CreateRequest()
         {
-            var uri = new Uri(url);
-            var request = WebRequest.CreateHttp(uri);
-            request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            request.Credentials = CredentialCache.DefaultCredentials;
-            request.Referer = Referer;
-            if (Cookies != null)
+            var firstHandle = new HttpClientHandler
             {
-                request.CookieContainer = new CookieContainer();
-                request.CookieContainer.Add(Cookies);
-            }
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                Credentials = CredentialCache.DefaultCredentials,
+                AllowAutoRedirect = false,
+                CookieContainer = new CookieContainer()
+            };
+
+            if (Cookies != null)
+                firstHandle.CookieContainer.Add(Cookies);
+
+            var cloudFlareHandler = new ClearanceHandler(firstHandle);
+            var request = new HttpClient(cloudFlareHandler);
+            if (Referrer != null)
+                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
+
+            // Add the Headers for "User Agent"
             return request;
         }
 
@@ -44,17 +52,8 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url)
         {
-            Logger.Info("> DownloadStringAsync(String): {0}", url);
-            var request = CreateRequest(url);
-            using (var response = (HttpWebResponse)await request.GetResponseAsync())
-            {
-                using (var responseStream = response.GetResponseStream())
-                {
-                    Debug.Assert(responseStream != null, "responseStream != null");
-                    var streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                    return await streamReader.ReadToEndAsync();
-                }
-            }
+            Logger.Info("> DownloadStringAsync: {0}", url);
+            return await WorkWithStreams(url);
         }
 
         /// <summary>
@@ -91,15 +90,30 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
-            Logger.Info("> DownloadFileAsync: {0} - {1}", url, fileName);
-            var request = CreateRequest(url);
-            using (var response = (HttpWebResponse)await request.GetResponseAsync())
+            Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
+            var result = await WorkWithStreams(url, fileName, cancellationToken);
+            Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
+        }
+
+        private async Task<string> WorkWithStreams(string url, string fileName = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var request = CreateRequest();
+
+            using (var response = await request.GetAsync(url))
             {
-                using (var responseStream = response.GetResponseStream())
-                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                if (string.IsNullOrWhiteSpace(fileName))
                 {
-                    Debug.Assert(responseStream != null, "responseStream != null");
-                    await responseStream.CopyToAsync(streamReader, 81920, cancellationToken);
+                    // Get the html from site
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    //Download the file
+                    using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                    {
+                        await response.Content.CopyToAsync(streamReader);
+                        return response.StatusCode.ToString();
+                    }
                 }
             }
         }

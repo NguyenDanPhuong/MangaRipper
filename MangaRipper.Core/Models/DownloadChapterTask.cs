@@ -10,7 +10,6 @@ namespace MangaRipper.Core.Models
     /// </summary>
     public class DownloadChapterTask
     {
-        #region ToRemove?
         public string Name => Chapter.Name;
         public string Url => Chapter.Url;
         public string PropFormats
@@ -21,7 +20,6 @@ namespace MangaRipper.Core.Models
                 return string.Join(", ", s);
             }
         }
-        #endregion
 
         public Chapter Chapter { get; private set; }
         public string SaveToFolder { get; private set; }

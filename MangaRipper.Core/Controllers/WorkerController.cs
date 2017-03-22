@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaRipper.Core.Extensions;
 
 namespace MangaRipper.Core.Controllers
 {
@@ -22,6 +23,8 @@ namespace MangaRipper.Core.Controllers
 
         CancellationTokenSource _source;
         readonly SemaphoreSlim _sema;
+
+        private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
         public WorkerController()
         {
@@ -69,8 +72,6 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
-
-
         /// <summary>
         /// Find all chapters of a manga
         /// </summary>
@@ -104,7 +105,7 @@ namespace MangaRipper.Core.Controllers
             var chapter = task.Chapter;
             progress.Report(0);
             var service = FrameworkProvider.GetService(chapter.Url);
-            var images = await service.FindImanges(chapter, new Progress<int>(count =>
+            var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
             }), _source.Token);
@@ -114,16 +115,20 @@ namespace MangaRipper.Core.Controllers
 
             await DownloadImages(images, tempFolder, progress);
 
-            var folderName = chapter.NomalizeName;
+            var folderName = chapter.Name;
             var finalFolder = Path.Combine(mangaLocalPath, folderName);
 
             if (task.Formats.Contains(OutputFormat.Folder))
             {
-                Directory.Move(tempFolder, finalFolder);
+                if (!Directory.Exists(finalFolder))
+                {
+                    Directory.CreateDirectory(finalFolder);
+                }
+                ExtensionHelper.SuperMove(tempFolder, finalFolder);
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
-                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
             }
 
             progress.Report(100);
@@ -137,18 +142,18 @@ namespace MangaRipper.Core.Controllers
             var countImage = 0;
             foreach (var image in images)
             {
-                await DownloadImage(image, destination);
+                await DownloadImage(image, destination, countImage);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
             }
         }
 
-        private async Task DownloadImage(string image, string destination)
+        private async Task DownloadImage(string image, string destination, int imageNum)
         {
             var downloader = new DownloadService();
             string tempFilePath = Path.GetTempFileName();
-            string filePath = Path.Combine(destination, GetFilenameFromUrl(image));
+            string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
             if (!File.Exists(filePath))
             {
                 await downloader.DownloadFileAsync(image, tempFilePath, _source.Token);
@@ -156,11 +161,36 @@ namespace MangaRipper.Core.Controllers
             }
         }
 
-
-        private string GetFilenameFromUrl(string url)
+        /// <summary>
+        /// Use the name from URL, or use the numbers if name is unappropriated
+        /// </summary>
+        /// <param name="url">Image URL</param>
+        /// <param name="imageNum">image's order</param>
+        /// <returns></returns>
+        private string GetFilenameFromUrl(string url, int imageNum)
         {
             var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
+            var path = Path.GetFileName(uri.LocalPath);
+            var nameInParam = false;
+
+            // if everything in parameters and path is incorrect
+            // e.g. https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000
+            string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
+            if (extension == null)
+            {
+                nameInParam = true;
+                extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
+            }
+
+            // Some names - just a gibberish text which is TOO LONG
+            // e.g. MG09qjYxsb3sFsrMt_lTn7f9ulfgcbusQjS5wypyy0aGn0sjL7hZHQhXuS-dXZNn0tuWvdBgKICQ8WI9RFGAgNNpdYglvFdwhJZC7qiClhvEd9toNLpLky19HRRZmSFbv3zq5lw=s0?title=000_1485859774.png
+            if (uri.LocalPath.Length > 50 || nameInParam)
+            {
+                imageNum++;
+                path = imageNum.ToString("0000") + "." + extension;
+            }
+
+            return path;
         }
 
 

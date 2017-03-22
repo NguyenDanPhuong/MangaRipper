@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using MangaRipper.Core.Models;
 using Newtonsoft.Json;
 using NLog;
@@ -29,7 +30,7 @@ namespace MangaRipper.Helpers
 
         public IEnumerable<string> LoadBookMarks()
         {
-            return LoadObject<List<string>>(BookmarksFile);
+            return LoadObject<List<string>>(BookmarksFile).OrderBy(s => s);
         }
 
         public void SaveBookmarks(IEnumerable<string> bookmarks)

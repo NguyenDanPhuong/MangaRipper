@@ -6,17 +6,18 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Plugin.MangaReader
+namespace MangaRipper.Plugin.KissManga
 {
     /// <summary>
-    /// Support find chapters and images from MangaReader
+    /// Support find chapters and images from KissManga
     /// </summary>
-    public class MangaReader : MangaService
+    public class KissManga : MangaService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -25,15 +26,12 @@ namespace MangaRipper.Plugin.MangaReader
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
-            // reverse chapters order and remove duplicated chapters in latest section
-            chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
-            // transform pages link
-            chaps = chaps.Select(c => new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri)).ToList();
+            var chaps = parser.ParseGroup("<td>\\s+<a\\s+href=\"(?=/Manga/)(?<Value>.[^\"]*)\"\\s+title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value");
+            chaps = chaps.Select(c => NameResolver(c.Name, c.Url, new Uri(manga)));
             progress.Report(100);
             return chaps;
         }
-        
+
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
@@ -41,7 +39,7 @@ namespace MangaRipper.Plugin.MangaReader
 
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
+            var pages = parser.Parse("lstImages.push\\(\"(?<Value>.[^\"]*)\"\\)", input, "Value");
 
             // transform pages link
             pages = pages.Select(p =>
@@ -50,28 +48,31 @@ namespace MangaRipper.Plugin.MangaReader
                 return value;
             }).ToList();
 
-            // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
-            {
-                var f = (float)count / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
-            }), cancellationToken);
-            var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
-
-            return images;
+            return pages;
         }
-
 
         public override SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaReader), "http://www.mangareader.net", "English");
+            return new SiteInformation("KissManga", "http://kissmanga.com/", "English");
         }
 
         public override bool Of(string link)
         {
-            var uri = new Uri(link);
-            return uri.Host.Equals("www.mangareader.net");
+            return new Uri(link).Host.Equals("kissmanga.com");
+        }
+
+        private Chapter NameResolver(string name, string value, Uri adress)
+        {
+            var urle = new Uri(adress, value);
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = System.Net.WebUtility.HtmlDecode(name);
+                name = Regex.Replace(name, "^Read\\s+|\\s+online$|:", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                name = Regex.Replace(name, "\\s+Read\\s+Online$", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            }
+
+            return new Chapter(name, urle.AbsoluteUri);
         }
     }
 }

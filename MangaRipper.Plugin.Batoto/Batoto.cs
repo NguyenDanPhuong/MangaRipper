@@ -17,13 +17,13 @@ namespace MangaRipper.Plugin.Batoto
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    public class Batoto : IMangaService
+    public class Batoto : MangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _username = "gufrohepra";
         private string _password = "123";
 
-        void IMangaService.Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
             var settingCollection = settings.ToArray();
             if (settingCollection.Any(i => i.Key.Equals("Username")))
@@ -41,24 +41,24 @@ namespace MangaRipper.Plugin.Batoto
             }
         }
 
-        public SiteInformation GetInformation()
+        public override SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
         }
 
-        public bool Of(string link)
+        public override bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("bato.to");
         }
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new DownloadService
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referer = "http://bato.to/reader"
+                Referrer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
 
@@ -68,14 +68,14 @@ namespace MangaRipper.Plugin.Batoto
             progress.Report(100);
             return chaps;
         }
-
-        public async Task<IEnumerable<string>> FindImanges(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        
+        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new DownloadService
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referer = "http://bato.to/reader"
+                Referrer = "http://bato.to/reader"
             };
             var parser = new ParserHelper();
 

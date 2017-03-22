@@ -2,9 +2,7 @@
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Services;
 using NLog;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using MangaRipper.Core.CustomException;
 using MangaRipper.Core.Models;

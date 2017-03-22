@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Models;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,6 +14,8 @@ namespace MangaRipper.Core.Helpers
     public class ParserHelper
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public delegate Chapter ChapterResolverHandler(string name, string value, Uri adress);
 
         /// <summary>
         /// Looking for chapter information in html code.
@@ -44,7 +47,7 @@ namespace MangaRipper.Core.Helpers
                 list.Add(chapter);
             }
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
             return result;
         }
 
@@ -70,7 +73,7 @@ namespace MangaRipper.Core.Helpers
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There're {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
             return result;
         }
       

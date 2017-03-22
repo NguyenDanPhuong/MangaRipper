@@ -37,10 +37,7 @@ namespace MangaRipper.Forms
                 var progressInt = new Progress<int>(progress => txtPercent.Text = progress + @"%");
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters.ToList();
-                if (checkBoxForPrefix.Checked)
-                {
-                    PrefixLogic(); // in case if tick is set
-                }
+                PrefixLogic();
             }
             catch (OperationCanceledException ex)
             {
@@ -67,6 +64,7 @@ namespace MangaRipper.Forms
                 return;
             }
             var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as Chapter).ToList();
+            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
                 _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
@@ -80,8 +78,9 @@ namespace MangaRipper.Forms
                 MessageBox.Show("Please select at least one output formats (Folder, Cbz...)");
                 return;
             }
-          
-            var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter) row.DataBoundItem).ToList();
+
+            var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter)row.DataBoundItem).ToList();
+            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
                 _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
@@ -199,10 +198,17 @@ namespace MangaRipper.Forms
 
             Text = $@"{Application.ProductName} {Application.ProductVersion}";
 
-            foreach (var service in FrameworkProvider.GetMangaServices())
+            try
             {
-                var infor = service.GetInformation();
-                dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
+                foreach (var service in FrameworkProvider.GetMangaServices())
+                {
+                    var infor = service.GetInformation();
+                    dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
             }
 
             if (string.IsNullOrEmpty(txtSaveTo.Text))
@@ -220,13 +226,21 @@ namespace MangaRipper.Forms
         {
             if (Application.ProductVersion == "1.0.0.0")
                 return;
+
             var latestVersion = await UpdateNotification.GetLatestVersion();
             if (UpdateNotification.GetLatestBuildNumber(latestVersion) >
                 UpdateNotification.GetLatestBuildNumber(Application.ProductVersion))
             {
                 Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
-                MessageBox.Show($"There's new version ({latestVersion}). Click OK to open download page.");
-                Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
+                                
+                if (MessageBox.Show(
+                    $"There's a new version: ({latestVersion}) - Click OK to open download page.",
+                    Application.ProductName,
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                {
+                    Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
+                }
             }
         }
 
@@ -295,9 +309,8 @@ namespace MangaRipper.Forms
         private void PrefixLogic()
         {
             var chapters = (from DataGridViewRow row in dgvChapter.Rows select row.DataBoundItem as Chapter).ToList();
-            chapters = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(chapters).ToList();
             chapters.Reverse();
-            chapters.ForEach(r => r.AddPrefix(chapters.IndexOf(r) + 1, checkBoxForPrefix.Checked));
+            chapters.ForEach(r => r.Prefix = checkBoxForPrefix.Checked ? chapters.IndexOf(r) + 1 : 0);
             chapters.Reverse();
             dgvChapter.DataSource = chapters;
         }
