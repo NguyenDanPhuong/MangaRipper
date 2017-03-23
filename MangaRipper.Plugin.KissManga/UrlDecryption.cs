@@ -19,7 +19,7 @@ namespace MangaRipper.Plugin.KissManga
         /// <param name="iv"></param>
         /// <param name="keybytes"></param>
         /// <returns></returns>
-        static public string DecryptStringAES(string cipherText, string iv, byte[] keybytes)
+        static internal string DecryptStringAES(string cipherText, string iv, byte[] keybytes)
         {
             var ivbytes = Enumerable.Range(0, iv.Length)
                      .Where(x => x % 2 == 0)
@@ -30,7 +30,6 @@ namespace MangaRipper.Plugin.KissManga
             var decriptedFromJavascript = DecryptStringFromBytes(encrypted, keybytes, ivbytes);
             return string.Format(decriptedFromJavascript);
         }
-
 
         static private string DecryptStringFromBytes(byte[] cipherText, byte[] key, byte[] iv)
         {
@@ -59,7 +58,7 @@ namespace MangaRipper.Plugin.KissManga
             // with the specified key and IV.  
             using (var rijAlg = new RijndaelManaged())
             {
-                //Settings
+                // Settings
                 rijAlg.Mode = CipherMode.CBC;
                 rijAlg.Padding = PaddingMode.PKCS7;
                 rijAlg.FeedbackSize = 128;
@@ -97,7 +96,12 @@ namespace MangaRipper.Plugin.KissManga
             return plaintext;
         }
 
-        static public byte[] ReturnShaKeyBytes(string cipherText)
+        /// <summary>
+        /// They are using SHA256
+        /// </summary>
+        /// <param name="cipherText"></param>
+        /// <returns></returns>
+        static internal byte[] ReturnShaKeyBytes(string cipherText)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(cipherText);
             SHA256Managed hashstring = new SHA256Managed();
@@ -109,13 +113,12 @@ namespace MangaRipper.Plugin.KissManga
         /// </summary>
         /// <param name="hex">Text as "\\x2E\\x0E"</param>
         /// <returns></returns>
-        static public string FromHexToString(string hex)
+        static internal string FromHexToString(string hex)
         {
             // because first element will be empty
             var hexEncode = hex.Replace(@"\", string.Empty).Substring(1).Split('x');
 
             var sb = new StringBuilder();
-
             foreach (string liter in hexEncode)
             {
                 int value = Convert.ToInt32(liter, 16);
