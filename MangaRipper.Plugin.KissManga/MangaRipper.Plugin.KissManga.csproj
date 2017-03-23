@@ -64,10 +64,7 @@
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\" mkdir "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"
-copy /Y "$(TargetDir)WebDriver.dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\WebDriver.dll"
-copy /Y "$(TargetDir)WebDriver.Support.dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\WebDriver.Support.dll"
-copy /Y "$(TargetDir)phantomjs.exe" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\phantomjs.exe"</PostBuildEvent>
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
