@@ -19,7 +19,7 @@ namespace MangaRipper.Plugin.KissManga
     /// <summary>
     /// Support find chapters and images from KissManga
     /// </summary>
-    public class KissManga : MangaService, IDisposable
+    public class KissManga : MangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private IWebDriver WebDriver;
@@ -27,12 +27,18 @@ namespace MangaRipper.Plugin.KissManga
 
         public KissManga()
         {
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
             var serviceJs = PhantomJSDriverService.CreateDefaultService();
             serviceJs.HideCommandPromptWindow = true;
             WebDriver = new PhantomJSDriver(serviceJs);
             WebDriver.Navigate().GoToUrl("http://kissmanga.com/");
             Wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(15));
             Wait.Until(ExpectedConditions.TitleContains("KissManga"));
+        }
+
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            WebDriver.Quit();
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
@@ -58,6 +64,7 @@ namespace MangaRipper.Plugin.KissManga
             var s = new SelectElement(selectTag);
             s.SelectByText("All pages");
             Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@id='divImage']")));
+            Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//p/img[@onload][@src]")));
             var images = WebDriver.FindElements(By.XPath("//p/img[@onload][@src]"));
             progress.Report(100);
             return images.Select(i => i.GetAttribute("src"));
@@ -85,11 +92,6 @@ namespace MangaRipper.Plugin.KissManga
             }
 
             return new Chapter(name, urle.AbsoluteUri);
-        }
-
-        public void Dispose()
-        {
-            WebDriver.Quit();
         }
     }
 }
