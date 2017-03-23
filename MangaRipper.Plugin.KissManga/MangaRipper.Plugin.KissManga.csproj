@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="KissManga.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlDecryption.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">

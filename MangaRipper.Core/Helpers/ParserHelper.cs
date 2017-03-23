@@ -73,7 +73,7 @@ namespace MangaRipper.Core.Helpers
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count} item(s).");
             return result;
         }
       
