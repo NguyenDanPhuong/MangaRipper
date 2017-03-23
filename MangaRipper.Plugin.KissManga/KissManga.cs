@@ -5,6 +5,7 @@ using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -64,10 +65,11 @@ namespace MangaRipper.Plugin.KissManga
             var s = new SelectElement(selectTag);
             s.SelectByText("All pages");
             Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@id='divImage']")));
-            Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//p/img[@onload][@src]")));
+            Wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.XPath("//p/img[@onload][@src]")));
             var images = WebDriver.FindElements(By.XPath("//p/img[@onload][@src]"));
+            var urls = images.Select(i => i.GetAttribute("src"));
             progress.Report(100);
-            return images.Select(i => i.GetAttribute("src"));
+            return urls;
         }
 
         public override SiteInformation GetInformation()
