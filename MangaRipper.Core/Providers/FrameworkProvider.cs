@@ -18,8 +18,6 @@ namespace MangaRipper.Core.Providers
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static IEnumerable<IMangaService> _services;
         private static WorkerController _worker;
-        private static PluginService _plugins;
-        private static Configuration _config;
 
         /// <summary>
         /// Initialization services.
@@ -27,10 +25,10 @@ namespace MangaRipper.Core.Providers
         public static void Init(string pluginPath, string configFile)
         {
             Logger.Info("> Framework.Init()");
+            var _config = new Configuration(configFile);
+            var _plugins = new PluginService(pluginPath, _config);
             _worker = new WorkerController();
-            _config = new Configuration(configFile);
-            _plugins = new PluginService(pluginPath, _config);
-            _services = _plugins.LoadWebPlugins();
+            _services = _plugins.LoadWebPlugins();            
         }
 
         /// <summary>

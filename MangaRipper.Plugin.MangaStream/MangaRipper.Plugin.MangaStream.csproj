@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}</ProjectGuid>
+    <ProjectGuid>{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MangaRipper.Plugin.KissManga</RootNamespace>
-    <AssemblyName>MangaRipper.Plugin.KissManga</AssemblyName>
+    <RootNamespace>MangaRipper.Plugin.MangaStream</RootNamespace>
+    <AssemblyName>MangaRipper.Plugin.MangaStream</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,7 +36,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,9 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KissManga.cs" />
+    <Compile Include="MangaStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="KissMangaTextDecryption.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
@@ -56,9 +54,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

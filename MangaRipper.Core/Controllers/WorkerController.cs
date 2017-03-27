@@ -105,7 +105,7 @@ namespace MangaRipper.Core.Controllers
             var chapter = task.Chapter;
             progress.Report(0);
             var service = FrameworkProvider.GetService(chapter.Url);
-            var images = await service.FindImanges(chapter, new Progress<int>(count =>
+            var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
             }), _source.Token);
@@ -115,7 +115,7 @@ namespace MangaRipper.Core.Controllers
 
             await DownloadImages(images, tempFolder, progress);
 
-            var folderName = chapter.NomalizeName;
+            var folderName = chapter.Name;
             var finalFolder = Path.Combine(mangaLocalPath, folderName);
 
             if (task.Formats.Contains(OutputFormat.Folder))
@@ -128,7 +128,7 @@ namespace MangaRipper.Core.Controllers
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
-                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.NomalizeName + ".cbz"));
+                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
             }
 
             progress.Report(100);
@@ -178,7 +178,7 @@ namespace MangaRipper.Core.Controllers
             string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
             if (extension == null)
             {
-                nameInParam = !nameInParam;
+                nameInParam = true;
                 extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
             }
 
