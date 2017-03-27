@@ -1,19 +1,15 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium;
-using OpenQA.Selenium.PhantomJS;
-using OpenQA.Selenium.Support.Extensions;
-using OpenQA.Selenium.Support.UI;
 
 namespace MangaRipper.Plugin.KissManga
 {
@@ -23,23 +19,32 @@ namespace MangaRipper.Plugin.KissManga
     public class KissManga : MangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private IWebDriver WebDriver;
-        private WebDriverWait Wait;
+        private string _iv = "a5e8e2e9c2721be0a84ad660c472c1f3";
+        private string _chko = "72nnasdasd9asdn123";
+
+        private KissMangaTextDecryption _decryptor;
 
         public KissManga()
         {
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
-            var serviceJs = PhantomJSDriverService.CreateDefaultService();
-            serviceJs.HideCommandPromptWindow = true;
-            WebDriver = new PhantomJSDriver(serviceJs);
-            WebDriver.Navigate().GoToUrl("http://kissmanga.com/");
-            Wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(15));
-            Wait.Until(ExpectedConditions.TitleContains("KissManga"));
+            _decryptor = new KissMangaTextDecryption(_iv, _chko);
         }
 
-        private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
-            WebDriver.Quit();
+            var settingCollection = settings.ToArray();
+            if (settingCollection.Any(i => i.Key.Equals("IV")))
+            {
+                var iv = settingCollection.First(i => i.Key.Equals("IV")).Value;
+                _logger.Info($@"Current IV: {_iv}. New IV: {iv}");
+                _iv = iv as string;
+            }
+            if (settingCollection.Any(i => i.Key.Equals("Chko")))
+            {
+                var chko = settingCollection.First(i => i.Key.Equals("Chko")).Value;
+                _logger.Info($@"Current Chko: {_chko}. New Chko: {chko}");
+                _chko = chko as string;
+            }
+            _decryptor = new KissMangaTextDecryption(_iv, _chko);
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
@@ -57,19 +62,18 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            WebDriver.Navigate().GoToUrl(chapter.Url);
-            Wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//select[@id='selectReadType']")));
-            progress.Report(50);
-            var selectTag = WebDriver.FindElement(By.XPath("//select[@id='selectReadType']"));
-            var s = new SelectElement(selectTag);
-            s.SelectByText("All pages");
-            Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@id='divImage']")));
-            Wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.XPath("//p/img[@onload][@src]")));
-            var images = WebDriver.FindElements(By.XPath("//p/img[@onload][@src]"));
-            var urls = images.Select(i => i.GetAttribute("src"));
-            progress.Report(100);
-            return urls;
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
+            string input = await downloader.DownloadStringAsync(chapter.Url);
+            var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
+            var pages = encryptPages.Select(e => _decryptor.DecryptFromBase64(e));
+            // transform pages link
+            pages = pages.Select(p =>
+            {
+                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
+                return value;
+            }).ToList();
+            return pages;
         }
 
         public override SiteInformation GetInformation()
@@ -85,14 +89,12 @@ namespace MangaRipper.Plugin.KissManga
         private Chapter NameResolver(string name, string value, Uri adress)
         {
             var urle = new Uri(adress, value);
-
             if (!string.IsNullOrWhiteSpace(name))
             {
                 name = System.Net.WebUtility.HtmlDecode(name);
-                name = Regex.Replace(name, "^Read\\s+|\\s+online$|:", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                name = Regex.Replace(name, "\\s+Read\\s+Online$", "", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                name = Regex.Replace(name, "^Read\\s+|\\s+online$|:", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                name = Regex.Replace(name, "\\s+Read\\s+Online$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             }
-
             return new Chapter(name, urle.AbsoluteUri);
         }
     }

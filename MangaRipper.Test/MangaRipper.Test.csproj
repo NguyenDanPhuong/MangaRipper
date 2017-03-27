@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="KissMangaDecryptionTest.cs" />
     <Compile Include="WinForm.cs" />
   </ItemGroup>
   <ItemGroup>
