@@ -4,10 +4,10 @@ This software helps you download manga (Japanese Comic) from several websites fo
 
 | BRANCH | STATUS |
 | --- | --- |
-| MASTER | [![Build status](https://ci.appveyor.com/api/projects/status/92scfmfbep7b9ieo/branch/master?svg=true)](https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper/branch/master) |
-| DEVELOP | [![Build status](https://ci.appveyor.com/api/projects/status/92scfmfbep7b9ieo/branch/develop?svg=true)](https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper/branch/develop) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/92scfmfbep7b9ieo/branch/master?svg=true)](https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper/branch/master) |
+| develop | [![Build status](https://ci.appveyor.com/api/projects/status/92scfmfbep7b9ieo/branch/develop?svg=true)](https://ci.appveyor.com/project/NguyenDanPhuong/mangaripper/branch/develop) |
 
-### Supported sites:
+### SUPPORTED SITES:
 - KissManga
 - MangaFox
 - MangaHere
