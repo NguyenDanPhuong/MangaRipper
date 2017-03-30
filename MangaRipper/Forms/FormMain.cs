@@ -21,6 +21,26 @@ namespace MangaRipper.Forms
         private BindingList<DownloadChapterTask> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
+        private string SaveDestination
+        {
+            get
+            {
+                if (rdSeriesDestination.Checked)
+                    return lbSeriesDestination.Text;
+
+                else
+                    return lbDefaultDestination.Text;
+            }
+            set
+            {
+                if (rdSeriesDestination.Checked)
+                    lbSeriesDestination.Text = value;
+
+                else
+                    lbDefaultDestination.Text = value;
+            }
+        }
+
         public FormMain()
         {
             InitializeComponent();
@@ -67,7 +87,7 @@ namespace MangaRipper.Forms
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
+                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
@@ -83,7 +103,7 @@ namespace MangaRipper.Forms
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, txtSaveTo.Text, formats));
+                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -165,15 +185,26 @@ namespace MangaRipper.Forms
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
         {
-            folderBrowserDialog1.SelectedPath = txtSaveTo.Text;
-            var dr = folderBrowserDialog1.ShowDialog(this);
+            saveDestinationDirectoryBrowser.SelectedPath = SaveDestination;
+
+            DialogResult dr = saveDestinationDirectoryBrowser.ShowDialog(this);
             if (dr == DialogResult.OK)
-                txtSaveTo.Text = folderBrowserDialog1.SelectedPath;
+            {
+                SaveDestination = saveDestinationDirectoryBrowser.SelectedPath;
+            }
+
         }
 
         private void btnOpenFolder_Click(object sender, EventArgs e)
         {
-            Process.Start(txtSaveTo.Text);
+            if (Directory.Exists(SaveDestination))
+            {
+                Process.Start(SaveDestination);
+            }
+            else
+            { 
+                MessageBox.Show($"Directory \"{SaveDestination}\" doesn't exist.");
+            }
         }
 
         private void dgvSupportedSites_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -188,7 +219,7 @@ namespace MangaRipper.Forms
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
-            txtSaveTo.Text = state.SaveTo;
+            lbDefaultDestination.Text = state.SaveTo;
             cbTitleUrl.Text = state.Url;
             cbSaveCbz.Checked = state.CbzChecked;
             checkBoxForPrefix.Checked = state.PrefixChecked;
@@ -210,9 +241,10 @@ namespace MangaRipper.Forms
             {
                 Logger.Error(ex, ex.Message);
             }
+            
+            if (string.IsNullOrWhiteSpace(SaveDestination))
+                lbDefaultDestination.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            if (string.IsNullOrEmpty(txtSaveTo.Text))
-                txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             _downloadQueue = _appConf.LoadDownloadChapterTasks();
             dgvQueueChapter.DataSource = _downloadQueue;
@@ -265,7 +297,7 @@ namespace MangaRipper.Forms
             }
 
             appConfig.Url = cbTitleUrl.Text;
-            appConfig.SaveTo = txtSaveTo.Text;
+            appConfig.SaveTo = lbDefaultDestination.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
             _appConf.SaveCommonSettings(appConfig);
@@ -342,5 +374,58 @@ namespace MangaRipper.Forms
         {
             Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
         }
+                
+        private void PrepareSpecificDirectory()
+        {
+            if (dgvChapter.RowCount == 0)
+                return;
+
+            // Todo: Introduce DefaultSaveDestination
+
+            string
+                defaultSeriesDestination = string.Empty, // Properties.Settings.Default.DefaultSaveDestination,
+                series = string.Empty,
+                path = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(cbTitleUrl.Text))
+            {
+                Uri seriesUri = null;
+
+                if (Uri.TryCreate(cbTitleUrl.Text, UriKind.Absolute, out seriesUri))
+                    series = seriesUri.ToString();
+
+                else
+                    series = cbTitleUrl.SelectedItem.ToString();
+            }
+            else
+            {
+                series = cbTitleUrl.Text;
+            }
+
+
+            if (string.IsNullOrWhiteSpace(series))
+            {
+                // Todo: Set series-specific directory path to default.
+                return;
+            }
+
+            if (string.IsNullOrEmpty(defaultSeriesDestination))
+                defaultSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            series = series.TrimEnd('/');
+            series = series.Substring(series.LastIndexOf('/') + 1);
+
+            var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
+            series = item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim();
+            path = Path.Combine(defaultSeriesDestination, series);
+
+            lbDestination.Text = path;
+            //lbSeriesDestination.Text = path;
+
+            if (Directory.Exists(path))
+                rdSeriesDestination.Checked = true;
+        }
+
+
     }
 }
