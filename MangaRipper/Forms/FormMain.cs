@@ -309,12 +309,13 @@ namespace MangaRipper.Forms
 
         private void FormMain_Paint(object sender, PaintEventArgs e)
         {
-            // Draw line separating the save destination and the options.
+            // Draw line separating the save destinations and the options.
 
-            int offSetX = Convert.ToInt32(dgvChapter.Width * 0.125);
+            int offSetX = Convert.ToInt32(dgvChapter.Width * 0.125),
+                y = rdSeriesDestination.Bottom + 15;
 
-            Point startingPoint = new Point(dgvChapter.Left + offSetX, rdSeriesDestination.Bottom + 15),
-                  endingPoint = new Point(dgvChapter.Right - offSetX, rdSeriesDestination.Bottom + 15);
+            Point startingPoint = new Point(dgvChapter.Left + offSetX, y),
+                  endingPoint = new Point(dgvChapter.Right - offSetX, y);
 
             e.Graphics.DrawLine(Pens.Gainsboro, startingPoint, endingPoint);
 
@@ -450,7 +451,7 @@ namespace MangaRipper.Forms
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim();
-            seriesPath = Path.Combine(baseSeriesDestination, series);
+            seriesPath = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(Path.Combine(baseSeriesDestination, series));
             
             lbSeriesDestination.Text = seriesPath;
 
