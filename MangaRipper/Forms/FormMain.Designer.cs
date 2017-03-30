@@ -409,14 +409,14 @@
             this.lbDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbDefaultDestination.AutoSize = true;
             this.lbDefaultDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbDefaultDestination.Location = new System.Drawing.Point(55, 323);
+            this.lbDefaultDestination.Location = new System.Drawing.Point(55, 319);
             this.lbDefaultDestination.MaximumSize = new System.Drawing.Size(385, 17);
-            this.lbDefaultDestination.MinimumSize = new System.Drawing.Size(380, 17);
+            this.lbDefaultDestination.MinimumSize = new System.Drawing.Size(64, 17);
             this.lbDefaultDestination.Name = "lbDefaultDestination";
-            this.lbDefaultDestination.Size = new System.Drawing.Size(380, 17);
+            this.lbDefaultDestination.Size = new System.Drawing.Size(118, 17);
             this.lbDefaultDestination.TabIndex = 34;
             this.lbDefaultDestination.Text = "Default Destination";
-            this.toolTip1.SetToolTip(this.lbDefaultDestination, "Saves the chapter to the default manga folder");
+            this.toolTip1.SetToolTip(this.lbDefaultDestination, "Saves chapters to the default manga folder");
             this.lbDefaultDestination.UseMnemonic = false;
             this.lbDefaultDestination.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbDefaultDestination_MouseClick);
             // 
@@ -425,14 +425,14 @@
             this.lbSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbSeriesDestination.AutoSize = true;
             this.lbSeriesDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbSeriesDestination.Location = new System.Drawing.Point(55, 358);
+            this.lbSeriesDestination.Location = new System.Drawing.Point(55, 354);
             this.lbSeriesDestination.MaximumSize = new System.Drawing.Size(380, 17);
-            this.lbSeriesDestination.MinimumSize = new System.Drawing.Size(380, 17);
+            this.lbSeriesDestination.MinimumSize = new System.Drawing.Size(64, 17);
             this.lbSeriesDestination.Name = "lbSeriesDestination";
-            this.lbSeriesDestination.Size = new System.Drawing.Size(380, 17);
+            this.lbSeriesDestination.Size = new System.Drawing.Size(160, 17);
             this.lbSeriesDestination.TabIndex = 35;
             this.lbSeriesDestination.Text = "Series Specific Destination";
-            this.toolTip1.SetToolTip(this.lbSeriesDestination, "Saves the chapter to the series\' folder");
+            this.toolTip1.SetToolTip(this.lbSeriesDestination, "Saves chapters to the series\' folder");
             this.lbSeriesDestination.UseMnemonic = false;
             this.lbSeriesDestination.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbSeriesDestination_MouseClick);
             // 
@@ -474,7 +474,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.cbSaveFolder);
             this.groupBox1.Controls.Add(this.cbSaveCbz);
-            this.groupBox1.Location = new System.Drawing.Point(12, 401);
+            this.groupBox1.Location = new System.Drawing.Point(102, 397);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(118, 41);
             this.groupBox1.TabIndex = 29;
@@ -485,7 +485,7 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.checkBoxForPrefix);
-            this.groupBox2.Location = new System.Drawing.Point(136, 401);
+            this.groupBox2.Location = new System.Drawing.Point(226, 397);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(120, 41);
             this.groupBox2.TabIndex = 30;
@@ -563,7 +563,7 @@
             this.rdDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.rdDefaultDestination.AutoSize = true;
             this.rdDefaultDestination.Checked = true;
-            this.rdDefaultDestination.Location = new System.Drawing.Point(35, 326);
+            this.rdDefaultDestination.Location = new System.Drawing.Point(35, 322);
             this.rdDefaultDestination.Name = "rdDefaultDestination";
             this.rdDefaultDestination.Size = new System.Drawing.Size(14, 13);
             this.rdDefaultDestination.TabIndex = 32;
@@ -574,7 +574,7 @@
             // 
             this.rdSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.rdSeriesDestination.AutoSize = true;
-            this.rdSeriesDestination.Location = new System.Drawing.Point(35, 361);
+            this.rdSeriesDestination.Location = new System.Drawing.Point(35, 357);
             this.rdSeriesDestination.Name = "rdSeriesDestination";
             this.rdSeriesDestination.Size = new System.Drawing.Size(14, 13);
             this.rdSeriesDestination.TabIndex = 33;
@@ -585,7 +585,7 @@
             this.lbDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbDestination.AutoSize = true;
             this.lbDestination.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbDestination.Location = new System.Drawing.Point(11, 291);
+            this.lbDestination.Location = new System.Drawing.Point(11, 288);
             this.lbDestination.Name = "lbDestination";
             this.lbDestination.Size = new System.Drawing.Size(123, 20);
             this.lbDestination.TabIndex = 26;
@@ -629,6 +629,7 @@
             this.Name = "FormMain";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FormMain_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).EndInit();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -304,6 +305,19 @@ namespace MangaRipper.Forms
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
             _appConf.SaveCommonSettings(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
+        }
+
+        private void FormMain_Paint(object sender, PaintEventArgs e)
+        {
+            // Draw line separating the save destination and the options.
+
+            int offSetX = Convert.ToInt32(dgvChapter.Width * 0.125);
+
+            Point startingPoint = new Point(dgvChapter.Left + offSetX, rdSeriesDestination.Bottom + 15),
+                  endingPoint = new Point(dgvChapter.Right - offSetX, rdSeriesDestination.Bottom + 15);
+
+            e.Graphics.DrawLine(Pens.Gainsboro, startingPoint, endingPoint);
+
         }
 
         private void LoadBookmark()
