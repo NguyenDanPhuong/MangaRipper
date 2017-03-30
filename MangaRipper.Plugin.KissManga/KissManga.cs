@@ -20,7 +20,7 @@ namespace MangaRipper.Plugin.KissManga
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private string _iv = "a5e8e2e9c2721be0a84ad660c472c1f3";
-        private string _chko = "72nnasdasd9asdn123";
+        private string _chko = "nsfd732nsdnds823nsdf";
 
         private KissMangaTextDecryption _decryptor;
 

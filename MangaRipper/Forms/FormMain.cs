@@ -450,8 +450,8 @@ namespace MangaRipper.Forms
             series = series.Substring(series.LastIndexOf('/') + 1);
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
-            series = item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim();
-            seriesPath = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(Path.Combine(baseSeriesDestination, series));
+            series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
+            seriesPath = Path.Combine(baseSeriesDestination, series);
             
             lbSeriesDestination.Text = seriesPath;
 
