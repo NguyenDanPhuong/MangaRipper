@@ -58,6 +58,8 @@ namespace MangaRipper.Forms
                 var chapters = await worker.FindChapters(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters.ToList();
                 PrefixLogic();
+                PrepareSpecificDirectory();
+
             }
             catch (OperationCanceledException ex)
             {
@@ -80,7 +82,7 @@ namespace MangaRipper.Forms
             var formats = GetOutputFormats().ToArray();
             if (formats.Length == 0)
             {
-                MessageBox.Show("Please select at least one output formats (Folder, Cbz...)");
+                MessageBox.Show("Please select at least one output format (Folder, Cbz...)");
                 return;
             }
             var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as Chapter).ToList();
@@ -95,7 +97,7 @@ namespace MangaRipper.Forms
             var formats = GetOutputFormats().ToArray();
             if (formats.Length == 0)
             {
-                MessageBox.Show("Please select at least one output formats (Folder, Cbz...)");
+                MessageBox.Show("Please select at least one output format (Folder, Cbz...)");
                 return;
             }
 
@@ -275,7 +277,7 @@ namespace MangaRipper.Forms
                 }
             }
         }
-
+        
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -312,6 +314,18 @@ namespace MangaRipper.Forms
             if (sc == null) return;
             foreach (var item in sc)
                 cbTitleUrl.Items.Add(item);
+        }
+
+        private void lbDefaultDestination_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                rdDefaultDestination.Checked = true;
+        }
+
+        private void lbSeriesDestination_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                rdSeriesDestination.Checked = true;
         }
 
         private void btnAddBookmark_Click(object sender, EventArgs e)
@@ -374,18 +388,22 @@ namespace MangaRipper.Forms
         {
             Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
         }
-                
+               
+        /// <summary>
+        /// Formulates a save destination based on the current series and selects it at the current series' save destination if it already exists.
+        /// </summary>
         private void PrepareSpecificDirectory()
         {
             if (dgvChapter.RowCount == 0)
                 return;
-
-            // Todo: Introduce DefaultSaveDestination
-
+            
+            // Cost to make it class-level?
+            var state = _appConf.LoadCommonSettings();
+            
             string
-                defaultSeriesDestination = string.Empty, // Properties.Settings.Default.DefaultSaveDestination,
+                baseSeriesDestination = state.BaseSeriesDestination,
                 series = string.Empty,
-                path = string.Empty;
+                seriesPath = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(cbTitleUrl.Text))
             {
@@ -405,27 +423,36 @@ namespace MangaRipper.Forms
 
             if (string.IsNullOrWhiteSpace(series))
             {
-                // Todo: Set series-specific directory path to default.
+                // Todo: Set series-specific directory path to the default value.
                 return;
             }
 
-            if (string.IsNullOrEmpty(defaultSeriesDestination))
-                defaultSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            // If the base series destination hasn't been set, use MyDocuments as the base for now.
+            if (string.IsNullOrEmpty(baseSeriesDestination))
+                baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             series = series.TrimEnd('/');
             series = series.Substring(series.LastIndexOf('/') + 1);
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim();
-            path = Path.Combine(defaultSeriesDestination, series);
+            seriesPath = Path.Combine(baseSeriesDestination, series);
+            
+            lbSeriesDestination.Text = seriesPath;
 
-            lbDestination.Text = path;
-            //lbSeriesDestination.Text = path;
-
-            if (Directory.Exists(path))
+            /* 
+             * Check if the series' diectory exists and switch to it. Use the default destination if it doesn't exist.
+             * 
+             * For the user's convenience, an option could allow saving to the series directory to be opt-out instead of opt-in.
+             * Automatically putting each in its own directory could be troublesome for users who read a lot of one-shot manga.
+            */
+            if (Directory.Exists(seriesPath))
                 rdSeriesDestination.Checked = true;
-        }
 
+            else
+                rdDefaultDestination.Checked = true;
+
+        }
 
     }
 }
