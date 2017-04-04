@@ -62,8 +62,6 @@
             this.lbDefaultDestination = new System.Windows.Forms.Label();
             this.lbSeriesDestination = new System.Windows.Forms.Label();
             this.txtMessage = new System.Windows.Forms.TextBox();
-            this.cbSaveFolder = new System.Windows.Forms.CheckBox();
-            this.cbSaveCbz = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -77,6 +75,11 @@
             this.rdDefaultDestination = new System.Windows.Forms.RadioButton();
             this.rdSeriesDestination = new System.Windows.Forms.RadioButton();
             this.lbDestination = new System.Windows.Forms.Label();
+            this.cbUseSeriesFolder = new System.Windows.Forms.CheckBox();
+            this.rbSaveFolder = new System.Windows.Forms.RadioButton();
+            this.rbSaveCbz = new System.Windows.Forms.RadioButton();
+            this.cbSaveCbz = new System.Windows.Forms.CheckBox();
+            this.cbSaveFolder = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -289,13 +292,13 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvSupportedSites.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvSupportedSites.Location = new System.Drawing.Point(12, 448);
+            this.dgvSupportedSites.Location = new System.Drawing.Point(12, 405);
             this.dgvSupportedSites.MultiSelect = false;
             this.dgvSupportedSites.Name = "dgvSupportedSites";
             this.dgvSupportedSites.ReadOnly = true;
             this.dgvSupportedSites.RowHeadersVisible = false;
             this.dgvSupportedSites.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 126);
+            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 169);
             this.dgvSupportedSites.TabIndex = 15;
             this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSupportedSites_CellContentClick);
             // 
@@ -395,7 +398,7 @@
             // checkBoxForPrefix
             // 
             this.checkBoxForPrefix.AutoSize = true;
-            this.checkBoxForPrefix.Location = new System.Drawing.Point(6, 18);
+            this.checkBoxForPrefix.Location = new System.Drawing.Point(11, 17);
             this.checkBoxForPrefix.Name = "checkBoxForPrefix";
             this.checkBoxForPrefix.Size = new System.Drawing.Size(99, 17);
             this.checkBoxForPrefix.TabIndex = 0;
@@ -409,7 +412,7 @@
             this.lbDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbDefaultDestination.AutoSize = true;
             this.lbDefaultDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbDefaultDestination.Location = new System.Drawing.Point(55, 319);
+            this.lbDefaultDestination.Location = new System.Drawing.Point(29, 318);
             this.lbDefaultDestination.MaximumSize = new System.Drawing.Size(385, 17);
             this.lbDefaultDestination.MinimumSize = new System.Drawing.Size(64, 17);
             this.lbDefaultDestination.Name = "lbDefaultDestination";
@@ -425,7 +428,7 @@
             this.lbSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbSeriesDestination.AutoSize = true;
             this.lbSeriesDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbSeriesDestination.Location = new System.Drawing.Point(55, 354);
+            this.lbSeriesDestination.Location = new System.Drawing.Point(710, 382);
             this.lbSeriesDestination.MaximumSize = new System.Drawing.Size(380, 17);
             this.lbSeriesDestination.MinimumSize = new System.Drawing.Size(64, 17);
             this.lbSeriesDestination.Name = "lbSeriesDestination";
@@ -445,38 +448,14 @@
             this.txtMessage.Size = new System.Drawing.Size(1004, 22);
             this.txtMessage.TabIndex = 23;
             // 
-            // cbSaveFolder
-            // 
-            this.cbSaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbSaveFolder.AutoSize = true;
-            this.cbSaveFolder.Checked = true;
-            this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveFolder.Location = new System.Drawing.Point(4, 18);
-            this.cbSaveFolder.Name = "cbSaveFolder";
-            this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
-            this.cbSaveFolder.TabIndex = 27;
-            this.cbSaveFolder.Text = "Folder";
-            this.cbSaveFolder.UseVisualStyleBackColor = true;
-            // 
-            // cbSaveCbz
-            // 
-            this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbSaveCbz.AutoSize = true;
-            this.cbSaveCbz.Location = new System.Drawing.Point(71, 18);
-            this.cbSaveCbz.Name = "cbSaveCbz";
-            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
-            this.cbSaveCbz.TabIndex = 28;
-            this.cbSaveCbz.Text = "CBZ";
-            this.cbSaveCbz.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.cbSaveFolder);
             this.groupBox1.Controls.Add(this.cbSaveCbz);
-            this.groupBox1.Location = new System.Drawing.Point(102, 397);
+            this.groupBox1.Location = new System.Drawing.Point(12, 358);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(118, 41);
+            this.groupBox1.Size = new System.Drawing.Size(161, 41);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Save As";
@@ -485,9 +464,10 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.checkBoxForPrefix);
-            this.groupBox2.Location = new System.Drawing.Point(226, 397);
+            this.groupBox2.Controls.Add(this.cbUseSeriesFolder);
+            this.groupBox2.Location = new System.Drawing.Point(179, 358);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(120, 41);
+            this.groupBox2.Size = new System.Drawing.Size(258, 41);
             this.groupBox2.TabIndex = 30;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "File manipulation";
@@ -563,7 +543,7 @@
             this.rdDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.rdDefaultDestination.AutoSize = true;
             this.rdDefaultDestination.Checked = true;
-            this.rdDefaultDestination.Location = new System.Drawing.Point(35, 322);
+            this.rdDefaultDestination.Location = new System.Drawing.Point(690, 353);
             this.rdDefaultDestination.Name = "rdDefaultDestination";
             this.rdDefaultDestination.Size = new System.Drawing.Size(14, 13);
             this.rdDefaultDestination.TabIndex = 32;
@@ -574,7 +554,7 @@
             // 
             this.rdSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.rdSeriesDestination.AutoSize = true;
-            this.rdSeriesDestination.Location = new System.Drawing.Point(35, 357);
+            this.rdSeriesDestination.Location = new System.Drawing.Point(690, 385);
             this.rdSeriesDestination.Name = "rdSeriesDestination";
             this.rdSeriesDestination.Size = new System.Drawing.Size(14, 13);
             this.rdSeriesDestination.TabIndex = 33;
@@ -591,12 +571,72 @@
             this.lbDestination.TabIndex = 26;
             this.lbDestination.Text = "Save Destination";
             // 
+            // cbUseSeriesFolder
+            // 
+            this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbUseSeriesFolder.AutoSize = true;
+            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
+            this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
+            this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
+            this.cbUseSeriesFolder.TabIndex = 29;
+            this.cbUseSeriesFolder.Text = "Save in Series Folder";
+            this.toolTip1.SetToolTip(this.cbUseSeriesFolder, "Save chapters in \'D:\\Manga\\Detective Conan\'");
+            this.cbUseSeriesFolder.UseVisualStyleBackColor = true;
+            // 
+            // rbSaveFolder
+            // 
+            this.rbSaveFolder.AutoSize = true;
+            this.rbSaveFolder.Checked = true;
+            this.rbSaveFolder.Location = new System.Drawing.Point(692, 319);
+            this.rbSaveFolder.Name = "rbSaveFolder";
+            this.rbSaveFolder.Size = new System.Drawing.Size(58, 17);
+            this.rbSaveFolder.TabIndex = 36;
+            this.rbSaveFolder.TabStop = true;
+            this.rbSaveFolder.Text = "Folder";
+            this.rbSaveFolder.UseVisualStyleBackColor = true;
+            // 
+            // rbSaveCbz
+            // 
+            this.rbSaveCbz.AutoSize = true;
+            this.rbSaveCbz.Location = new System.Drawing.Point(756, 318);
+            this.rbSaveCbz.Name = "rbSaveCbz";
+            this.rbSaveCbz.Size = new System.Drawing.Size(45, 17);
+            this.rbSaveCbz.TabIndex = 37;
+            this.rbSaveCbz.Text = "CBZ";
+            this.rbSaveCbz.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveCbz
+            // 
+            this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSaveCbz.AutoSize = true;
+            this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
+            this.cbSaveCbz.Name = "cbSaveCbz";
+            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
+            this.cbSaveCbz.TabIndex = 28;
+            this.cbSaveCbz.Text = "CBZ";
+            this.cbSaveCbz.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveFolder
+            // 
+            this.cbSaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSaveFolder.AutoSize = true;
+            this.cbSaveFolder.Checked = true;
+            this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSaveFolder.Location = new System.Drawing.Point(25, 17);
+            this.cbSaveFolder.Name = "cbSaveFolder";
+            this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
+            this.cbSaveFolder.TabIndex = 27;
+            this.cbSaveFolder.Text = "Folder";
+            this.cbSaveFolder.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 606);
+            this.Controls.Add(this.rbSaveCbz);
             this.Controls.Add(this.lbSeriesDestination);
+            this.Controls.Add(this.rbSaveFolder);
             this.Controls.Add(this.lbDefaultDestination);
             this.Controls.Add(this.lbDestination);
             this.Controls.Add(this.rdSeriesDestination);
@@ -670,8 +710,6 @@
         private System.Windows.Forms.Button btnRemoveBookmark;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.TextBox txtMessage;
-        private System.Windows.Forms.CheckBox cbSaveFolder;
-        private System.Windows.Forms.CheckBox cbSaveCbz;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
@@ -692,5 +730,10 @@
         private System.Windows.Forms.Label lbDestination;
         private System.Windows.Forms.Label lbDefaultDestination;
         private System.Windows.Forms.Label lbSeriesDestination;
+        private System.Windows.Forms.CheckBox cbUseSeriesFolder;
+        private System.Windows.Forms.RadioButton rbSaveCbz;
+        private System.Windows.Forms.RadioButton rbSaveFolder;
+        private System.Windows.Forms.CheckBox cbSaveCbz;
+        private System.Windows.Forms.CheckBox cbSaveFolder;
     }
 }

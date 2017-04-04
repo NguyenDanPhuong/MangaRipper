@@ -27,18 +27,24 @@ namespace MangaRipper.Forms
             get
             {
                 if (rdSeriesDestination.Checked)
+                {
                     return lbSeriesDestination.Text;
-
+                }
                 else
+                {
                     return lbDefaultDestination.Text;
+                }
             }
             set
             {
                 if (rdSeriesDestination.Checked)
+                {
                     lbSeriesDestination.Text = value;
-
+                }
                 else
+                {
                     lbDefaultDestination.Text = value;
+                }
             }
         }
 
@@ -174,10 +180,13 @@ namespace MangaRipper.Forms
         private IEnumerable<OutputFormat> GetOutputFormats()
         {
             var outputFormats = new List<OutputFormat>();
+
             if (cbSaveFolder.Checked)
                 outputFormats.Add(OutputFormat.Folder);
+
             if (cbSaveCbz.Checked)
                 outputFormats.Add(OutputFormat.CBZ);
+
             return outputFormats;
         }
 
@@ -403,7 +412,7 @@ namespace MangaRipper.Forms
         {
             Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
         }
-               
+
         /// <summary>
         /// Formulates a save destination based on the current series and selects it at the current series' save destination if it already exists.
         /// </summary>
@@ -411,18 +420,18 @@ namespace MangaRipper.Forms
         {
             if (dgvChapter.RowCount == 0)
                 return;
-            
-            // Cost to make it class-level?
+
+            // TODO Cost to make it class-level?
             var state = _appConf.LoadCommonSettings();
-            
+
             string
                 baseSeriesDestination = state.BaseSeriesDestination,
-                series = string.Empty,
-                seriesPath = string.Empty;
+                series,
+                seriesPath;
 
             if (!string.IsNullOrWhiteSpace(cbTitleUrl.Text))
             {
-                Uri seriesUri = null;
+                Uri seriesUri;
 
                 if (Uri.TryCreate(cbTitleUrl.Text, UriKind.Absolute, out seriesUri))
                     series = seriesUri.ToString();
@@ -438,7 +447,7 @@ namespace MangaRipper.Forms
 
             if (string.IsNullOrWhiteSpace(series))
             {
-                // Todo: Set series-specific directory path to the default value.
+                // TODO Set series-specific directory path to the default value.
                 return;
             }
 
@@ -446,13 +455,12 @@ namespace MangaRipper.Forms
             if (string.IsNullOrEmpty(baseSeriesDestination))
                 baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            series = series.TrimEnd('/');
-            series = series.Substring(series.LastIndexOf('/') + 1);
+            series = series.TrimEnd('/').Substring(series.LastIndexOf('/') + 1);
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
             seriesPath = Path.Combine(baseSeriesDestination, series);
-            
+
             lbSeriesDestination.Text = seriesPath;
 
             /* 
@@ -461,11 +469,13 @@ namespace MangaRipper.Forms
              * For the user's convenience, an option could allow saving to the series directory to be opt-out instead of opt-in.
              * Automatically putting each in its own directory could be troublesome for users who read a lot of one-shot manga.
             */
-            if (Directory.Exists(seriesPath))
+            if (Directory.Exists(seriesPath)) {
                 rdSeriesDestination.Checked = true;
-
+            }
             else
+            {
                 rdDefaultDestination.Checked = true;
+            }
 
         }
 

@@ -27,7 +27,7 @@ namespace MangaRipper.Plugin.MangaStream
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga);
-            string regEx = "<td><a href=\"(?<Value>http://mangastream.com/r/[^\"]+)\">(?<Name>[^<]+)</a>";
+            string regEx = "<td><a href=\"(?<Value>http://readms.net/r/[^\"]+)\">(?<Name>[^<]+)</a>";
             var chaps = parser.ParseGroup(regEx, input, "Name", "Value");
             progress.Report(100);
             return chaps;
@@ -42,7 +42,7 @@ namespace MangaRipper.Plugin.MangaStream
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url);
             string regExPages =
-                "<li><a href=\"(?<Value>http://mangastream.com/r/[^\"]+)\">[^<]+</a>";
+                "<li><a href=\"(?<Value>http://readms.com/r/[^\"]+)\">[^<]+</a>";
             var pages = parser.Parse(regExPages, input, "Value");
 
             // find all images in pages
