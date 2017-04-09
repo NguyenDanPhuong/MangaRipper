@@ -57,12 +57,13 @@
             this.cbTitleUrl = new System.Windows.Forms.ComboBox();
             this.btnAddBookmark = new System.Windows.Forms.Button();
             this.btnRemoveBookmark = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.FormToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxForPrefix = new System.Windows.Forms.CheckBox();
-            this.lbDefaultDestination = new System.Windows.Forms.Label();
-            this.lbSeriesDestination = new System.Windows.Forms.Label();
+            this.cbUseSeriesFolder = new System.Windows.Forms.CheckBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbSaveFolder = new System.Windows.Forms.CheckBox();
+            this.cbSaveCbz = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.locationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,14 +73,8 @@
             this.wikiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bugReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rdDefaultDestination = new System.Windows.Forms.RadioButton();
-            this.rdSeriesDestination = new System.Windows.Forms.RadioButton();
             this.lbDestination = new System.Windows.Forms.Label();
-            this.cbUseSeriesFolder = new System.Windows.Forms.CheckBox();
-            this.rbSaveFolder = new System.Windows.Forms.RadioButton();
-            this.rbSaveCbz = new System.Windows.Forms.RadioButton();
-            this.cbSaveCbz = new System.Windows.Forms.CheckBox();
-            this.cbSaveFolder = new System.Windows.Forms.CheckBox();
+            this.txtSaveTo = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -96,7 +91,7 @@
             this.btnGetChapter.Size = new System.Drawing.Size(116, 23);
             this.btnGetChapter.TabIndex = 5;
             this.btnGetChapter.Text = "Get Chapters";
-            this.toolTip1.SetToolTip(this.btnGetChapter, "Get Chapters from Inputed Url");
+            this.FormToolTip.SetToolTip(this.btnGetChapter, "Get Chapters from Inputed Url");
             this.btnGetChapter.UseVisualStyleBackColor = true;
             this.btnGetChapter.Click += new System.EventHandler(this.btnGetChapter_Click);
             // 
@@ -120,7 +115,7 @@
             this.btnAdd.Size = new System.Drawing.Size(62, 33);
             this.btnAdd.TabIndex = 8;
             this.btnAdd.Text = "4";
-            this.toolTip1.SetToolTip(this.btnAdd, "Add selected chapters");
+            this.FormToolTip.SetToolTip(this.btnAdd, "Add selected chapters");
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
@@ -132,7 +127,7 @@
             this.btnAddAll.Size = new System.Drawing.Size(62, 32);
             this.btnAddAll.TabIndex = 9;
             this.btnAddAll.Text = "8";
-            this.toolTip1.SetToolTip(this.btnAddAll, "Add all chapters");
+            this.FormToolTip.SetToolTip(this.btnAddAll, "Add all chapters");
             this.btnAddAll.UseVisualStyleBackColor = true;
             this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
             // 
@@ -237,7 +232,7 @@
             this.btnChangeSaveTo.Size = new System.Drawing.Size(30, 23);
             this.btnChangeSaveTo.TabIndex = 13;
             this.btnChangeSaveTo.Text = "...";
-            this.toolTip1.SetToolTip(this.btnChangeSaveTo, "Change Folder");
+            this.FormToolTip.SetToolTip(this.btnChangeSaveTo, "Change Folder");
             this.btnChangeSaveTo.UseVisualStyleBackColor = true;
             this.btnChangeSaveTo.Click += new System.EventHandler(this.btnChangeSaveTo_Click);
             // 
@@ -379,7 +374,7 @@
             this.btnAddBookmark.Size = new System.Drawing.Size(24, 23);
             this.btnAddBookmark.TabIndex = 2;
             this.btnAddBookmark.Text = "B";
-            this.toolTip1.SetToolTip(this.btnAddBookmark, "Bookmark This Url");
+            this.FormToolTip.SetToolTip(this.btnAddBookmark, "Bookmark This Url");
             this.btnAddBookmark.UseVisualStyleBackColor = true;
             this.btnAddBookmark.Click += new System.EventHandler(this.btnAddBookmark_Click);
             // 
@@ -391,7 +386,7 @@
             this.btnRemoveBookmark.Size = new System.Drawing.Size(24, 23);
             this.btnRemoveBookmark.TabIndex = 3;
             this.btnRemoveBookmark.Text = "R";
-            this.toolTip1.SetToolTip(this.btnRemoveBookmark, "Remove This Url From Bookmark");
+            this.FormToolTip.SetToolTip(this.btnRemoveBookmark, "Remove This Url From Bookmark");
             this.btnRemoveBookmark.UseVisualStyleBackColor = true;
             this.btnRemoveBookmark.Click += new System.EventHandler(this.btnRemoveBookmark_Click);
             // 
@@ -403,41 +398,20 @@
             this.checkBoxForPrefix.Size = new System.Drawing.Size(99, 17);
             this.checkBoxForPrefix.TabIndex = 0;
             this.checkBoxForPrefix.Text = "Prefix Counter";
-            this.toolTip1.SetToolTip(this.checkBoxForPrefix, "Add prefix to chapters");
+            this.FormToolTip.SetToolTip(this.checkBoxForPrefix, "Add prefix to chapters");
             this.checkBoxForPrefix.UseVisualStyleBackColor = true;
             this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.checkBoxForPrefix_CheckedChanged);
             // 
-            // lbDefaultDestination
+            // cbUseSeriesFolder
             // 
-            this.lbDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbDefaultDestination.AutoSize = true;
-            this.lbDefaultDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbDefaultDestination.Location = new System.Drawing.Point(29, 318);
-            this.lbDefaultDestination.MaximumSize = new System.Drawing.Size(385, 17);
-            this.lbDefaultDestination.MinimumSize = new System.Drawing.Size(64, 17);
-            this.lbDefaultDestination.Name = "lbDefaultDestination";
-            this.lbDefaultDestination.Size = new System.Drawing.Size(118, 17);
-            this.lbDefaultDestination.TabIndex = 34;
-            this.lbDefaultDestination.Text = "Default Destination";
-            this.toolTip1.SetToolTip(this.lbDefaultDestination, "Saves chapters to the default manga folder");
-            this.lbDefaultDestination.UseMnemonic = false;
-            this.lbDefaultDestination.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbDefaultDestination_MouseClick);
-            // 
-            // lbSeriesDestination
-            // 
-            this.lbSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbSeriesDestination.AutoSize = true;
-            this.lbSeriesDestination.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbSeriesDestination.Location = new System.Drawing.Point(710, 382);
-            this.lbSeriesDestination.MaximumSize = new System.Drawing.Size(380, 17);
-            this.lbSeriesDestination.MinimumSize = new System.Drawing.Size(64, 17);
-            this.lbSeriesDestination.Name = "lbSeriesDestination";
-            this.lbSeriesDestination.Size = new System.Drawing.Size(160, 17);
-            this.lbSeriesDestination.TabIndex = 35;
-            this.lbSeriesDestination.Text = "Series Specific Destination";
-            this.toolTip1.SetToolTip(this.lbSeriesDestination, "Saves chapters to the series\' folder");
-            this.lbSeriesDestination.UseMnemonic = false;
-            this.lbSeriesDestination.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbSeriesDestination_MouseClick);
+            this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbUseSeriesFolder.AutoSize = true;
+            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
+            this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
+            this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
+            this.cbUseSeriesFolder.TabIndex = 29;
+            this.cbUseSeriesFolder.Text = "Save in Series Folder";
+            this.cbUseSeriesFolder.UseVisualStyleBackColor = true;
             // 
             // txtMessage
             // 
@@ -459,6 +433,30 @@
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Save As";
+            // 
+            // cbSaveFolder
+            // 
+            this.cbSaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSaveFolder.AutoSize = true;
+            this.cbSaveFolder.Checked = true;
+            this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSaveFolder.Location = new System.Drawing.Point(25, 17);
+            this.cbSaveFolder.Name = "cbSaveFolder";
+            this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
+            this.cbSaveFolder.TabIndex = 27;
+            this.cbSaveFolder.Text = "Folder";
+            this.cbSaveFolder.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveCbz
+            // 
+            this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSaveCbz.AutoSize = true;
+            this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
+            this.cbSaveCbz.Name = "cbSaveCbz";
+            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
+            this.cbSaveCbz.TabIndex = 28;
+            this.cbSaveCbz.Text = "CBZ";
+            this.cbSaveCbz.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -538,28 +536,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // rdDefaultDestination
-            // 
-            this.rdDefaultDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.rdDefaultDestination.AutoSize = true;
-            this.rdDefaultDestination.Checked = true;
-            this.rdDefaultDestination.Location = new System.Drawing.Point(690, 353);
-            this.rdDefaultDestination.Name = "rdDefaultDestination";
-            this.rdDefaultDestination.Size = new System.Drawing.Size(14, 13);
-            this.rdDefaultDestination.TabIndex = 32;
-            this.rdDefaultDestination.TabStop = true;
-            this.rdDefaultDestination.UseVisualStyleBackColor = true;
-            // 
-            // rdSeriesDestination
-            // 
-            this.rdSeriesDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.rdSeriesDestination.AutoSize = true;
-            this.rdSeriesDestination.Location = new System.Drawing.Point(690, 385);
-            this.rdSeriesDestination.Name = "rdSeriesDestination";
-            this.rdSeriesDestination.Size = new System.Drawing.Size(14, 13);
-            this.rdSeriesDestination.TabIndex = 33;
-            this.rdSeriesDestination.UseVisualStyleBackColor = true;
-            // 
             // lbDestination
             // 
             this.lbDestination.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -571,76 +547,22 @@
             this.lbDestination.TabIndex = 26;
             this.lbDestination.Text = "Save Destination";
             // 
-            // cbUseSeriesFolder
+            // txtSaveTo
             // 
-            this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbUseSeriesFolder.AutoSize = true;
-            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
-            this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
-            this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
-            this.cbUseSeriesFolder.TabIndex = 29;
-            this.cbUseSeriesFolder.Text = "Save in Series Folder";
-            this.toolTip1.SetToolTip(this.cbUseSeriesFolder, "Save chapters in \'D:\\Manga\\Detective Conan\'");
-            this.cbUseSeriesFolder.UseVisualStyleBackColor = true;
-            // 
-            // rbSaveFolder
-            // 
-            this.rbSaveFolder.AutoSize = true;
-            this.rbSaveFolder.Checked = true;
-            this.rbSaveFolder.Location = new System.Drawing.Point(692, 319);
-            this.rbSaveFolder.Name = "rbSaveFolder";
-            this.rbSaveFolder.Size = new System.Drawing.Size(58, 17);
-            this.rbSaveFolder.TabIndex = 36;
-            this.rbSaveFolder.TabStop = true;
-            this.rbSaveFolder.Text = "Folder";
-            this.rbSaveFolder.UseVisualStyleBackColor = true;
-            // 
-            // rbSaveCbz
-            // 
-            this.rbSaveCbz.AutoSize = true;
-            this.rbSaveCbz.Location = new System.Drawing.Point(756, 318);
-            this.rbSaveCbz.Name = "rbSaveCbz";
-            this.rbSaveCbz.Size = new System.Drawing.Size(45, 17);
-            this.rbSaveCbz.TabIndex = 37;
-            this.rbSaveCbz.Text = "CBZ";
-            this.rbSaveCbz.UseVisualStyleBackColor = true;
-            // 
-            // cbSaveCbz
-            // 
-            this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbSaveCbz.AutoSize = true;
-            this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
-            this.cbSaveCbz.Name = "cbSaveCbz";
-            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
-            this.cbSaveCbz.TabIndex = 28;
-            this.cbSaveCbz.Text = "CBZ";
-            this.cbSaveCbz.UseVisualStyleBackColor = true;
-            // 
-            // cbSaveFolder
-            // 
-            this.cbSaveFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbSaveFolder.AutoSize = true;
-            this.cbSaveFolder.Checked = true;
-            this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveFolder.Location = new System.Drawing.Point(25, 17);
-            this.cbSaveFolder.Name = "cbSaveFolder";
-            this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
-            this.cbSaveFolder.TabIndex = 27;
-            this.cbSaveFolder.Text = "Folder";
-            this.cbSaveFolder.UseVisualStyleBackColor = true;
+            this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSaveTo.Location = new System.Drawing.Point(21, 319);
+            this.txtSaveTo.Name = "txtSaveTo";
+            this.txtSaveTo.Size = new System.Drawing.Size(405, 22);
+            this.txtSaveTo.TabIndex = 35;
+            this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaveTo_KeyPress);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 606);
-            this.Controls.Add(this.rbSaveCbz);
-            this.Controls.Add(this.lbSeriesDestination);
-            this.Controls.Add(this.rbSaveFolder);
-            this.Controls.Add(this.lbDefaultDestination);
             this.Controls.Add(this.lbDestination);
-            this.Controls.Add(this.rdSeriesDestination);
-            this.Controls.Add(this.rdDefaultDestination);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtMessage);
@@ -662,6 +584,7 @@
             this.Controls.Add(this.dgvQueueChapter);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.dgvChapter);
+            this.Controls.Add(this.txtSaveTo);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -708,7 +631,7 @@
         private System.Windows.Forms.ComboBox cbTitleUrl;
         private System.Windows.Forms.Button btnAddBookmark;
         private System.Windows.Forms.Button btnRemoveBookmark;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolTip FormToolTip;
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
@@ -725,15 +648,10 @@
         private System.Windows.Forms.ToolStripMenuItem wikiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bugReportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.RadioButton rdDefaultDestination;
-        private System.Windows.Forms.RadioButton rdSeriesDestination;
         private System.Windows.Forms.Label lbDestination;
-        private System.Windows.Forms.Label lbDefaultDestination;
-        private System.Windows.Forms.Label lbSeriesDestination;
         private System.Windows.Forms.CheckBox cbUseSeriesFolder;
-        private System.Windows.Forms.RadioButton rbSaveCbz;
-        private System.Windows.Forms.RadioButton rbSaveFolder;
         private System.Windows.Forms.CheckBox cbSaveCbz;
         private System.Windows.Forms.CheckBox cbSaveFolder;
+        private System.Windows.Forms.TextBox txtSaveTo;
     }
 }

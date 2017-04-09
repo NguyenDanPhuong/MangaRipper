@@ -26,26 +26,14 @@ namespace MangaRipper.Forms
         {
             get
             {
-                if (rdSeriesDestination.Checked)
-                {
-                    return lbSeriesDestination.Text;
-                }
-                else
-                {
-                    return lbDefaultDestination.Text;
-                }
+                return cbUseSeriesFolder.Checked ? SeriesDestination : txtSaveTo.Text;
             }
-            set
-            {
-                if (rdSeriesDestination.Checked)
-                {
-                    lbSeriesDestination.Text = value;
-                }
-                else
-                {
-                    lbDefaultDestination.Text = value;
-                }
-            }
+        }
+
+        private string SeriesDestination
+        {
+            get;
+            set;
         }
 
         public FormMain()
@@ -202,7 +190,7 @@ namespace MangaRipper.Forms
             DialogResult dr = saveDestinationDirectoryBrowser.ShowDialog(this);
             if (dr == DialogResult.OK)
             {
-                SaveDestination = saveDestinationDirectoryBrowser.SelectedPath;
+                txtSaveTo.Text = saveDestinationDirectoryBrowser.SelectedPath;
             }
 
         }
@@ -214,7 +202,7 @@ namespace MangaRipper.Forms
                 Process.Start(SaveDestination);
             }
             else
-            { 
+            {
                 MessageBox.Show($"Directory \"{SaveDestination}\" doesn't exist.");
             }
         }
@@ -227,11 +215,14 @@ namespace MangaRipper.Forms
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            // Enables double-buffering to reduce flicker.
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+
             var state = _appConf.LoadCommonSettings();
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
-            lbDefaultDestination.Text = state.SaveTo;
+            txtSaveTo.Text = state.SaveTo;
             cbTitleUrl.Text = state.Url;
             cbSaveCbz.Checked = state.CbzChecked;
             checkBoxForPrefix.Checked = state.PrefixChecked;
@@ -253,9 +244,9 @@ namespace MangaRipper.Forms
             {
                 Logger.Error(ex, ex.Message);
             }
-            
+
             if (string.IsNullOrWhiteSpace(SaveDestination))
-                lbDefaultDestination.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
 
             _downloadQueue = _appConf.LoadDownloadChapterTasks();
@@ -276,7 +267,7 @@ namespace MangaRipper.Forms
                 UpdateNotification.GetLatestBuildNumber(Application.ProductVersion))
             {
                 Logger.Info($"Local version: {Application.ProductVersion}. Remote version: {latestVersion}");
-                                
+
                 if (MessageBox.Show(
                     $"There's a new version: ({latestVersion}) - Click OK to open download page.",
                     Application.ProductName,
@@ -287,7 +278,7 @@ namespace MangaRipper.Forms
                 }
             }
         }
-        
+
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -309,7 +300,7 @@ namespace MangaRipper.Forms
             }
 
             appConfig.Url = cbTitleUrl.Text;
-            appConfig.SaveTo = lbDefaultDestination.Text;
+            appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
             _appConf.SaveCommonSettings(appConfig);
@@ -318,16 +309,7 @@ namespace MangaRipper.Forms
 
         private void FormMain_Paint(object sender, PaintEventArgs e)
         {
-            // Draw line separating the save destinations and the options.
-
-            int offSetX = Convert.ToInt32(dgvChapter.Width * 0.125),
-                y = rdSeriesDestination.Bottom + 15;
-
-            Point startingPoint = new Point(dgvChapter.Left + offSetX, y),
-                  endingPoint = new Point(dgvChapter.Right - offSetX, y);
-
-            e.Graphics.DrawLine(Pens.Gainsboro, startingPoint, endingPoint);
-
+            // Method intentionally left empty.
         }
 
         private void LoadBookmark()
@@ -339,19 +321,7 @@ namespace MangaRipper.Forms
             foreach (var item in sc)
                 cbTitleUrl.Items.Add(item);
         }
-
-        private void lbDefaultDestination_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                rdDefaultDestination.Checked = true;
-        }
-
-        private void lbSeriesDestination_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                rdSeriesDestination.Checked = true;
-        }
-
+        
         private void btnAddBookmark_Click(object sender, EventArgs e)
         {
             var sc = _appConf.LoadBookMarks().ToList();
@@ -369,6 +339,15 @@ namespace MangaRipper.Forms
             sc.Remove(cbTitleUrl.Text);
             _appConf.SaveBookmarks(sc);
             LoadBookmark();
+        }
+
+        private void txtSaveTo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Reject the user's keystroke if it's an invalid character for paths.
+            if ((Keys)e.KeyChar != Keys.Back && Path.GetInvalidPathChars().Contains(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private void checkBoxForPrefix_CheckedChanged(object sender, EventArgs e)
@@ -454,30 +433,25 @@ namespace MangaRipper.Forms
             // If the base series destination hasn't been set, use MyDocuments as the base for now.
             if (string.IsNullOrEmpty(baseSeriesDestination))
                 baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            series = series.TrimEnd('/').Substring(series.LastIndexOf('/') + 1);
-
+            
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
             seriesPath = Path.Combine(baseSeriesDestination, series);
+            
+            SeriesDestination = seriesPath;
 
-            lbSeriesDestination.Text = seriesPath;
+            FormToolTip.SetToolTip(cbUseSeriesFolder, $"Save chapters to {seriesPath}");
 
             /* 
-             * Check if the series' diectory exists and switch to it. Use the default destination if it doesn't exist.
+             * Check if the series' directory exists and automatically check 'cbUseSeriesFolder' if it exists. Uncheck
+             * it if it doesn't exist.
              * 
              * For the user's convenience, an option could allow saving to the series directory to be opt-out instead of opt-in.
              * Automatically putting each in its own directory could be troublesome for users who read a lot of one-shot manga.
             */
-            if (Directory.Exists(seriesPath)) {
-                rdSeriesDestination.Checked = true;
-            }
-            else
-            {
-                rdDefaultDestination.Checked = true;
-            }
+            cbUseSeriesFolder.Checked = Directory.Exists(seriesPath);
 
         }
-
+        
     }
 }
