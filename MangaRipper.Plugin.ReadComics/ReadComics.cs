@@ -37,19 +37,13 @@ namespace MangaRipper.Plugin.ReadComics
             try
             {
                 string html = await downloader.DownloadStringAsync(manga);
-
-                Logger.Info("> Retrieved HTML source.");
-
+                
                 progress.Report(50);
 
                 string pattern = "<a\\s+class=\"ch-name\"\\s+href=\"(?<Value>.[^\"]*)\">(?<Name>.*)(?=\\<)";
-
-                Logger.Debug($"> Scraping chapters with \"{pattern}\"");
-
+                
                 var chapters = parser.ParseGroup(pattern, html, "Name", "Value");
-
-                Logger.Info($"> Found {((List<Chapter>)chapters).Count} chapters.");
-
+                
                 progress.Report(90);
 
                 ((List<Chapter>)chapters).Reverse();
@@ -85,12 +79,8 @@ namespace MangaRipper.Plugin.ReadComics
                 if (!string.IsNullOrWhiteSpace(html))
                 {
                     string pattern = "<img\\s+class=\"chapter_img\".*src=\"(?<Value>.[^\"]*)";
-
-                    Logger.Debug($"Scraping images with \"{pattern}\"");
-
+                    
                     var pages = parser.Parse(pattern, html, "Value");
-
-                    Logger.Info($"> Found {((List<string>)pages).Count} pages.");
 
                     return pages;
                 }
