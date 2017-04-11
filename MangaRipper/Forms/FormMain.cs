@@ -45,6 +45,13 @@ namespace MangaRipper.Forms
         {
             try
             {
+                if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                {
+                    MessageBox.Show("An Internet connection has not been detected.", Application.ProductName,  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Logger.Error("Aborting chapter retrieval, no Internet connection.");
+                    return;
+                }
+
                 btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
 
@@ -108,6 +115,7 @@ namespace MangaRipper.Forms
             foreach (DataGridViewRow item in dgvQueueChapter.SelectedRows)
             {
                 var chapter = (DownloadChapterTask)item.DataBoundItem;
+
                 if (chapter.IsBusy == false)
                     _downloadQueue.Remove(chapter);
             }
@@ -278,8 +286,7 @@ namespace MangaRipper.Forms
                 }
             }
         }
-
-
+        
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             var appConfig = _appConf.LoadCommonSettings();
@@ -346,7 +353,14 @@ namespace MangaRipper.Forms
             // Reject the user's keystroke if it's an invalid character for paths.
             if ((Keys)e.KeyChar != Keys.Back && Path.GetInvalidPathChars().Contains(e.KeyChar))
             {
+                // Display a tooltip telling the user their input has been rejected.
+                FormToolTip.Show($"The character \"{e.KeyChar}\" is a invalid for use in paths.", txtSaveTo);
+
                 e.Handled = true;
+            }
+            else
+            {
+                FormToolTip.SetToolTip(txtSaveTo, string.Empty);
             }
         }
 
@@ -399,8 +413,7 @@ namespace MangaRipper.Forms
         {
             if (dgvChapter.RowCount == 0)
                 return;
-
-            // TODO Cost to make it class-level?
+            
             var state = _appConf.LoadCommonSettings();
 
             string
