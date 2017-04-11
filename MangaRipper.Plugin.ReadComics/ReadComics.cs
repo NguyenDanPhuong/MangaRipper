@@ -1,7 +1,7 @@
 ﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-
+using NLog;
 using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -21,10 +21,14 @@ namespace MangaRipper.Plugin.ReadComics
          *  
          */
 
-        static readonly string Host = "readcomics.tv";
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private static readonly Uri HostUri = new Uri("http://readcomics.tv");
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
+            Logger.Info($@"> FindChapters(): {manga}");
+
             progress.Report(0);
 
             var downloader = new DownloadService();
@@ -34,11 +38,17 @@ namespace MangaRipper.Plugin.ReadComics
             {
                 string html = await downloader.DownloadStringAsync(manga);
 
+                Logger.Info("> Retrieved HTML source.");
+
                 progress.Report(50);
 
                 string pattern = "<a\\s+class=\"ch-name\"\\s+href=\"(?<Value>.[^\"]*)\">(?<Name>.*)(?=\\<)";
 
+                Logger.Debug($"> Scraping chapters with \"{pattern}\"");
+
                 var chapters = parser.ParseGroup(pattern, html, "Name", "Value");
+
+                Logger.Info($"> Found {((List<Chapter>)chapters).Count} chapters.");
 
                 progress.Report(90);
 
@@ -67,13 +77,20 @@ namespace MangaRipper.Plugin.ReadComics
 
             try
             {
+                Logger.Info("> FindImages()");
+
                 chapterUrl = string.Concat(chapter.Url, "/full");
                 html = await downloader.DownloadStringAsync(chapterUrl);
 
                 if (!string.IsNullOrWhiteSpace(html))
                 {
                     string pattern = "<img\\s+class=\"chapter_img\".*src=\"(?<Value>.[^\"]*)";
+
+                    Logger.Debug($"Scraping images with \"{pattern}\"");
+
                     var pages = parser.Parse(pattern, html, "Value");
+
+                    Logger.Info($"> Found {((List<string>)pages).Count} pages.");
 
                     return pages;
                 }
@@ -87,12 +104,12 @@ namespace MangaRipper.Plugin.ReadComics
                 chapterUrl = null;
             }
 
-            throw new Core.CustomException.MangaRipperException("Can't return pages.");
+            throw new Core.CustomException.MangaRipperException("Can't find pages.");
         }
 
         public override SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(ReadComics), Host, "English");
+            return new SiteInformation(nameof(ReadComics), HostUri.ToString(), "English");
         }
 
         public override bool Of(string link)
@@ -103,7 +120,7 @@ namespace MangaRipper.Plugin.ReadComics
             {
                 if (Uri.TryCreate(link, UriKind.Absolute, out uri))
                 {
-                    return (string.Compare(uri.Host, Host, true, System.Globalization.CultureInfo.InvariantCulture) == 0);
+                    return (string.Compare(uri.Host, HostUri.Host, true, System.Globalization.CultureInfo.InvariantCulture) == 0);
                 }
                 else
                 {
