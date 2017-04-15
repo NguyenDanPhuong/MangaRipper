@@ -57,7 +57,7 @@ namespace MangaRipper.Forms
 
                 var worker = FrameworkProvider.GetWorker();
                 var progressInt = new Progress<int>(progress => txtPercent.Text = progress + @"%");
-                var chapters = await worker.FindChapters(titleUrl, progressInt);
+                var chapters = await worker.FindChapterListAsync(titleUrl, progressInt);
                 dgvChapter.DataSource = chapters.ToList();
                 PrefixLogic();
                 PrepareSpecificDirectory();
@@ -159,7 +159,7 @@ namespace MangaRipper.Forms
                 var chapter = _downloadQueue.First();
                 var worker = FrameworkProvider.GetWorker();
 
-                await worker.DownloadChapter(chapter, new Progress<int>(c =>
+                await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
                 {
                     foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         if (chapter == item.DataBoundItem)

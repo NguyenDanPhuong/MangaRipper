@@ -18,32 +18,8 @@ namespace MangaRipper.Core.Services
     public class DownloadService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public CookieCollection Cookies { get; set; }
-
         public string Referrer { get; set; }
-        
-        private HttpClient CreateRequest()
-        {
-            var firstHandle = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                Credentials = CredentialCache.DefaultCredentials,
-                AllowAutoRedirect = false,
-                CookieContainer = new CookieContainer()
-            };
-
-            if (Cookies != null)
-                firstHandle.CookieContainer.Add(Cookies);
-
-            var cloudFlareHandler = new ClearanceHandler(firstHandle);
-            var request = new HttpClient(cloudFlareHandler);
-            if (Referrer != null)
-                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
-
-            // Add the Headers for "User Agent"
-            return request;
-        }
 
         /// <summary>
         /// Download single web page to string.
@@ -53,7 +29,7 @@ namespace MangaRipper.Core.Services
         public async Task<string> DownloadStringAsync(string url)
         {
             Logger.Info("> DownloadStringAsync: {0}", url);
-            return await WorkWithStreams(url);
+            return await DownloadStringAsync(url);
         }
 
         /// <summary>
@@ -91,31 +67,51 @@ namespace MangaRipper.Core.Services
         public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
         {
             Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
-            var result = await WorkWithStreams(url, fileName, cancellationToken);
+            var result = await DownloadFileAsyncImpl(url, fileName, cancellationToken);
             Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
         }
 
-        private async Task<string> WorkWithStreams(string url, string fileName = null, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<string> DownloadFileAsyncImpl(string url, string fileName, CancellationToken cancellationToken = default(CancellationToken))
         {
             var request = CreateRequest();
-
             using (var response = await request.GetAsync(url))
             {
-                if (string.IsNullOrWhiteSpace(fileName))
+                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
-                    // Get the html from site
-                    return await response.Content.ReadAsStringAsync();
-                }
-                else
-                {
-                    //Download the file
-                    using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-                    {
-                        await response.Content.CopyToAsync(streamReader);
-                        return response.StatusCode.ToString();
-                    }
+                    await response.Content.CopyToAsync(streamReader);
+                    return response.StatusCode.ToString();
                 }
             }
+        }
+
+        private async Task<string> DownloadStringAsync(string url, string fileName = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var request = CreateRequest();
+            using (var response = await request.GetAsync(url))
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        private HttpClient CreateRequest()
+        {
+            var firstHandle = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                Credentials = CredentialCache.DefaultCredentials,
+                AllowAutoRedirect = false,
+                CookieContainer = new CookieContainer()
+            };
+            if (Cookies != null)
+                firstHandle.CookieContainer.Add(Cookies);
+
+            var cloudFlareHandler = new ClearanceHandler(firstHandle);
+            var request = new HttpClient(cloudFlareHandler);
+            if (Referrer != null)
+            {
+                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
+            }
+            return request;
         }
     }
 }
