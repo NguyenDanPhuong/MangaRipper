@@ -47,7 +47,7 @@ namespace MangaRipper.Core.Helpers
                 list.Add(chapter);
             }
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There are {result.Count()} item(s).");
+            Logger.Info($@"Parse success. There are {result.Count} item(s).");
             return result;
         }
 

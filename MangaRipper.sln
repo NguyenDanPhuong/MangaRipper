@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Core", "MangaRipper.Core\MangaRipper.Core.csproj", "{13EFFE36-DBB8-4573-9260-B601177F66E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Test", "MangaRipper.Test\MangaRipper.Test.csproj", "{CF6D034E-8BFD-4799-AEFD-2589F58D1C1A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D45675A2-8920-4FA5-8B89-C15C2958E765} = {D45675A2-8920-4FA5-8B89-C15C2958E765}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaFox", "MangaRipper.Plugin.MangaFox\MangaRipper.Plugin.MangaFox.csproj", "{F5D529B4-CBB6-46E2-9D32-25CEF8365318}"
 EndProject
@@ -24,6 +27,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA38E249-11BB-4145-A06C-F51D281497F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaStream", "MangaRipper.Plugin.MangaStream\MangaRipper.Plugin.MangaStream.csproj", "{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.ReadComics", "MangaRipper.Plugin.ReadComics\MangaRipper.Plugin.ReadComics.csproj", "{D45675A2-8920-4FA5-8B89-C15C2958E765}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +156,18 @@ Global
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|x86.ActiveCfg = Release|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|x86.Build.0 = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Debug|x86.Build.0 = Debug|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|x86.ActiveCfg = Release|Any CPU
+		{D45675A2-8920-4FA5-8B89-C15C2958E765}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +180,7 @@ Global
 		{A156FB0B-1E4A-4DB0-B944-D23413CA8D58} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B} = {AA38E249-11BB-4145-A06C-F51D281497F5}
+		{D45675A2-8920-4FA5-8B89-C15C2958E765} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = MangaRipper.vsmdi
