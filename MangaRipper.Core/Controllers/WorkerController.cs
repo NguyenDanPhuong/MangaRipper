@@ -142,6 +142,7 @@ namespace MangaRipper.Core.Controllers
             var countImage = 0;
             foreach (var image in images)
             {
+                _source.Token.ThrowIfCancellationRequested();
                 await DownloadImage(image, destination, countImage);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
