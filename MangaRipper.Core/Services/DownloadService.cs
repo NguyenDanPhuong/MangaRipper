@@ -29,7 +29,7 @@ namespace MangaRipper.Core.Services
         public async Task<string> DownloadStringAsync(string url)
         {
             Logger.Info("> DownloadStringAsync: {0}", url);
-            return await DownloadStringAsync(url);
+            return await DownloadStringAsyncInternal(url);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace MangaRipper.Core.Services
             progress.Report(count);
             foreach (var url in inputUrls)
             {
-                var input = await DownloadStringAsync(url);
+                var input = await DownloadStringAsyncInternal(url, cancellationToken);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
                 progress.Report(count++);
@@ -84,7 +84,7 @@ namespace MangaRipper.Core.Services
             }
         }
 
-        private async Task<string> DownloadStringAsync(string url, string fileName = null, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken = default(CancellationToken))
         {
             var request = CreateRequest();
             using (var response = await request.GetAsync(url))
