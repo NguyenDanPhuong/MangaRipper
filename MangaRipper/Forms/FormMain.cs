@@ -12,11 +12,12 @@ using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
 using MangaRipper.Helpers;
+using MangaRipper.Presenters;
 using NLog;
 
 namespace MangaRipper.Forms
 {
-    public partial class FormMain : Form
+    public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private BindingList<DownloadChapterTask> _downloadQueue;
@@ -41,7 +42,20 @@ namespace MangaRipper.Forms
             InitializeComponent();
         }
 
-        private async void btnGetChapter_Click(object sender, EventArgs e)
+        public void SetChaptersProgress(string progress)
+        {
+            txtPercent.Text = progress;
+        }
+        public Action<string> FindChaptersClicked { get; set; }
+        public void SetChapters(IEnumerable<Chapter> chapters)
+        {
+            dgvChapter.DataSource = chapters.ToList();
+            PrefixLogic();
+            PrepareSpecificDirectory();
+            btnGetChapter.Enabled = true;
+        }
+
+        private void btnGetChapter_Click(object sender, EventArgs e)
         {
             try
             {
@@ -51,16 +65,9 @@ namespace MangaRipper.Forms
                     Logger.Error("Aborting chapter retrieval, no Internet connection.");
                     return;
                 }
-
                 btnGetChapter.Enabled = false;
                 var titleUrl = cbTitleUrl.Text;
-
-                var worker = FrameworkProvider.GetWorker();
-                var progressInt = new Progress<int>(progress => txtPercent.Text = progress + @"%");
-                var chapters = await worker.FindChapterListAsync(titleUrl, progressInt);
-                dgvChapter.DataSource = chapters.ToList();
-                PrefixLogic();
-                PrepareSpecificDirectory();
+                FindChaptersClicked(titleUrl);
 
             }
             catch (OperationCanceledException ex)
@@ -72,10 +79,6 @@ namespace MangaRipper.Forms
                 Logger.Error(ex);
                 txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            finally
-            {
-                btnGetChapter.Enabled = true;
             }
         }
 
@@ -465,6 +468,7 @@ namespace MangaRipper.Forms
             cbUseSeriesFolder.Checked = Directory.Exists(seriesPath);
 
         }
-        
+
+       
     }
 }

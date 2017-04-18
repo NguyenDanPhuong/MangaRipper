@@ -128,6 +128,8 @@
     <Compile Include="Helpers\ApplicationConfiguration.cs" />
     <Compile Include="Helpers\CommonSettings.cs" />
     <Compile Include="Helpers\UpdateNotification.cs" />
+    <Compile Include="Presenters\IMainView.cs" />
+    <Compile Include="Presenters\MainViewPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FormMain.resx">
