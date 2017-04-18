@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MangaRipper.Core.CustomException;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
@@ -46,40 +44,33 @@ namespace MangaRipper.Forms
         {
             txtPercent.Text = progress;
         }
-        public Action<string> FindChaptersClicked { get; set; }
+
+        public void SetStatusText(string statusMessage)
+        {
+            txtMessage.Text = statusMessage;
+        }
+
+        public Func<string, Task> FindChaptersClicked { get; set; }
+
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
+            btnGetChapter.Enabled = true;
             dgvChapter.DataSource = chapters.ToList();
             PrefixLogic();
             PrepareSpecificDirectory();
-            btnGetChapter.Enabled = true;
         }
 
         private void btnGetChapter_Click(object sender, EventArgs e)
         {
-            try
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                {
-                    MessageBox.Show("An Internet connection has not been detected.", Application.ProductName,  MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Logger.Error("Aborting chapter retrieval, no Internet connection.");
-                    return;
-                }
-                btnGetChapter.Enabled = false;
-                var titleUrl = cbTitleUrl.Text;
-                FindChaptersClicked(titleUrl);
-
+                MessageBox.Show("An Internet connection has not been detected.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Error("Aborting chapter retrieval, no Internet connection.");
+                return;
             }
-            catch (OperationCanceledException ex)
-            {
-                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
-                MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            btnGetChapter.Enabled = false;
+            var titleUrl = cbTitleUrl.Text;
+            FindChaptersClicked(titleUrl);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -259,12 +250,9 @@ namespace MangaRipper.Forms
             if (string.IsNullOrWhiteSpace(SaveDestination))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-
             _downloadQueue = _appConf.LoadDownloadChapterTasks();
             dgvQueueChapter.DataSource = _downloadQueue;
-
             LoadBookmark();
-
             CheckForUpdate();
         }
 
@@ -289,7 +277,7 @@ namespace MangaRipper.Forms
                 }
             }
         }
-        
+
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             var appConfig = _appConf.LoadCommonSettings();
@@ -331,7 +319,7 @@ namespace MangaRipper.Forms
             foreach (var item in sc)
                 cbTitleUrl.Items.Add(item);
         }
-        
+
         private void btnAddBookmark_Click(object sender, EventArgs e)
         {
             var sc = _appConf.LoadBookMarks().ToList();
@@ -416,7 +404,7 @@ namespace MangaRipper.Forms
         {
             if (dgvChapter.RowCount == 0)
                 return;
-            
+
             var state = _appConf.LoadCommonSettings();
 
             string
@@ -449,11 +437,11 @@ namespace MangaRipper.Forms
             // If the base series destination hasn't been set, use MyDocuments as the base for now.
             if (string.IsNullOrEmpty(baseSeriesDestination))
                 baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            
+
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
             seriesPath = Path.Combine(baseSeriesDestination, series);
-            
+
             SeriesDestination = seriesPath;
 
             FormToolTip.SetToolTip(cbUseSeriesFolder, $"Save chapters to {seriesPath}");
@@ -469,6 +457,9 @@ namespace MangaRipper.Forms
 
         }
 
-       
+        public void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            MessageBox.Show(text, caption, buttons, icon);
+        }
     }
 }
