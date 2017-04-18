@@ -26,10 +26,10 @@ namespace MangaRipper.Core.Services
         /// </summary>
         /// <param name="url">The URL to download</param>
         /// <returns></returns>
-        public async Task<string> DownloadStringAsync(string url)
+        public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
             Logger.Info("> DownloadStringAsync: {0}", url);
-            return await DownloadStringAsyncInternal(url);
+            return await DownloadStringAsyncInternal(url, token);
         }
 
         /// <summary>
@@ -62,19 +62,19 @@ namespace MangaRipper.Core.Services
         /// </summary>
         /// <param name="url">The URL to download</param>
         /// <param name="fileName">Save to filename</param>
-        /// <param name="cancellationToken">Cancellation control</param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
+        public async Task DownloadFileAsync(string url, string fileName, CancellationToken token)
         {
             Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
-            var result = await DownloadFileAsyncImpl(url, fileName, cancellationToken);
+            var result = await DownloadFileAsyncInternal(url, fileName, token);
             Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
         }
 
-        private async Task<string> DownloadFileAsyncImpl(string url, string fileName, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<string> DownloadFileAsyncInternal(string url, string fileName, CancellationToken token)
         {
             var request = CreateRequest();
-            using (var response = await request.GetAsync(url))
+            using (var response = await request.GetAsync(url, token))
             {
                 using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
@@ -84,10 +84,10 @@ namespace MangaRipper.Core.Services
             }
         }
 
-        private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
         {
             var request = CreateRequest();
-            using (var response = await request.GetAsync(url))
+            using (var response = await request.GetAsync(url, cancellationToken))
             {
                 return await response.Content.ReadAsStringAsync();
             }

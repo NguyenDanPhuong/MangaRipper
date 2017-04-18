@@ -36,7 +36,7 @@ namespace MangaRipper.Plugin.ReadComics
 
             try
             {
-                string html = await downloader.DownloadStringAsync(manga);
+                string html = await downloader.DownloadStringAsync(manga, cancellationToken);
                 
                 progress.Report(50);
 
@@ -74,7 +74,7 @@ namespace MangaRipper.Plugin.ReadComics
                 Logger.Info("> FindImages()");
 
                 chapterUrl = string.Concat(chapter.Url, "/full");
-                html = await downloader.DownloadStringAsync(chapterUrl);
+                html = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
 
                 if (!string.IsNullOrWhiteSpace(html))
                 {

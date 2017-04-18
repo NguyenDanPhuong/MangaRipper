@@ -38,7 +38,7 @@ namespace MangaRipper.Plugin.MangaFox
             var parser = new ParserHelper();
 
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga);
+            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
             progress.Report(100);
             return chaps;
@@ -50,7 +50,7 @@ namespace MangaRipper.Plugin.MangaFox
             var downloader = new DownloadService();
             var parser = new ParserHelper();
 
-            var pages = (await FindPagesInChapter(chapter.Url)).ToList();
+            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken)).ToList();
             var transformedPages = TransformPagesUrl(chapter.Url, pages).ToArray();
             
             // find all images in pages
@@ -70,11 +70,11 @@ namespace MangaRipper.Plugin.MangaFox
             return images;
         }
 
-        private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl)
+        private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
-            var input = await downloader.DownloadStringAsync(chapterUrl);
+            var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             return parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
         }
 
