@@ -12,6 +12,6 @@ namespace MangaRipper.Presenters
         void SetChapters(IEnumerable<Chapter> chapters);
         void SetChaptersProgress(string progress);
         void SetStatusText(string statusMessage);
-        void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon);
+        void ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon);
     }
 }

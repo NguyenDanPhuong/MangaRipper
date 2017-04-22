@@ -457,7 +457,7 @@ namespace MangaRipper.Forms
 
         }
 
-        public void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon)
+        public void ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             MessageBox.Show(text, caption, buttons, icon);
         }
