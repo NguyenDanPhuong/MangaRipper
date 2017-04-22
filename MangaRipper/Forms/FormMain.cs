@@ -18,7 +18,6 @@ namespace MangaRipper.Forms
     public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private BindingList<DownloadChapterTask> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private string SaveDestination
@@ -51,7 +50,11 @@ namespace MangaRipper.Forms
         }
 
         public Func<string, Task> FindChaptersClicked { get; set; }
-
+        public Func<Task> StartDownloadClicked { get; set; }
+        public Action<IEnumerable<Chapter>, string, OutputFormat[]> AddDownloadClicked { get; set; }
+        public Action<IEnumerable<DownloadChapterTask>> RemoveDownloadClicked { get; set; }
+        public Action MainFormClosing { get; set; }
+        public Action MainFormLoaded { get; set; }
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
             btnGetChapter.Enabled = true;
@@ -82,10 +85,8 @@ namespace MangaRipper.Forms
                 return;
             }
             var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as Chapter).ToList();
-            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
-            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            AddDownloadClicked(items, SaveDestination, formats);
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
@@ -96,31 +97,21 @@ namespace MangaRipper.Forms
                 MessageBox.Show("Please select at least one output format (Folder, Cbz...)");
                 return;
             }
-
             var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter)row.DataBoundItem).ToList();
-            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
-            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            AddDownloadClicked(items, SeriesDestination, formats);
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow item in dgvQueueChapter.SelectedRows)
-            {
-                var chapter = (DownloadChapterTask)item.DataBoundItem;
-
-                if (chapter.IsBusy == false)
-                    _downloadQueue.Remove(chapter);
-            }
+            var chapters = dgvQueueChapter.SelectedRows.Cast<DataGridViewRow>().Select(row => (DownloadChapterTask)row.DataBoundItem);
+            RemoveDownloadClicked(chapters);
         }
 
         private void btnRemoveAll_Click(object sender, EventArgs e)
         {
-            var removeItems = _downloadQueue.Where(r => r.IsBusy == false).ToList();
-
-            foreach (var item in removeItems)
-                _downloadQueue.Remove(item);
+            var chapters = dgvQueueChapter.Rows.Cast<DataGridViewRow>().Select(row => (DownloadChapterTask)row.DataBoundItem);
+            RemoveDownloadClicked(chapters);
         }
 
         private async void btnDownload_Click(object sender, EventArgs e)
@@ -128,7 +119,7 @@ namespace MangaRipper.Forms
             try
             {
                 btnDownload.Enabled = false;
-                await StartDownload();
+                await StartDownloadClicked();
             }
             catch (OperationCanceledException ex)
             {
@@ -143,27 +134,6 @@ namespace MangaRipper.Forms
             finally
             {
                 btnDownload.Enabled = true;
-            }
-        }
-
-        private async Task StartDownload()
-        {
-            while (_downloadQueue.Count > 0)
-            {
-                var chapter = _downloadQueue.First();
-                var worker = FrameworkProvider.GetWorker();
-
-                await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
-                {
-                    foreach (DataGridViewRow item in dgvQueueChapter.Rows)
-                        if (chapter == item.DataBoundItem)
-                        {
-                            chapter.Percent = c;
-                            dgvQueueChapter.Refresh();
-                        }
-                }));
-
-                _downloadQueue.Remove(chapter);
             }
         }
 
@@ -250,8 +220,8 @@ namespace MangaRipper.Forms
             if (string.IsNullOrWhiteSpace(SaveDestination))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            _downloadQueue = _appConf.LoadDownloadChapterTasks();
-            dgvQueueChapter.DataSource = _downloadQueue;
+            MainFormLoaded();
+
             LoadBookmark();
             CheckForUpdate();
         }
@@ -302,7 +272,7 @@ namespace MangaRipper.Forms
             appConfig.CbzChecked = cbSaveCbz.Checked;
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
             _appConf.SaveCommonSettings(appConfig);
-            _appConf.SaveDownloadChapterTasks(_downloadQueue);
+            MainFormClosing();
         }
 
         private void FormMain_Paint(object sender, PaintEventArgs e)
@@ -317,7 +287,9 @@ namespace MangaRipper.Forms
             var sc = bookmarks;
             if (sc == null) return;
             foreach (var item in sc)
+            {
                 cbTitleUrl.Items.Add(item);
+            }
         }
 
         private void btnAddBookmark_Click(object sender, EventArgs e)
@@ -460,6 +432,16 @@ namespace MangaRipper.Forms
         public void ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             MessageBox.Show(text, caption, buttons, icon);
+        }
+
+        public void RefreshTaskGrid()
+        {
+            dgvQueueChapter.Refresh();
+        }
+
+        public void SetDownloadQueue(BindingList<DownloadChapterTask> downloadQueue)
+        {
+            dgvQueueChapter.DataSource = downloadQueue;
         }
     }
 }
