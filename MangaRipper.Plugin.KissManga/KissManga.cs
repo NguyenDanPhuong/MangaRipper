@@ -20,7 +20,7 @@ namespace MangaRipper.Plugin.KissManga
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private string _iv = "a5e8e2e9c2721be0a84ad660c472c1f3";
-        private string _chko = "72nnasdasd9asdn123";
+        private string _chko = "nsfd732nsdnds823nsdf";
 
         private KissMangaTextDecryption _decryptor;
 
@@ -53,7 +53,7 @@ namespace MangaRipper.Plugin.KissManga
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga);
+            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<td>\\s+<a\\s+href=\"(?=/Manga/)(?<Value>.[^\"]*)\"\\s+title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value");
             chaps = chaps.Select(c => NameResolver(c.Name, c.Url, new Uri(manga)));
             progress.Report(100);
@@ -64,7 +64,7 @@ namespace MangaRipper.Plugin.KissManga
         {
             var downloader = new DownloadService();
             var parser = new ParserHelper();
-            string input = await downloader.DownloadStringAsync(chapter.Url);
+            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
             var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
             var pages = encryptPages.Select(e => _decryptor.DecryptFromBase64(e));
             // transform pages link

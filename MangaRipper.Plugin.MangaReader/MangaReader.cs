@@ -24,7 +24,7 @@ namespace MangaRipper.Plugin.MangaReader
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga);
+            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
             // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
@@ -40,7 +40,7 @@ namespace MangaRipper.Plugin.MangaReader
             var parser = new ParserHelper();
 
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url);
+            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
 
             // transform pages link

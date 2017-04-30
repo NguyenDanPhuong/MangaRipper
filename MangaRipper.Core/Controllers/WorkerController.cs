@@ -47,7 +47,7 @@ namespace MangaRipper.Core.Controllers
         /// <param name="task">Contain chapter and save to path</param>
         /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task DownloadChapter(DownloadChapterTask task, IProgress<int> progress)
+        public async Task RunDownloadTaskAsync(DownloadChapterTask task, IProgress<int> progress)
         {
             Logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Url, task.SaveToFolder);
             await Task.Run(async () =>
@@ -57,7 +57,7 @@ namespace MangaRipper.Core.Controllers
                     _source = new CancellationTokenSource();
                     await _sema.WaitAsync();
                     task.IsBusy = true;
-                    await DownloadChapterInternal(task, task.SaveToFolder, progress);
+                    await DownloadChapter(task, task.SaveToFolder, progress);
                 }
                 catch (Exception ex)
                 {
@@ -78,7 +78,7 @@ namespace MangaRipper.Core.Controllers
         /// <param name="mangaPath">The URL of manga</param>
         /// <param name="progress">Progress report callback</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Chapter>> FindChapters(string mangaPath, IProgress<int> progress)
+        public async Task<IEnumerable<Chapter>> FindChapterListAsync(string mangaPath, IProgress<int> progress)
         {
             Logger.Info("> FindChapters: {0}", mangaPath);
             return await Task.Run(async () =>
@@ -100,7 +100,7 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
-        private async Task DownloadChapterInternal(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
+        private async Task DownloadChapter(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
         {
             var chapter = task.Chapter;
             progress.Report(0);
@@ -142,6 +142,7 @@ namespace MangaRipper.Core.Controllers
             var countImage = 0;
             foreach (var image in images)
             {
+                _source.Token.ThrowIfCancellationRequested();
                 await DownloadImage(image, destination, countImage);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
@@ -189,7 +190,6 @@ namespace MangaRipper.Core.Controllers
                 imageNum++;
                 path = imageNum.ToString("0000") + "." + extension;
             }
-
             return path;
         }
 

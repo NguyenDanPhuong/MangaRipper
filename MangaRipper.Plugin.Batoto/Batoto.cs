@@ -63,7 +63,7 @@ namespace MangaRipper.Plugin.Batoto
             var parser = new ParserHelper();
 
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga);
+            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>http://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)", input, "Name", "Value");
             progress.Report(100);
             return chaps;
@@ -81,7 +81,7 @@ namespace MangaRipper.Plugin.Batoto
 
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);
-            var input = await downloader.DownloadStringAsync(chapterUrl);
+            var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             var pages = parser.Parse(@"<option value=""(?<Value>http://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
 
             // transform pages link
