@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Jurassic;
 
 namespace MangaRipper.Plugin.KissManga
 {
@@ -24,9 +25,37 @@ namespace MangaRipper.Plugin.KissManga
 
         private KissMangaTextDecryption _decryptor;
 
+        static ScriptEngine Engine;
+
         public KissManga()
         {
             _decryptor = new KissMangaTextDecryption(_iv, _chko);
+        }
+
+        public void InitializeJurassicEngine()
+        {
+            if (Engine == null)
+            {
+                Engine = new ScriptEngine();
+            }
+
+            /// Consider using a one-and-done approach with the engine.
+            ///  Make it static and allow it to be reused.
+            ///  
+            /// Download the latest files from KissManga, to do so, the HTTP client will
+            /// also have to be static as to avoid the five second wait per request.
+            /// Investigate methods to achieve the aforementioned.
+            /// 
+
+            /// Execute the following JavaScript files as the browser would do.
+            /// Engine.Execute(Properties.Resources.KissManga_CryptoJs);
+            /// Engine.Execute(Properties.Resources.KissManga_lo);
+
+            // Series
+            // http://kissmanga.com/Manga/Koe-no-Katachi/
+
+            // Chapters
+            // http://kissmanga.com/Manga/Koe-no-Katachi/vol-000-ch-000?id=323664
         }
 
         public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
@@ -65,15 +94,84 @@ namespace MangaRipper.Plugin.KissManga
             var downloader = new DownloadService();
             var parser = new ParserHelper();
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
-            var pages = encryptPages.Select(e => _decryptor.DecryptFromBase64(e));
-            // transform pages link
-            pages = pages.Select(p =>
+
+            InitializeJurassicEngine();
+
+            string pattern = "<script\\s+(type=[\"']text/javascript[\"'])?\\s+(src=[\"']/Scripts/{0}[\"'])>";
+
+            if (Regex.IsMatch(input, string.Format(pattern, "ca.js"), RegexOptions.IgnoreCase | RegexOptions.Compiled) &&
+                Regex.IsMatch(input, string.Format(pattern, "lo.js"), RegexOptions.IgnoreCase | RegexOptions.Compiled))
             {
-                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
-                return value;
-            }).ToList();
-            return pages;
+                string funcUri = "http://kissmanga.com/Scripts/lo.js";                
+                string decryptFunc = await downloader.DownloadStringAsync(funcUri, cancellationToken);
+
+                // Execute CryptoJS from saved resources to reduce HTTP requests.
+                Engine.Execute(Properties.Resources.CryptoJs);
+
+                // Execute the decryption function to allow it to be called later.
+                Engine.Execute(decryptFunc);
+
+                var keysPattern = "<script type=\"text/javascript\">[\\s]*(?<Value>.*)(?!</script>)";
+                var regex = new Regex(keysPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var keys = string.Empty;
+
+                foreach (Match match in regex.Matches(input))
+                {
+                    if (match.Value.Contains("CryptoJS"))
+                    {
+                        keys = match.Groups["Value"].Value;
+                        break;
+                    }
+                }
+                
+                if (string.IsNullOrWhiteSpace(keys))
+                {
+                    throw new ArgumentException("Cannot decrypt image URIs.");
+                }
+                else
+                {
+                    Engine.Execute(keys);
+                }
+                
+                var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
+
+                var pages = encryptPages.Select(e => {
+                    string value = string.Empty;
+
+                    try
+                    {
+                        value = Engine.CallGlobalFunction<string>("wrapKA", e);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(e);
+                    }
+
+                    return value;
+                });
+                                
+
+                pages = pages.Select(p =>
+                {
+                    var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
+                    return value;
+                }).ToList();
+
+                return pages;
+            }
+
+            return null;
+
+
+            //var pages = encryptPages.Select(e => _decryptor.DecryptFromBase64(e));
+
+            //// transform pages link
+            //pages = pages.Select(p =>
+            //{
+            //    var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
+            //    return value;
+            //}).ToList();
+            //return pages;
         }
 
         public override SiteInformation GetInformation()

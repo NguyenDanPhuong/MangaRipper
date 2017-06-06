@@ -58,7 +58,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)\ReadComics\$(OutDir)Plugins\" mkdir "$(SolutionDir)\ReadComics\$(OutDir)Plugins\"
+    <PostBuildEvent>if not exist "$(SolutionDir)\MangaRipper\$(OutDir)Plugins" mkdir "$(SolutionDir)\MangaRipper\$(OutDir)Plugins"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).dll"
 copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
