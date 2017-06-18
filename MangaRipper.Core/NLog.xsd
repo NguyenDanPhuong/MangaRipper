@@ -2784,26 +2784,7 @@
   <xs:complexType name="Log4JXmlEventLayout">
     <xs:complexContent>
       <xs:extension base="Layout">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-        </xs:choice>
-        <xs:attribute name="includeAllProperties" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="includeMdc" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="includeMdlc" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
+        <xs:choice minOccurs="0" maxOccurs="unbounded" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
