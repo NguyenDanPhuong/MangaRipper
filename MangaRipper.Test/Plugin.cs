@@ -117,7 +117,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Vol.01 Ch.01 Read Online", chapter.Name);
-            Assert.AreEqual("http://bato.to/reader#900d11d96d1466f2", chapter.Url);
+            Assert.AreEqual("https://bato.to/reader#900d11d96d1466f2", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(31, images.Count());
             Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000001.jpg"));

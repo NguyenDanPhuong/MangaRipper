@@ -82,7 +82,7 @@ namespace MangaRipper.Plugin.Batoto
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             
-            var allLanguagesRegEx = "<a href=\"(?<Value>http://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
+            var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
             // Choose only specific languages if it set so in config
             if (!string.IsNullOrEmpty(_languagesRegEx))
             {
@@ -161,7 +161,7 @@ namespace MangaRipper.Plugin.Batoto
                 page = id.Substring(id.LastIndexOf('_') + 1);
                 id = id.Remove(id.LastIndexOf('_'));
             };
-            return $@"http://bato.to/areader?id={id}&p={page}";
+            return $@"https://bato.to/areader?id={id}&p={page}";
         }
     }
 }
