@@ -18,42 +18,18 @@ namespace MangaRipper.Core.Services
     public class DownloadService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public CookieCollection Cookies { get; set; }
-
         public string Referrer { get; set; }
-        
-        private HttpClient CreateRequest()
-        {
-            var firstHandle = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                Credentials = CredentialCache.DefaultCredentials,
-                AllowAutoRedirect = false,
-                CookieContainer = new CookieContainer()
-            };
-
-            if (Cookies != null)
-                firstHandle.CookieContainer.Add(Cookies);
-
-            var cloudFlareHandler = new ClearanceHandler(firstHandle);
-            var request = new HttpClient(cloudFlareHandler);
-            if (Referrer != null)
-                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
-
-            // Add the Headers for "User Agent"
-            return request;
-        }
 
         /// <summary>
         /// Download single web page to string.
         /// </summary>
         /// <param name="url">The URL to download</param>
         /// <returns></returns>
-        public async Task<string> DownloadStringAsync(string url)
+        public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
             Logger.Info("> DownloadStringAsync: {0}", url);
-            return await WorkWithStreams(url);
+            return await DownloadStringAsyncInternal(url, token);
         }
 
         /// <summary>
@@ -72,7 +48,7 @@ namespace MangaRipper.Core.Services
             progress.Report(count);
             foreach (var url in inputUrls)
             {
-                var input = await DownloadStringAsync(url);
+                var input = await DownloadStringAsyncInternal(url, cancellationToken);
                 sb.Append(input);
                 cancellationToken.ThrowIfCancellationRequested();
                 progress.Report(count++);
@@ -86,36 +62,56 @@ namespace MangaRipper.Core.Services
         /// </summary>
         /// <param name="url">The URL to download</param>
         /// <param name="fileName">Save to filename</param>
-        /// <param name="cancellationToken">Cancellation control</param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public async Task DownloadFileAsync(string url, string fileName, CancellationToken cancellationToken)
+        public async Task DownloadFileAsync(string url, string fileName, CancellationToken token)
         {
             Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
-            var result = await WorkWithStreams(url, fileName, cancellationToken);
+            var result = await DownloadFileAsyncInternal(url, fileName, token);
             Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
         }
 
-        private async Task<string> WorkWithStreams(string url, string fileName = null, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<string> DownloadFileAsyncInternal(string url, string fileName, CancellationToken token)
         {
             var request = CreateRequest();
-
-            using (var response = await request.GetAsync(url))
+            using (var response = await request.GetAsync(url, token))
             {
-                if (string.IsNullOrWhiteSpace(fileName))
+                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
-                    // Get the html from site
-                    return await response.Content.ReadAsStringAsync();
-                }
-                else
-                {
-                    //Download the file
-                    using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-                    {
-                        await response.Content.CopyToAsync(streamReader);
-                        return response.StatusCode.ToString();
-                    }
+                    await response.Content.CopyToAsync(streamReader);
+                    return response.StatusCode.ToString();
                 }
             }
+        }
+
+        private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
+        {
+            var request = CreateRequest();
+            using (var response = await request.GetAsync(url, cancellationToken))
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        private HttpClient CreateRequest()
+        {
+            var firstHandle = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                Credentials = CredentialCache.DefaultCredentials,
+                AllowAutoRedirect = false,
+                CookieContainer = new CookieContainer()
+            };
+            if (Cookies != null)
+                firstHandle.CookieContainer.Add(Cookies);
+
+            var cloudFlareHandler = new ClearanceHandler(firstHandle);
+            var request = new HttpClient(cloudFlareHandler);
+            if (Referrer != null)
+            {
+                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
+            }
+            return request;
         }
     }
 }

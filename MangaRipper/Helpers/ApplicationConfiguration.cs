@@ -71,7 +71,7 @@ namespace MangaRipper.Helpers
                 throw new ArgumentNullException(nameof(objectToStore));
             }
 
-            Logger.Info("> SaveObject(): " + fileName);
+            Logger.Info("> SaveObject(): " + Core.Extensions.ExtensionHelper.SanitizeUserName(fileName));
             var serializer = new JsonSerializer();
             using (var sw = new StreamWriter(fileName))
             using (JsonWriter writer = new JsonTextWriter(sw))
@@ -90,7 +90,7 @@ namespace MangaRipper.Helpers
             var result = default(T);
             try
             {
-                Logger.Info("> LoadObject(): " + fileName);
+                Logger.Info("> LoadObject(): " + Core.Extensions.ExtensionHelper.SanitizeUserName(fileName));
 
                 var serializer = new JsonSerializer();
 

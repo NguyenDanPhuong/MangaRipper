@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using MangaRipper.Core.Providers;
 using MangaRipper.Forms;
+using MangaRipper.Presenters;
 using NLog;
 
 namespace MangaRipper
@@ -24,7 +25,9 @@ namespace MangaRipper
                 Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            var form = new FormMain();
+            var presenter = new MainViewPresenter(form);
+            Application.Run(form);
             Logger.Info("< Main()");
         }
 
