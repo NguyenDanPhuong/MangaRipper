@@ -93,28 +93,7 @@ namespace MangaRipper.Plugin.KissManga
 
                 var keysPattern = "<script type=\"text/javascript\">[\\s]*(?<Value>.*)(?!</script>)";
                 var regex = new Regex(keysPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                var keys = string.Empty;
-
-                foreach (Match match in regex.Matches(input))
-                {
-                    if (match.Value.Contains("CryptoJS"))
-                    {
-                        keys = match.Groups["Value"].Value;
-                        break;
-                    }
-                }
-                
-                if (string.IsNullOrWhiteSpace(keys))
-                {
-                    throw new ArgumentException("Cannot decrypt image URIs.");
-                }
-                else
-                {
-                    _engine.Execute(keys);
-                }
-
-                /// As with the script locations, to avoid unnecessary breaking the application, the function name could be captured and invoked 
-                /// in the event it changes.
+                                
                 var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
 
                 var pages = encryptPages.Select(e =>
@@ -133,11 +112,11 @@ namespace MangaRipper.Plugin.KissManga
 
                     return value;
                 });
-
-
+                
                 pages = pages.Select(p =>
                 {
                     var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
+
                     return value;
                 }).ToList();
 
