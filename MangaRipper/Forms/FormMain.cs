@@ -406,9 +406,11 @@ namespace MangaRipper.Forms
                 return;
             }
 
-            // If the base series destination hasn't been set, use MyDocuments as the base for now.
+            /// If the base series destination hasn't been set, use the 'txtSaveTo.Text' location instead.
             if (string.IsNullOrEmpty(baseSeriesDestination))
-                baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            {
+                baseSeriesDestination = txtSaveTo.Text;
+            }
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());

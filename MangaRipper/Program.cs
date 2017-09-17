@@ -18,6 +18,8 @@ namespace MangaRipper
         [STAThread]
         private static void Main()
         {
+            // TODO Apply Composition Root to use DI for WinForm
+            // So we can unit test.
             Logger.Info("> Main()");
             var appDomain = AppDomain.CurrentDomain;
             appDomain.UnhandledException += AppDomain_UnhandledException;

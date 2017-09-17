@@ -14,6 +14,9 @@ namespace MangaRipper.Presenters
 {
     public class MainViewPresenter
     {
+        // TODO Implement MVP (passive)
+        // So we can separate UI can UI's logic
+        // Then we can unit test presenter (it likes UI Test :)) ) 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IMainView View { get; set; }
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();

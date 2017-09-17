@@ -6,6 +6,7 @@ using System.Threading;
 using System.Linq;
 using MangaRipper.Core.Services;
 using MangaRipper.Core.Providers;
+using System.Collections.Generic;
 
 namespace MangaRipper.Test
 {
@@ -68,9 +69,9 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://mangafox.me/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(15, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q002.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("http://h.mfcdn.net/store/manga/19803/001.0/compressed/q003.jpg"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q002.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
             var downloader = new DownloadService();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
@@ -98,16 +99,25 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
+        #region Batoto
+
         [TestMethod]
         public async Task Batoto_Test()
         {
             string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
             var service = FrameworkProvider.GetService(url);
+
+            service.Configuration(new[] {
+                new KeyValuePair<string, object>("Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Password", "123"),
+                new KeyValuePair<string, object>("Languages", "")
+            });
+
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Vol.01 Ch.01 Read Online", chapter.Name);
-            Assert.AreEqual("http://bato.to/reader#900d11d96d1466f2", chapter.Url);
+            Assert.AreEqual("https://bato.to/reader#900d11d96d1466f2", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(31, images.Count());
             Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000001.jpg"));
@@ -118,6 +128,56 @@ namespace MangaRipper.Test
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
+        
+        [TestMethod]
+        public async Task Batoto_AllLanguages_Test()
+        {
+            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
+            var service = FrameworkProvider.GetService(url);
+
+            service.Configuration(new[] {
+                new KeyValuePair<string, object>("Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Password", "123"),
+                new KeyValuePair<string, object>("Languages", "")
+            });
+
+            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
+            Assert.AreEqual(chapters.Count(), 82);
+        }
+
+        [TestMethod]
+        public async Task Batoto_EnglishLanguages_Test()
+        {
+            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
+            var service = FrameworkProvider.GetService(url);
+
+            service.Configuration(new[] {
+                new KeyValuePair<string, object>("Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Password", "123"),
+                new KeyValuePair<string, object>("Languages", "English")
+            });
+
+            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
+            Assert.AreEqual(chapters.Count(), 32);
+        }
+
+        [TestMethod]
+        public async Task Batoto_GermanEnglishLanguages_Test()
+        {
+            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
+            var service = FrameworkProvider.GetService(url);
+
+            service.Configuration(new[] {
+                new KeyValuePair<string, object>("Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Password", "123"),
+                new KeyValuePair<string, object>("Languages", "German, English")
+            });
+
+            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
+            Assert.AreEqual(chapters.Count(), 64);
+        }
+
+        #endregion
 
         [TestMethod]
         public async Task MangaStream_Test()

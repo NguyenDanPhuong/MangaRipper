@@ -22,6 +22,7 @@ namespace MangaRipper.Plugin.Batoto
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _username = "gufrohepra";
         private string _password = "123";
+        private string _languagesRegEx;
 
         public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
@@ -38,6 +39,22 @@ namespace MangaRipper.Plugin.Batoto
                 var pass = settingCollection.First(i => i.Key.Equals("Password")).Value;
                 Logger.Info($@"Current Password: {_password}. New Password: {pass}");
                 _password = pass as string;
+            }
+
+            if (settingCollection.Any(i => i.Key.Equals("Languages")))
+            {
+                var languages = settingCollection.First(i => i.Key.Equals("Languages")).Value as string;
+                Logger.Info($@"Only the follow languages will be selected: {languages}");
+                // For test purpose
+                if (!string.IsNullOrEmpty(languages))
+                {
+                    var languagesRegEx = languages.Replace(" ", String.Empty).Replace(",", "|");                
+                    _languagesRegEx = "<tr class=\"\\w+ lang_(" + languagesRegEx + ") \\w+\"( style=\"display:none;\")?>\\s*<td style=\"[^\"]+\">\\s*";
+                }
+                else
+                {
+                    _languagesRegEx = null;
+                }
             }
         }
 
@@ -64,7 +81,14 @@ namespace MangaRipper.Plugin.Batoto
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>http://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)", input, "Name", "Value");
+            
+            var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
+            // Choose only specific languages if it set so in config
+            if (!string.IsNullOrEmpty(_languagesRegEx))
+            {
+                allLanguagesRegEx = _languagesRegEx + allLanguagesRegEx;
+            }
+            var chaps = parser.ParseGroup(allLanguagesRegEx, input, "Name", "Value");
             progress.Report(100);
             return chaps;
         }
@@ -92,7 +116,7 @@ namespace MangaRipper.Plugin.Batoto
                 transformedPages,
                 new Progress<int>((count) =>
                 {
-                    var f = (float)count / transformedPages.Count();
+                    var f = (float)count / transformedPages.Count;
                     var i = Convert.ToInt32(f * 100);
                     progress.Report(i);
                 }),
@@ -137,7 +161,7 @@ namespace MangaRipper.Plugin.Batoto
                 page = id.Substring(id.LastIndexOf('_') + 1);
                 id = id.Remove(id.LastIndexOf('_'));
             };
-            return $@"http://bato.to/areader?id={id}&p={page}";
+            return $@"https://bato.to/areader?id={id}&p={page}";
         }
     }
 }

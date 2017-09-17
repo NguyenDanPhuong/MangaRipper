@@ -32,8 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.4.8\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,7 +58,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)\ReadComics\$(OutDir)Plugins\" mkdir "$(SolutionDir)\ReadComics\$(OutDir)Plugins\"
+    <PostBuildEvent>if not exist "$(SolutionDir)\MangaRipper\$(OutDir)Plugins" mkdir "$(SolutionDir)\MangaRipper\$(OutDir)Plugins"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).dll"
 copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>

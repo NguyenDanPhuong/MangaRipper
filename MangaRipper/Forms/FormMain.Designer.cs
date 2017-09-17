@@ -416,7 +416,7 @@
             // txtMessage
             // 
             this.txtMessage.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txtMessage.Location = new System.Drawing.Point(0, 584);
+            this.txtMessage.Location = new System.Drawing.Point(0, 588);
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.ReadOnly = true;
             this.txtMessage.Size = new System.Drawing.Size(1004, 22);
@@ -549,8 +549,7 @@
             // 
             // txtSaveTo
             // 
-            this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtSaveTo.Location = new System.Drawing.Point(21, 319);
             this.txtSaveTo.Name = "txtSaveTo";
             this.txtSaveTo.Size = new System.Drawing.Size(405, 22);
@@ -561,7 +560,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1004, 606);
+            this.ClientSize = new System.Drawing.Size(1004, 610);
             this.Controls.Add(this.lbDestination);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
