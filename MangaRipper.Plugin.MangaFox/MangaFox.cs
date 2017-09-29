@@ -36,11 +36,21 @@ namespace MangaRipper.Plugin.MangaFox
             var downloader = new DownloadService();
 
             var parser = new ParserHelper();
+            
+            manga = CheckAndInsertMissingScheme(manga);
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
             progress.Report(100);
+
+            // Insert missing URI schemes in each chapter's URI.
+            // Provisional solution, the current implementation may not be the best way to go about it.
+            chaps = chaps.Select(chap => {
+                var newUri = CheckAndInsertMissingScheme(chap.Url);
+                return new Chapter(chap.OriginalName, newUri);
+            });
+
             return chaps;
         }
         
@@ -83,8 +93,38 @@ namespace MangaRipper.Plugin.MangaFox
             return pages.Select(p =>
             {
                 var value = new Uri(new Uri(chapterUrl), (p + ".html")).AbsoluteUri;
+                
                 return value;
             });
+        }
+
+        /// <summary>
+        /// Checks if the URI is missing the HTTP or HTTPS scheme.
+        /// </summary>
+        /// <param name="uri">The URI to check.</param>
+        /// <param name="preferredScheme">The scheme to insert if it is missing one.</param>
+        /// <returns></returns>
+        public string CheckAndInsertMissingScheme(string uri, string preferredScheme = "http")
+        {
+            var missingSchemePattern = "^(?!http[s]:)(?=//)";
+
+            if (System.Text.RegularExpressions.Regex.IsMatch(uri, missingSchemePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            {
+                // Insert the missing colon if the preferred scheme doesn't end with one.
+                if (!preferredScheme.EndsWith(":"))
+                {
+                    preferredScheme = string.Concat(preferredScheme, ":");
+                }
+
+                // Return the uri with the preferred scheme prefixed.
+                return uri.Insert(0, preferredScheme);
+            }
+            else
+            {
+                // Return the unchanged value.
+                return uri;
+            }
+
         }
     }
 }
