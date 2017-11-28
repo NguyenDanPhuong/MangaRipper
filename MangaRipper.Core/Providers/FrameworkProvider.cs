@@ -28,24 +28,11 @@ namespace MangaRipper.Core.Providers
             var _config = new Configuration(configFile);
             var _plugins = new PluginManager(pluginPath);
             _worker = new WorkerController();
-            _services = _plugins.CreateAll<IMangaService>();
+            _services = _plugins.CreateServices<IMangaService>();
             foreach (var service in _services)
             {
                 InjectConfiguration(service, _config);
             }
-        }
-
-        private static void InjectConfiguration(IMangaService service, Configuration config)
-        {
-            string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
-            var configItems = config.FindConfigByPrefix(lookupPrefix);
-            configItems = RemovePrefix(configItems, lookupPrefix);
-            service.Configuration(configItems);
-        }
-
-        private static IEnumerable<KeyValuePair<string, object>> RemovePrefix(IEnumerable<KeyValuePair<string, object>> configItems, string prefix)
-        {
-            return configItems.ToArray().Select(i => new KeyValuePair<string, object>(i.Key.Remove(0, prefix.Length), i.Value));
         }
 
         /// <summary>
@@ -80,6 +67,19 @@ namespace MangaRipper.Core.Providers
                 throw new MangaRipperException("Cannot find service to download from input site!");
             }
             return service;
+        }
+
+        private static void InjectConfiguration(IMangaService service, Configuration config)
+        {
+            string lookupPrefix = $@"Plugin.{service.GetInformation().Name}.";
+            var configItems = config.FindConfigByPrefix(lookupPrefix);
+            configItems = RemovePrefix(configItems, lookupPrefix);
+            service.Configuration(configItems);
+        }
+
+        private static IEnumerable<KeyValuePair<string, object>> RemovePrefix(IEnumerable<KeyValuePair<string, object>> configItems, string prefix)
+        {
+            return configItems.ToArray().Select(i => new KeyValuePair<string, object>(i.Key.Remove(0, prefix.Length), i.Value));
         }
     }
 }

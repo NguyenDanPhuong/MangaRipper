@@ -1,11 +1,9 @@
-﻿using MangaRipper.Core.Interfaces;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using MangaRipper.Core.Models;
 
 namespace MangaRipper.Core.Services
 {
@@ -26,32 +24,7 @@ namespace MangaRipper.Core.Services
         /// Load plugins for WebSites
         /// </summary>
         /// <returns>List with all founded Services</returns>
-        public IEnumerable<T> CreateAll<T>() where T : class
-        {
-            return CreateServices<T>().ToArray();
-        }
-
-        private IEnumerable<Assembly> LoadPluginAssemblies(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                var error = $"The plugins path: `{path}` is not exist!";
-                Logger.Error(error);
-                throw new DirectoryNotFoundException(error);
-            }
-
-            foreach (var fileOn in Directory.GetFiles(path))
-            {
-                FileInfo file = new FileInfo(fileOn);
-                if (file.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    Logger.Info($@"Load plugin from file: {fileOn}");
-                    yield return Assembly.LoadFrom(fileOn);
-                }
-            }
-        }
-
-        private IEnumerable<T> CreateServices<T>() where T : class
+        public IEnumerable<T> CreateServices<T>() where T : class
         {
             var result = new List<T>();
             foreach (var a in LoadedAssemblies)
@@ -72,6 +45,26 @@ namespace MangaRipper.Core.Services
                 }
             }
             return result;
+        }
+
+        private IEnumerable<Assembly> LoadPluginAssemblies(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                var error = $"The plugins path: `{path}` is not exist!";
+                Logger.Error(error);
+                throw new DirectoryNotFoundException(error);
+            }
+
+            foreach (var fileOn in Directory.GetFiles(path))
+            {
+                FileInfo file = new FileInfo(fileOn);
+                if (file.Extension.Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.Info($@"Load plugin from file: {fileOn}");
+                    yield return Assembly.LoadFrom(fileOn);
+                }
+            }
         }
     }
 }
