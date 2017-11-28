@@ -31,7 +31,7 @@ namespace MangaRipper.Plugin.ReadComics
 
             progress.Report(0);
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
 
             try
@@ -63,7 +63,7 @@ namespace MangaRipper.Plugin.ReadComics
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             string
                 html,

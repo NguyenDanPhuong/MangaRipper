@@ -157,7 +157,7 @@ namespace MangaRipper.Core.Controllers
 
         private async Task DownloadImage(string image, string destination, int imageNum)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string tempFilePath = Path.GetTempFileName();
             string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
             if (!File.Exists(filePath))

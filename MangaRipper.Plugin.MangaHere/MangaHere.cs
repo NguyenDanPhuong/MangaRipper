@@ -21,7 +21,7 @@ namespace MangaRipper.Plugin.MangaHere
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
@@ -33,7 +33,7 @@ namespace MangaRipper.Plugin.MangaHere
         
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
 
             // find all pages in a chapter

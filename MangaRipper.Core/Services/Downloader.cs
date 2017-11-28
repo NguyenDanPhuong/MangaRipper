@@ -15,7 +15,7 @@ namespace MangaRipper.Core.Services
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class DownloadService
+    public class Downloader
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public CookieCollection Cookies { get; set; }

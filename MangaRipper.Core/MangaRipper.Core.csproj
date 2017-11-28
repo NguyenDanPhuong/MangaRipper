@@ -77,9 +77,9 @@
     <Compile Include="Models\DownloadChapterTask.cs" />
     <Compile Include="Providers\FrameworkProvider.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
-    <Compile Include="Services\DownloadService.cs" />
+    <Compile Include="Services\Downloader.cs" />
     <Compile Include="Extensions\ExtensionHelper.cs" />
-    <Compile Include="Services\PluginService.cs" />
+    <Compile Include="Services\PluginManager.cs" />
     <Compile Include="DataTypes\OutputFormat.cs" />
     <Compile Include="Helpers\PackageCbzHelper.cs" />
     <Compile Include="Helpers\ParserHelper.cs" />

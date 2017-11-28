@@ -50,7 +50,7 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
             Assert.AreEqual("http://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -73,7 +73,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q002.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -94,7 +94,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
             Assert.IsTrue(images.ToArray()[54].StartsWith("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -124,7 +124,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000002.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000003.jpg"));
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -195,7 +195,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.readms.net/cdn/manga/107/2831/001a.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.readms.net/cdn/manga/107/2831/002.png"));
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -219,7 +219,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f2.jpg&imgmax=30000"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f3.jpg&imgmax=30000"));
 
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }

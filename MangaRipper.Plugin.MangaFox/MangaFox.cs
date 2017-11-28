@@ -33,7 +33,7 @@ namespace MangaRipper.Plugin.MangaFox
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
 
             var parser = new ParserHelper();
             
@@ -57,7 +57,7 @@ namespace MangaRipper.Plugin.MangaFox
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
 
             var pages = (await FindPagesInChapter(chapter.Url, cancellationToken)).ToList();
@@ -82,7 +82,7 @@ namespace MangaRipper.Plugin.MangaFox
 
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             return parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
