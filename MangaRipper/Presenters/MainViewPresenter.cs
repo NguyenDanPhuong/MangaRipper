@@ -23,7 +23,7 @@ namespace MangaRipper.Presenters
         {
             try
             {
-                var worker = FrameworkProvider.GetWorker();
+                var worker = Framework.GetWorker();
                 var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
                 var chapters = await worker.FindChapterListAsync(obj, progressInt);
                 View.SetChapters(chapters);

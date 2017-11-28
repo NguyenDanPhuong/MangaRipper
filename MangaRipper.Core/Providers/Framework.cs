@@ -13,7 +13,7 @@ namespace MangaRipper.Core.Providers
     /// The framework contains all services for this app.
     /// When the app start, we have to call Init() to initialization services.
     /// </summary>
-    public class FrameworkProvider
+    public class Framework
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static IEnumerable<IMangaService> _services;

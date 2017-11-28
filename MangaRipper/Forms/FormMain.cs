@@ -151,7 +151,7 @@ namespace MangaRipper.Forms
             while (_downloadQueue.Count > 0)
             {
                 var chapter = _downloadQueue.First();
-                var worker = FrameworkProvider.GetWorker();
+                var worker = Framework.GetWorker();
 
                 await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
                 {
@@ -182,7 +182,7 @@ namespace MangaRipper.Forms
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            FrameworkProvider.GetWorker().Cancel();
+            Framework.GetWorker().Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
@@ -236,7 +236,7 @@ namespace MangaRipper.Forms
 
             try
             {
-                foreach (var service in FrameworkProvider.GetMangaServices())
+                foreach (var service in Framework.GetMangaServices())
                 {
                     var infor = service.GetInformation();
                     dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);

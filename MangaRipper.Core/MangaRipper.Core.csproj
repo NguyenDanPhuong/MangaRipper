@@ -75,7 +75,7 @@
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
-    <Compile Include="Providers\FrameworkProvider.cs" />
+    <Compile Include="Providers\Framework.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\Downloader.cs" />
     <Compile Include="Extensions\ExtensionHelper.cs" />
