@@ -16,10 +16,9 @@ namespace MangaRipper.Presenters
         public MainViewPresenter(IMainView view)
         {
             View = view;
-            View.FindChaptersClicked = OnFindChapters;
         }
 
-        private async Task OnFindChapters(string obj)
+        public async Task OnFindChapters(string obj)
         {
             try
             {

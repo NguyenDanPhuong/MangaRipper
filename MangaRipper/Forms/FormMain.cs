@@ -53,8 +53,6 @@ namespace MangaRipper.Forms
             txtMessage.Text = statusMessage;
         }
 
-        public Func<string, Task> FindChaptersClicked { get; set; }
-
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
             btnGetChapter.Enabled = true;
@@ -63,7 +61,7 @@ namespace MangaRipper.Forms
             PrepareSpecificDirectory();
         }
 
-        private void btnGetChapter_Click(object sender, EventArgs e)
+        private async void btnGetChapter_ClickAsync(object sender, EventArgs e)
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
@@ -73,7 +71,7 @@ namespace MangaRipper.Forms
             }
             btnGetChapter.Enabled = false;
             var titleUrl = cbTitleUrl.Text;
-            FindChaptersClicked(titleUrl);
+            await Presenter.OnFindChapters(titleUrl);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
