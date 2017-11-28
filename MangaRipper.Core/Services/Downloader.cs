@@ -21,6 +21,11 @@ namespace MangaRipper.Core.Services
         public CookieCollection Cookies { get; set; }
         public string Referrer { get; set; }
 
+        public void DownloadFileAsync(string url, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Download single web page to string.
         /// </summary>
