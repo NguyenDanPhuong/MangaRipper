@@ -21,6 +21,8 @@ namespace MangaRipper.Forms
         private BindingList<DownloadChapterTask> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
+        private MainViewPresenter Presenter;
+
         private string SaveDestination
         {
             get
@@ -38,6 +40,7 @@ namespace MangaRipper.Forms
         public FormMain()
         {
             InitializeComponent();
+            Presenter = new MainViewPresenter(this);
         }
 
         public void SetChaptersProgress(string progress)

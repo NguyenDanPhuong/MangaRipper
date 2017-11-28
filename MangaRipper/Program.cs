@@ -28,7 +28,6 @@ namespace MangaRipper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var form = new FormMain();
-            var presenter = new MainViewPresenter(form);
             Application.Run(form);
             Logger.Info("< Main()");
         }
