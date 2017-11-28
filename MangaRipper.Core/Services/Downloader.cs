@@ -21,10 +21,7 @@ namespace MangaRipper.Core.Services
         public CookieCollection Cookies { get; set; }
         public string Referrer { get; set; }
 
-        public void DownloadFileAsync(string url, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+
 
         /// <summary>
         /// Download single web page to string.
@@ -62,6 +59,17 @@ namespace MangaRipper.Core.Services
             return sb.ToString();
         }
 
+        public async Task DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
+        {
+            var request = CreateRequest();
+            using (var response = await request.GetAsync(url, cancellationToken))
+            {
+                var fileNameFromServer = response.Content.Headers.ContentDisposition.FileName.Trim().Trim(new char[] { '"' });
+                var file = Path.Combine(folder, fileNameFromServer);
+                await DownloadToFile(url, file, cancellationToken);
+            }
+        }
+
         /// <summary>
         /// Download file and save to folder
         /// </summary>
@@ -69,7 +77,7 @@ namespace MangaRipper.Core.Services
         /// <param name="fileName">Save to filename</param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task DownloadFileAsync(string url, string fileName, CancellationToken token)
+        public async Task DownloadToFile(string url, string fileName, CancellationToken token)
         {
             Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
             var result = await DownloadFileAsyncInternal(url, fileName, token);

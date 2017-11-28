@@ -161,7 +161,7 @@ namespace MangaRipper.Core.Controllers
             string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
             if (!File.Exists(filePath))
             {
-                await downloader.DownloadFileAsync(image, tempFilePath, _source.Token);
+                await downloader.DownloadToFile(image, tempFilePath, _source.Token);
                 File.Move(tempFilePath, filePath);
             }
         }
