@@ -69,9 +69,9 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://mangafox.me/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(15, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q002.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("http://l.mfcdn.net/store/manga/19803/001.0/compressed/q003.jpg"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q002.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
             var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
