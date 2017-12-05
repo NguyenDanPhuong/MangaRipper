@@ -23,12 +23,11 @@ namespace MangaRipper
             Logger.Info("> Main()");
             var appDomain = AppDomain.CurrentDomain;
             appDomain.UnhandledException += AppDomain_UnhandledException;
-            FrameworkProvider.Init(Path.Combine(Environment.CurrentDirectory, "Plugins"),
+            Framework.Init(Path.Combine(Environment.CurrentDirectory, "Plugins"),
                 Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var form = new FormMain();
-            var presenter = new MainViewPresenter(form);
             Application.Run(form);
             Logger.Info("< Main()");
         }

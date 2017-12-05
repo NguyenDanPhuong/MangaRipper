@@ -58,7 +58,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
@@ -71,7 +71,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
 

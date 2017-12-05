@@ -16,14 +16,13 @@ namespace MangaRipper.Presenters
         public MainViewPresenter(IMainView view)
         {
             View = view;
-            View.FindChaptersClicked = OnFindChapters;
         }
 
-        private async Task OnFindChapters(string obj)
+        public async Task OnFindChapters(string obj)
         {
             try
             {
-                var worker = FrameworkProvider.GetWorker();
+                var worker = Framework.GetWorker();
                 var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
                 var chapters = await worker.FindChapterListAsync(obj, progressInt);
                 View.SetChapters(chapters);

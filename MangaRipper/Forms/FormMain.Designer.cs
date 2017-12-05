@@ -93,7 +93,7 @@
             this.btnGetChapter.Text = "Get Chapters";
             this.FormToolTip.SetToolTip(this.btnGetChapter, "Get Chapters from Inputed Url");
             this.btnGetChapter.UseVisualStyleBackColor = true;
-            this.btnGetChapter.Click += new System.EventHandler(this.btnGetChapter_Click);
+            this.btnGetChapter.Click += new System.EventHandler(this.btnGetChapter_ClickAsync);
             // 
             // btnDownload
             // 
