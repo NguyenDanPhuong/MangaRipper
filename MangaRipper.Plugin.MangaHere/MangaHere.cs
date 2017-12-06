@@ -26,8 +26,14 @@ namespace MangaRipper.Plugin.MangaHere
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>//[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
             progress.Report(100);
+
+            chaps = chaps.Select(chap => {
+                var newUri = CheckAndInsertMissingScheme(chap.Url);
+                return new Chapter(chap.OriginalName, newUri);
+            });
+
             return chaps;
         }
         
@@ -69,5 +75,35 @@ namespace MangaRipper.Plugin.MangaHere
             var uri = new Uri(link);
             return uri.Host.Equals("www.mangahere.co");
         }
+
+        /// <summary>
+        /// Checks if the URI is missing the HTTP or HTTPS scheme.
+        /// </summary>
+        /// <param name="uri">The URI to check.</param>
+        /// <param name="preferredScheme">The scheme to insert if it is missing one.</param>
+        /// <returns></returns>
+        public string CheckAndInsertMissingScheme(string uri, string preferredScheme = "http")
+        {
+            var missingSchemePattern = "^(?!http[s]:)(?=//)";
+
+            if (System.Text.RegularExpressions.Regex.IsMatch(uri, missingSchemePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            {
+                // Insert the missing colon if the preferred scheme doesn't end with one.
+                if (!preferredScheme.EndsWith(":"))
+                {
+                    preferredScheme = string.Concat(preferredScheme, ":");
+                }
+
+                // Return the uri with the preferred scheme prefixed.
+                return uri.Insert(0, preferredScheme);
+            }
+            else
+            {
+                // Return the unchanged value.
+                return uri;
+            }
+
+        }
+
     }
 }
