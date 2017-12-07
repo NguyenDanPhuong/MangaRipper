@@ -90,9 +90,9 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://www.mangahere.co/manga/the_god_of_high_school/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(55, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.01.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
-            Assert.IsTrue(images.ToArray()[54].StartsWith("http://h.mhcdn.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.01.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
+            Assert.IsTrue(images.ToArray()[54].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
 
             var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
@@ -182,7 +182,7 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task MangaStream_Test()
         {
-            string url = "http://mangastream.com/manga/dragon_ball_super";
+            string url = "http://readms.net/manga/dragon_ball_super";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -191,9 +191,9 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(17, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.readms.net/cdn/manga/107/2831/001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.readms.net/cdn/manga/107/2831/001a.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.readms.net/cdn/manga/107/2831/002.png"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/002.png"));
 
             var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);

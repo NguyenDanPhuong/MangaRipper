@@ -26,7 +26,11 @@ namespace MangaRipper.Plugin.MangaHere
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>[^\"]+)\" >\r\n              (?<Name>[^<]+)            </a>", input, "Name", "Value");
+            chaps = chaps.Select(c =>
+            {
+                return new Chapter(c.OriginalName, $"http:{c.Url}");
+            });
             progress.Report(100);
             return chaps;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MangaRipper.Core.Services;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace MangaRipper.Test
 {
@@ -27,6 +28,17 @@ namespace MangaRipper.Test
             //var downloader = new Downloader();
             //string fileFromServer = await downloader.DownloadToFolder(url, new System.Threading.CancellationToken());
             //Assert.AreEqual("000_1485859774.jpg", fileFromServer);
+            //<a class="color_0077" href="([^"]+)" >\n              ([^<]+)            </a>
+
+            string s = @"
+               <span class=""left"">
+            <a class=""color_0077"" href=""//www.mangahere.co/manga/the_god_of_high_school/c325/"" >
+              The God Of High School 325            </a>
+          <span class=""mr6""></span></span>
+";
+
+            var r = new Regex("<a class=\"color_0077\" href=\"(?<Value>[^\"]+)\" >\r\n              (?<Name>[^<]+)            </a>").Matches(s);
+            Assert.IsTrue(r.Count > 0);
         }
     }
 }
