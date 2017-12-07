@@ -8,7 +8,6 @@ namespace MangaRipper.Presenters
 {
     public interface IMainView
     {
-        Func<string, Task> FindChaptersClicked { get; set; }
         void SetChapters(IEnumerable<Chapter> chapters);
         void SetChaptersProgress(string progress);
         void SetStatusText(string statusMessage);

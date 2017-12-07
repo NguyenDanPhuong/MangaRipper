@@ -20,34 +20,44 @@ namespace MangaRipper.Plugin.MangaFox
 
         public override SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaFox), "http://mangafox.me", "English");
+            return new SiteInformation(nameof(MangaFox), "http://mangafox.la", "English");
         }
 
         public override bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("mangafox.me");
+            return uri.Host.Equals("mangafox.la");
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
 
             var parser = new ParserHelper();
+            
+            manga = CheckAndInsertMissingScheme(manga);
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
             progress.Report(100);
+
+            // Insert missing URI schemes in each chapter's URI.
+            // Provisional solution, the current implementation may not be the best way to go about it.
+            chaps = chaps.Select(chap => {
+                var newUri = CheckAndInsertMissingScheme(chap.Url);
+                return new Chapter(chap.OriginalName, newUri);
+            });
+
             return chaps;
         }
         
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
 
             var pages = (await FindPagesInChapter(chapter.Url, cancellationToken)).ToList();
@@ -72,7 +82,7 @@ namespace MangaRipper.Plugin.MangaFox
 
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             return parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
@@ -83,8 +93,38 @@ namespace MangaRipper.Plugin.MangaFox
             return pages.Select(p =>
             {
                 var value = new Uri(new Uri(chapterUrl), (p + ".html")).AbsoluteUri;
+                
                 return value;
             });
+        }
+
+        /// <summary>
+        /// Checks if the URI is missing the HTTP or HTTPS scheme.
+        /// </summary>
+        /// <param name="uri">The URI to check.</param>
+        /// <param name="preferredScheme">The scheme to insert if it is missing one.</param>
+        /// <returns></returns>
+        public string CheckAndInsertMissingScheme(string uri, string preferredScheme = "http")
+        {
+            var missingSchemePattern = "^(?!http[s]:)(?=//)";
+
+            if (System.Text.RegularExpressions.Regex.IsMatch(uri, missingSchemePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            {
+                // Insert the missing colon if the preferred scheme doesn't end with one.
+                if (!preferredScheme.EndsWith(":"))
+                {
+                    preferredScheme = string.Concat(preferredScheme, ":");
+                }
+
+                // Return the uri with the preferred scheme prefixed.
+                return uri.Insert(0, preferredScheme);
+            }
+            else
+            {
+                // Return the unchanged value.
+                return uri;
+            }
+
         }
     }
 }

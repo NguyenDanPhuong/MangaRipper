@@ -21,6 +21,8 @@ namespace MangaRipper.Forms
         private BindingList<DownloadChapterTask> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
+        private MainViewPresenter Presenter;
+
         private string SaveDestination
         {
             get
@@ -38,6 +40,7 @@ namespace MangaRipper.Forms
         public FormMain()
         {
             InitializeComponent();
+            Presenter = new MainViewPresenter(this);
         }
 
         public void SetChaptersProgress(string progress)
@@ -50,8 +53,6 @@ namespace MangaRipper.Forms
             txtMessage.Text = statusMessage;
         }
 
-        public Func<string, Task> FindChaptersClicked { get; set; }
-
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
             btnGetChapter.Enabled = true;
@@ -60,7 +61,7 @@ namespace MangaRipper.Forms
             PrepareSpecificDirectory();
         }
 
-        private void btnGetChapter_Click(object sender, EventArgs e)
+        private async void btnGetChapter_ClickAsync(object sender, EventArgs e)
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
@@ -70,7 +71,7 @@ namespace MangaRipper.Forms
             }
             btnGetChapter.Enabled = false;
             var titleUrl = cbTitleUrl.Text;
-            FindChaptersClicked(titleUrl);
+            await Presenter.OnFindChapters(titleUrl);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -151,7 +152,7 @@ namespace MangaRipper.Forms
             while (_downloadQueue.Count > 0)
             {
                 var chapter = _downloadQueue.First();
-                var worker = FrameworkProvider.GetWorker();
+                var worker = Framework.GetWorker();
 
                 await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
                 {
@@ -182,7 +183,7 @@ namespace MangaRipper.Forms
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            FrameworkProvider.GetWorker().Cancel();
+            Framework.GetWorker().Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
@@ -236,7 +237,7 @@ namespace MangaRipper.Forms
 
             try
             {
-                foreach (var service in FrameworkProvider.GetMangaServices())
+                foreach (var service in Framework.GetMangaServices())
                 {
                     var infor = service.GetInformation();
                     dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
@@ -434,9 +435,11 @@ namespace MangaRipper.Forms
                 return;
             }
 
-            // If the base series destination hasn't been set, use MyDocuments as the base for now.
+            /// If the base series destination hasn't been set, use the 'txtSaveTo.Text' location instead.
             if (string.IsNullOrEmpty(baseSeriesDestination))
-                baseSeriesDestination = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            {
+                baseSeriesDestination = txtSaveTo.Text;
+            }
 
             var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
             series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
