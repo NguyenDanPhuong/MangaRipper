@@ -20,13 +20,13 @@ namespace MangaRipper.Plugin.MangaFox
 
         public override SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaFox), "http://mangafox.me", "English");
+            return new SiteInformation(nameof(MangaFox), "http://mangafox.la", "English");
         }
 
         public override bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("mangafox.me");
+            return uri.Host.Equals("mangafox.la");
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)

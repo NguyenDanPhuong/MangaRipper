@@ -60,13 +60,13 @@ namespace MangaRipper.Test
         {
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
-            string url = "http://mangafox.me/manga/tian_jiang_xian_shu_nan/";
+            string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Tian Jiang Xian Shu Nan 1", chapter.Name);
-            Assert.AreEqual("http://mangafox.me/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
+            Assert.AreEqual("http://mangafox.la/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(15, images.Count());
             Assert.IsTrue(images.ToArray()[0].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q001.jpg"));
