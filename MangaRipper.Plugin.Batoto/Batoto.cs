@@ -72,7 +72,7 @@ namespace MangaRipper.Plugin.Batoto
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new DownloadService
+            var downloader = new Downloader
             {
                 Cookies = LoginBatoto(_username, _password),
                 Referrer = "http://bato.to/reader"
@@ -96,7 +96,7 @@ namespace MangaRipper.Plugin.Batoto
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new DownloadService
+            var downloader = new Downloader
             {
                 Cookies = LoginBatoto(_username, _password),
                 Referrer = "http://bato.to/reader"

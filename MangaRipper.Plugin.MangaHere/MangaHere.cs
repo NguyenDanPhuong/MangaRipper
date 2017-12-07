@@ -21,19 +21,23 @@ namespace MangaRipper.Plugin.MangaHere
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>[^\"]+)\" >\r\n              (?<Name>[^<]+)            </a>", input, "Name", "Value");
+            chaps = chaps.Select(c =>
+            {
+                return new Chapter(c.OriginalName, $"http:{c.Url}");
+            });
             progress.Report(100);
             return chaps;
         }
         
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
 
             // find all pages in a chapter

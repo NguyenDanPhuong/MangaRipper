@@ -35,7 +35,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public void InitializeJurassicEngine()
         {
-            _engine = new ScriptEngine();            
+            _engine = new ScriptEngine();
         }
 
         public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
@@ -58,7 +58,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
@@ -71,7 +71,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             var parser = new ParserHelper();
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
 
@@ -90,27 +90,35 @@ namespace MangaRipper.Plugin.KissManga
                 /// Execute the decryption function to allow it to be called later.
                 _engine.Execute(decryptFunc);
 
-
                 var keysPattern = "<script type=\"text/javascript\">[\\s]*(?<Value>.*)(?!</script>)";
                 var regex = new Regex(keysPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                var keys = string.Empty;
+                var keys = new List<string>();
 
                 foreach (Match match in regex.Matches(input))
                 {
                     if (match.Value.Contains("CryptoJS"))
                     {
-                        keys = match.Groups["Value"].Value;
-                        break;
+                        var value = match.Groups["Value"].Value;
+                        keys.Add(value);
+                        _logger.Debug($"Script to be executed: {value}");
                     }
                 }
-                
-                if (string.IsNullOrWhiteSpace(keys))
+
+                if (keys.Count > 0)
                 {
-                    throw new ArgumentException("Cannot decrypt image URIs.");
+                    try
+                    {
+                        keys.ForEach(key => _engine.Execute(key));
+                    }
+                    catch (Exception)
+                    {
+                        _logger.Fatal($"Source: {input}");
+                        throw new ArgumentException("Cannot decrypt image URIs.");
+                    }
                 }
                 else
                 {
-                    _engine.Execute(keys);
+                    _logger.Debug("Keys not found. Continuing.");
                 }
 
                 /// As with the script locations, to avoid unnecessary breaking the application, the function name could be captured and invoked 
@@ -127,6 +135,7 @@ namespace MangaRipper.Plugin.KissManga
                     }
                     catch (Exception ex)
                     {
+                        _logger.Fatal($"Source: {input}");
                         _logger.Fatal(ex);
                         throw;
                     }

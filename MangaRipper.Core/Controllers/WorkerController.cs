@@ -104,7 +104,7 @@ namespace MangaRipper.Core.Controllers
         {
             var chapter = task.Chapter;
             progress.Report(0);
-            var service = FrameworkProvider.GetService(chapter.Url);
+            var service = Framework.GetService(chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
@@ -115,11 +115,10 @@ namespace MangaRipper.Core.Controllers
 
             await DownloadImages(images, tempFolder, progress);
 
-            var folderName = chapter.Name;
-            var finalFolder = Path.Combine(mangaLocalPath, folderName);
-
             if (task.Formats.Contains(OutputFormat.Folder))
             {
+                var folderName = chapter.Name;
+                var finalFolder = Path.Combine(mangaLocalPath, folderName);
                 if (!Directory.Exists(finalFolder))
                 {
                     Directory.CreateDirectory(finalFolder);
@@ -128,6 +127,11 @@ namespace MangaRipper.Core.Controllers
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
+                if (!Directory.Exists(task.SaveToFolder))
+                {
+                    Directory.CreateDirectory(task.SaveToFolder);
+                }
+
                 PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
             }
 
@@ -152,12 +156,12 @@ namespace MangaRipper.Core.Controllers
 
         private async Task DownloadImage(string image, string destination, int imageNum)
         {
-            var downloader = new DownloadService();
+            var downloader = new Downloader();
             string tempFilePath = Path.GetTempFileName();
             string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
             if (!File.Exists(filePath))
             {
-                await downloader.DownloadFileAsync(image, tempFilePath, _source.Token);
+                await downloader.DownloadToFile(image, tempFilePath, _source.Token);
                 File.Move(tempFilePath, filePath);
             }
         }
@@ -184,7 +188,7 @@ namespace MangaRipper.Core.Controllers
             }
 
             // Some names - just a gibberish text which is TOO LONG
-            // e.g. MG09qjYxsb3sFsrMt_lTn7f9ulfgcbusQjS5wypyy0aGn0sjL7hZHQhXuS-dXZNn0tuWvdBgKICQ8WI9RFGAgNNpdYglvFdwhJZC7qiClhvEd9toNLpLky19HRRZmSFbv3zq5lw=s0?title=000_1485859774.png
+            // e.g. http://2.bp.blogspot.com/MG09qjYxsb3sFsrMt_lTn7f9ulfgcbusQjS5wypyy0aGn0sjL7hZHQhXuS-dXZNn0tuWvdBgKICQ8WI9RFGAgNNpdYglvFdwhJZC7qiClhvEd9toNLpLky19HRRZmSFbv3zq5lw=s0?title=000_1485859774.png
             if (uri.LocalPath.Length > 50 || nameInParam)
             {
                 imageNum++;
@@ -198,7 +202,7 @@ namespace MangaRipper.Core.Controllers
         {
             progress.Report(0);
             // let service find all chapters in manga
-            var service = FrameworkProvider.GetService(mangaPath);
+            var service = Framework.GetService(mangaPath);
             var chapters = await service.FindChapters(mangaPath, progress, _source.Token);
             progress.Report(100);
             return chapters;
