@@ -84,7 +84,7 @@ namespace MangaRipper.Plugin.KissManga
                 string funcUri = "http://kissmanga.com/Scripts/lo.js";
                 string decryptFunc = await downloader.DownloadStringAsync(funcUri, cancellationToken);
 
-                /// Execute CryptoJS from saved resources to reduce HTTP requests.
+                /// Execute CryptoJS (ca.js) from saved resources to reduce HTTP requests.
                 _engine.Execute(Properties.Resources.CryptoJs);
 
                 /// Execute the decryption function to allow it to be called later.

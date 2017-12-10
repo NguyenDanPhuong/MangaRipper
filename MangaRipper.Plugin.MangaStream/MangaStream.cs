@@ -29,7 +29,7 @@ namespace MangaRipper.Plugin.MangaStream
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             string regEx = "<td><a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a>";
             var chaps = parser.ParseGroup(regEx, input, "Name", "Value");
-            chaps = chaps.Select(c => new Chapter(c.OriginalName, $"http://readms.net{c.Url}"));
+            chaps = chaps.Select(c => new Chapter(c.OriginalName, $"https://readms.net{c.Url}"));
             progress.Report(100);
             return chaps;
         }
@@ -45,7 +45,7 @@ namespace MangaRipper.Plugin.MangaStream
             string regExPages =
                 "<li><a href=\"(?<Value>/r[^\"]+)\">[^<]+</a>";
             var pages = parser.Parse(regExPages, input, "Value")
-                .Select(p => $"http://readms.net{p}");
+                .Select(p => $"https://readms.net{p}");
 
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
@@ -56,7 +56,7 @@ namespace MangaRipper.Plugin.MangaStream
             }), cancellationToken);
             var images = parser.Parse("<img id=\"manga-page\" src=\"(?<Value>[^\"]+)\"", pageData,
                 "Value");
-            return images.Select(i => $"http:{i}");
+            return images.Select(i => $"https:{i}");
         }
 
         public override SiteInformation GetInformation()
