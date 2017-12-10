@@ -182,18 +182,18 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task MangaStream_Test()
         {
-            string url = "http://readms.net/manga/dragon_ball_super";
+            string url = "https://readms.net/manga/dragon_ball_super";
             var service = Framework.GetService(url);
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("001 - The God of Destruction's Prophetic Dream", chapter.Name);
-            Assert.AreEqual("http://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
+            Assert.AreEqual("https://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
             Assert.AreEqual(17, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.mangastream.com/cdn/manga/107/2831/002.png"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/002.png"));
 
             var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
@@ -211,13 +211,13 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
-            Assert.AreEqual("Onepunch-Man _vol.001 ch.001", chapter.Name);
-            Assert.AreEqual("http://kissmanga.com/Manga/Onepunch-Man/vol-001-ch-001?id=313725", chapter.Url);
+            Assert.AreEqual("Onepunch-Man 001", chapter.Name);
+            Assert.AreEqual("http://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
-            Assert.AreEqual(19, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f2.jpg&imgmax=30000"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f3.jpg&imgmax=30000"));
+            Assert.AreEqual(28, images.Count());
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-daAIY2sJQcE%2fV8rt280634I%2fAAAAAAAA404%2fLd1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM%2fs16000%2f0001-001.png&imgmax=30000"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-cx66pnwxYF4%2fV8rt3BUIFuI%2fAAAAAAAA408%2fC9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM%2fs16000%2f0001-002.png&imgmax=30000"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-EfldQUNYKe8%2fV8rt3cmh-nI%2fAAAAAAAA41A%2f_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM%2fs16000%2f0001-003.png&imgmax=30000"));
 
             var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);

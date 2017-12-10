@@ -464,5 +464,11 @@ namespace MangaRipper.Forms
         {
             MessageBox.Show(text, caption, buttons, icon);
         }
+
+        public void EnableTheButtonsAfterError()
+        {
+            btnGetChapter.Enabled = true;
+            btnDownload.Enabled = true;
+        }
     }
 }

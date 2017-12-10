@@ -35,7 +35,8 @@ namespace MangaRipper.Presenters
             {
                 Logger.Error(ex);
                 View.SetStatusText(@"Download cancelled! Reason: " + ex.Message);
-                View.ShowMessageBox(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                View.ShowMessageBox(ex.Source, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                View.EnableTheButtonsAfterError();
             }
         }
     }

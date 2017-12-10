@@ -36,7 +36,7 @@ namespace MangaRipper.Core.Helpers
             {
                 Logger.Error("Cannot parse below content.");
                 Logger.Error(input);
-                throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser.");
+                throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser and the URL is supported by MangaRipper.");
             }
 
             foreach (Match match in matches)
