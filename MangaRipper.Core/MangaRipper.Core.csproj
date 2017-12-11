@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="CustomException\MangaRipperException.cs" />
     <Compile Include="Interfaces\MangaService.cs" />
+    <Compile Include="MyLogger.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />

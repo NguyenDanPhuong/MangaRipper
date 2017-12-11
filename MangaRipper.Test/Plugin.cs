@@ -201,9 +201,6 @@ namespace MangaRipper.Test
         }
 
         [TestMethod]
-#if !DEBUG
-        [Ignore]
-#endif
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
