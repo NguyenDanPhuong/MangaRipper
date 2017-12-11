@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core.CustomException;
-using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
@@ -17,7 +16,7 @@ namespace MangaRipper.Plugin.KissManga
     /// <summary>
     /// Support find chapters and images from KissManga
     /// </summary>
-    public class KissManga : MangaService
+    public class KissManga : IMangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -33,7 +32,7 @@ namespace MangaRipper.Plugin.KissManga
             _engine = new ScriptEngine();
         }
 
-        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new ParserHelper();
@@ -46,7 +45,7 @@ namespace MangaRipper.Plugin.KissManga
             return chaps;
         }
 
-        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
             var parser = new ParserHelper();
@@ -134,12 +133,12 @@ namespace MangaRipper.Plugin.KissManga
 
         }
 
-        public override SiteInformation GetInformation()
+        public SiteInformation GetInformation()
         {
             return new SiteInformation("KissManga", "http://kissmanga.com/", "English");
         }
 
-        public override bool Of(string link)
+        public bool Of(string link)
         {
             return new Uri(link).Host.Equals("kissmanga.com");
         }

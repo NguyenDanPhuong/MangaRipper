@@ -14,22 +14,22 @@ namespace MangaRipper.Plugin.MangaFox
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    public class MangaFox : MangaService
+    public class MangaFox : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public override SiteInformation GetInformation()
+        public SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(MangaFox), "http://mangafox.la", "English");
         }
 
-        public override bool Of(string link)
+        public bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("mangafox.la");
         }
 
-        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
@@ -54,7 +54,7 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
         
-        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new Downloader();

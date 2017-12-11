@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MangaRipper.Core.Providers;
 using NLog;
+using MangaRipper.Core.Controllers;
 
 namespace MangaRipper.Presenters
 {
@@ -13,16 +13,19 @@ namespace MangaRipper.Presenters
         // Then we can unit test presenter (it likes UI Test :)) ) 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IMainView View { get; set; }
-        public MainViewPresenter(IMainView view)
+
+        private WorkerController worker;
+
+        public MainViewPresenter(IMainView view, WorkerController wc)
         {
             View = view;
+            worker = wc;
         }
 
         public async Task OnFindChapters(string obj)
         {
             try
             {
-                var worker = Framework.GetWorker();
                 var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
                 var chapters = await worker.FindChapterListAsync(obj, progressInt);
                 View.SetChapters(chapters);

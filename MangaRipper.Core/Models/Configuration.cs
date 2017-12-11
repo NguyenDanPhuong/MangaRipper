@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -9,7 +8,7 @@ namespace MangaRipper.Core.Models
     /// <summary>
     /// Configuration for plugins
     /// </summary>
-    class Configuration
+    public class Configuration
     {
         private string ConfigFile
         {

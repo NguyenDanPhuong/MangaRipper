@@ -17,33 +17,42 @@ namespace MangaRipper.Plugin.Batoto
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    public class Batoto : MangaService
+    public class Batoto : IMangaService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _username = "gufrohepra";
         private string _password = "123";
         private string _languagesRegEx;
 
-        public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        public Batoto(Configuration config)
+        {
+            if(config == null)
+            {
+                return;
+            }
+            Configuration(config.FindConfigByPrefix("Plugin.Batoto"));
+        }
+
+        public void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
             var settingCollection = settings.ToArray();
-            if (settingCollection.Any(i => i.Key.Equals("Username")))
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Username")))
             {
-                var user = settingCollection.First(i => i.Key.Equals("Username")).Value;
+                var user = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Username")).Value;
                 Logger.Info($@"Current Username: {_username}. New Username: {user}");
                 _username = user as string;
             }
 
-            if (settingCollection.Any(i => i.Key.Equals("Password")))
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Password")))
             {
-                var pass = settingCollection.First(i => i.Key.Equals("Password")).Value;
+                var pass = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Password")).Value;
                 Logger.Info($@"Current Password: {_password}. New Password: {pass}");
                 _password = pass as string;
             }
 
-            if (settingCollection.Any(i => i.Key.Equals("Languages")))
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Languages")))
             {
-                var languages = settingCollection.First(i => i.Key.Equals("Languages")).Value as string;
+                var languages = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Languages")).Value as string;
                 Logger.Info($@"Only the follow languages will be selected: {languages}");
                 // For test purpose
                 if (!string.IsNullOrEmpty(languages))
@@ -58,18 +67,18 @@ namespace MangaRipper.Plugin.Batoto
             }
         }
 
-        public override SiteInformation GetInformation()
+        public SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
         }
 
-        public override bool Of(string link)
+        public bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("bato.to");
         }
 
-        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new Downloader
@@ -93,7 +102,7 @@ namespace MangaRipper.Plugin.Batoto
             return chaps;
         }
         
-        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             var downloader = new Downloader

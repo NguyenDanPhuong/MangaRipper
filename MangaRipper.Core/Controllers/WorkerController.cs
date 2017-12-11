@@ -21,14 +21,17 @@ namespace MangaRipper.Core.Controllers
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public ServiceManager ServiceManager { get; }
+
         CancellationTokenSource _source;
         readonly SemaphoreSlim _sema;
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController()
+        public WorkerController(ServiceManager sm)
         {
             Logger.Info("> Worker()");
+            ServiceManager = sm;
             _source = new CancellationTokenSource();
             _sema = new SemaphoreSlim(2);
         }
@@ -104,7 +107,7 @@ namespace MangaRipper.Core.Controllers
         {
             var chapter = task.Chapter;
             progress.Report(0);
-            var service = Framework.GetService(chapter.Url);
+            var service = ServiceManager.GetService(chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
@@ -202,7 +205,7 @@ namespace MangaRipper.Core.Controllers
         {
             progress.Report(0);
             // let service find all chapters in manga
-            var service = Framework.GetService(mangaPath);
+            var service = ServiceManager.GetService(mangaPath);
             var chapters = await service.FindChapters(mangaPath, progress, _source.Token);
             progress.Report(100);
             return chapters;

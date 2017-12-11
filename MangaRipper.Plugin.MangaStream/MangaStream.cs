@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Helpers;
@@ -15,11 +14,11 @@ namespace MangaRipper.Plugin.MangaStream
     /// <summary>
     /// Support find chapters, images from MangaStream
     /// </summary>
-    public class MangaStream : MangaService
+    public class MangaStream : IMangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
@@ -34,7 +33,7 @@ namespace MangaRipper.Plugin.MangaStream
             return chaps;
         }
 
-        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
+        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             var downloader = new Downloader();
@@ -59,12 +58,12 @@ namespace MangaRipper.Plugin.MangaStream
             return images.Select(i => $"https:{i}");
         }
 
-        public override SiteInformation GetInformation()
+        public SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(MangaStream), "http://readms.net/manga", "English");
         }
 
-        public override bool Of(string link)
+        public bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("readms.net");

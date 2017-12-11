@@ -73,16 +73,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomException\MangaRipperException.cs" />
-    <Compile Include="Interfaces\MangaService.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
-    <Compile Include="Providers\Framework.cs" />
+    <Compile Include="Providers\ServiceManager.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\Downloader.cs" />
     <Compile Include="Extensions\ExtensionHelper.cs" />
-    <Compile Include="Services\PluginManager.cs" />
     <Compile Include="DataTypes\OutputFormat.cs" />
     <Compile Include="Helpers\PackageCbzHelper.cs" />
     <Compile Include="Helpers\ParserHelper.cs" />

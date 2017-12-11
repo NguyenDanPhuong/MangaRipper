@@ -1,12 +1,16 @@
 ﻿using System;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using MangaRipper.Core.Services;
-using MangaRipper.Core.Providers;
 using System.Collections.Generic;
+using MangaRipper.Plugin.MangaStream;
+using MangaRipper.Plugin.KissManga;
+using MangaRipper.Plugin.MangaHere;
+using MangaRipper.Plugin.MangaFox;
+using MangaRipper.Plugin.MangaReader;
+using MangaRipper.Plugin.Batoto;
 
 namespace MangaRipper.Test
 {
@@ -18,7 +22,6 @@ namespace MangaRipper.Test
         [TestInitialize]
         public void Initialize()
         {
-            Framework.Init(Environment.CurrentDirectory, Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json"));
             _source = new CancellationTokenSource();
         }
 
@@ -32,7 +35,7 @@ namespace MangaRipper.Test
         public async Task MangaReader_Test()
         {
             string url = "http://www.mangareader.net/naruto";
-            var service = Framework.GetService(url);
+            var service = new MangaReader();
             // Test service can find chapters
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -61,7 +64,7 @@ namespace MangaRipper.Test
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
             string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
-            var service = Framework.GetService(url);
+            var service = new MangaFox();
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -82,7 +85,7 @@ namespace MangaRipper.Test
         public async Task MangaHere_Test()
         {
             string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
-            var service = Framework.GetService(url);
+            var service = new MangaHere();
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -105,7 +108,7 @@ namespace MangaRipper.Test
         public async Task Batoto_Test()
         {
             string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
-            var service = Framework.GetService(url);
+            var service = new Batoto(null);
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -128,12 +131,12 @@ namespace MangaRipper.Test
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
-        
+
         [TestMethod]
         public async Task Batoto_AllLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = Framework.GetService(url);
+            var service = new Batoto(null);
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -149,7 +152,7 @@ namespace MangaRipper.Test
         public async Task Batoto_EnglishLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = Framework.GetService(url);
+            var service = new Batoto(null);
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -165,7 +168,7 @@ namespace MangaRipper.Test
         public async Task Batoto_GermanEnglishLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = Framework.GetService(url);
+            var service = new Batoto(null);
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -183,7 +186,7 @@ namespace MangaRipper.Test
         public async Task MangaStream_Test()
         {
             string url = "https://readms.net/manga/dragon_ball_super";
-            var service = Framework.GetService(url);
+            var service = new MangaStream();
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -201,10 +204,13 @@ namespace MangaRipper.Test
         }
 
         [TestMethod]
+#if !DEBUG
+        [Ignore]
+#endif
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
-            var service = Framework.GetService(url);
+            var service = new KissManga();
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();

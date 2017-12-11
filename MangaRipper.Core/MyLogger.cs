@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MangaRipper.Core
+﻿namespace MangaRipper.Core
 {
-    public static class MyLogger
+    public class MyLogger
     {
+        private MyLogger()
+        {
+
+        }
+        public static MyLogger CreateLogger()
+        {
+            return new MyLogger();
+        }
     }
 }

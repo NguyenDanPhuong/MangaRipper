@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Providers;
 using MangaRipper.Helpers;
 using MangaRipper.Presenters;
 using NLog;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Controllers;
 
 namespace MangaRipper.Forms
 {
@@ -22,6 +23,8 @@ namespace MangaRipper.Forms
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
+        private IEnumerable<IMangaService> MangaServices;
+        private WorkerController worker;
 
         private string SaveDestination
         {
@@ -37,10 +40,12 @@ namespace MangaRipper.Forms
             set;
         }
 
-        public FormMain()
+        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
         {
             InitializeComponent();
-            Presenter = new MainViewPresenter(this);
+            MangaServices = mangaServices;
+            worker = wc;
+            Presenter = new MainViewPresenter(this, wc);
         }
 
         public void SetChaptersProgress(string progress)
@@ -152,7 +157,6 @@ namespace MangaRipper.Forms
             while (_downloadQueue.Count > 0)
             {
                 var chapter = _downloadQueue.First();
-                var worker = Framework.GetWorker();
 
                 await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
                 {
@@ -183,7 +187,7 @@ namespace MangaRipper.Forms
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            Framework.GetWorker().Cancel();
+            worker.Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
@@ -237,7 +241,7 @@ namespace MangaRipper.Forms
 
             try
             {
-                foreach (var service in Framework.GetMangaServices())
+                foreach (var service in MangaServices)
                 {
                     var infor = service.GetInformation();
                     dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
