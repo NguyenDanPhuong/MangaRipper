@@ -17,7 +17,7 @@ namespace MangaRipper.Core
 
         public MyLogger()
         {
-            var name = nameof(T);
+            var name = typeof(T).Name;
             Logger = LogManager.GetLogger(name);
         }
 
