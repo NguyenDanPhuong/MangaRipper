@@ -470,5 +470,10 @@ namespace MangaRipper.Forms
             btnGetChapter.Enabled = true;
             btnDownload.Enabled = true;
         }
+
+        private void contributorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/graphs/contributors");
+        }
     }
 }

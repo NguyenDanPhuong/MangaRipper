@@ -20,40 +20,17 @@ namespace MangaRipper.Plugin.KissManga
     public class KissManga : MangaService
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private string _iv = "a5e8e2e9c2721be0a84ad660c472c1f3";
-        private string _chko = "nsfd732nsdnds823nsdf";
-
-        private KissMangaTextDecryption _decryptor;
 
         private ScriptEngine _engine = null;
 
         public KissManga()
         {
-            _decryptor = new KissMangaTextDecryption(_iv, _chko);
             InitializeJurassicEngine();
         }
 
         public void InitializeJurassicEngine()
         {
             _engine = new ScriptEngine();
-        }
-
-        public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
-        {
-            var settingCollection = settings.ToArray();
-            if (settingCollection.Any(i => i.Key.Equals("IV")))
-            {
-                var iv = settingCollection.First(i => i.Key.Equals("IV")).Value;
-                _logger.Info($@"Current IV: {_iv}. New IV: {iv}");
-                _iv = iv as string;
-            }
-            if (settingCollection.Any(i => i.Key.Equals("Chko")))
-            {
-                var chko = settingCollection.First(i => i.Key.Equals("Chko")).Value;
-                _logger.Info($@"Current Chko: {_chko}. New Chko: {chko}");
-                _chko = chko as string;
-            }
-            _decryptor = new KissMangaTextDecryption(_iv, _chko);
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
