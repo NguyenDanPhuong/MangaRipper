@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Controllers;
+using MangaRipper.Core;
 
 namespace MangaRipper
 {
@@ -47,6 +48,13 @@ namespace MangaRipper
         private static void Bootstrap()
         {
             container = new Container();
+
+            container.RegisterConditional(typeof(IMyLogger),
+               c => typeof(MyLogger<>).MakeGenericType(c.Consumer.ImplementationType),
+               Lifestyle.Transient,
+               c => true
+               );
+
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()
@@ -58,6 +66,7 @@ namespace MangaRipper
             container.Register<ServiceManager>(Lifestyle.Singleton);
             container.Register<WorkerController>(Lifestyle.Singleton);
             container.Register<FormMain>(Lifestyle.Singleton);
+           
             container.Verify();
         }
     }

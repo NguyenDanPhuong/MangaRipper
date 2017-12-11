@@ -2,7 +2,6 @@
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jurassic;
+using MangaRipper.Core;
 
 namespace MangaRipper.Plugin.KissManga
 {
@@ -18,12 +18,13 @@ namespace MangaRipper.Plugin.KissManga
     /// </summary>
     public class KissManga : IMangaService
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static IMyLogger _logger;
 
         private ScriptEngine _engine = null;
 
-        public KissManga()
+        public KissManga(IMyLogger myLogger)
         {
+            _logger = myLogger;
             InitializeJurassicEngine();
         }
 

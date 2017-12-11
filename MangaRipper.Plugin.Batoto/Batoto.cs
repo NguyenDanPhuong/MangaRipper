@@ -1,8 +1,8 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,13 +19,14 @@ namespace MangaRipper.Plugin.Batoto
     /// </summary>
     public class Batoto : IMangaService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private IMyLogger Logger;
         private string _username = "gufrohepra";
         private string _password = "123";
         private string _languagesRegEx;
 
-        public Batoto(Configuration config)
+        public Batoto(Configuration config, IMyLogger myLogger)
         {
+            Logger = myLogger;
             if(config == null)
             {
                 return;
@@ -35,6 +36,7 @@ namespace MangaRipper.Plugin.Batoto
 
         public void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
+            // TODO FIX THIS
             var settingCollection = settings.ToArray();
             if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Username")))
             {

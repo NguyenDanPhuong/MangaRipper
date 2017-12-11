@@ -1,8 +1,8 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +16,12 @@ namespace MangaRipper.Plugin.MangaReader
     /// </summary>
     public class MangaReader : IMangaService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static IMyLogger logger;
 
+        public MangaReader(IMyLogger myLogger)
+        {
+            logger = myLogger;
+        }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var downloader = new Downloader();

@@ -1,8 +1,8 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +16,11 @@ namespace MangaRipper.Plugin.MangaFox
     /// </summary>
     public class MangaFox : IMangaService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
+        private readonly IMyLogger Logger;
+        public MangaFox(IMyLogger myLogger)
+        {
+            Logger = myLogger;
+        }
         public SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(MangaFox), "http://mangafox.la", "English");

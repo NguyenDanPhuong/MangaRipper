@@ -7,7 +7,7 @@ using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
+using MangaRipper.Core;
 
 namespace MangaRipper.Plugin.MangaStream
 {
@@ -16,8 +16,11 @@ namespace MangaRipper.Plugin.MangaStream
     /// </summary>
     public class MangaStream : IMangaService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
+        private static IMyLogger logger;
+        public MangaStream(IMyLogger myLogger)
+        {
+            logger = myLogger;
+        }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
@@ -49,7 +52,7 @@ namespace MangaRipper.Plugin.MangaStream
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
             {
-                var f = (float) count / pages.Count();
+                var f = (float)count / pages.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
