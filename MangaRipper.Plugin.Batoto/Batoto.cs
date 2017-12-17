@@ -1,4 +1,5 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
@@ -60,7 +61,7 @@ namespace MangaRipper.Plugin.Batoto
 
         public override SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
+            return new SiteInformation(nameof(Batoto), "https://bato.to", "Multiple Languages");
         }
 
         public override bool Of(string link)
@@ -71,18 +72,24 @@ namespace MangaRipper.Plugin.Batoto
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
+            // So people won't forget to change the login/password
+            if (_username.Equals("login") && _password.Equals("password"))
+            {
+                throw new MangaRipperException("PLease check if your set the login and password correctly in 'MangaRipper.Configuration.json' file");
+            }
+
             progress.Report(0);
             var downloader = new Downloader
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
+                Referrer = "https://bato.to/reader"
             };
             var parser = new ParserHelper();
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             
-            var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
+            var allLanguagesRegEx = "<a href=\"(?<Value>http(s)?://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
             // Choose only specific languages if it set so in config
             if (!string.IsNullOrEmpty(_languagesRegEx))
             {
@@ -99,14 +106,14 @@ namespace MangaRipper.Plugin.Batoto
             var downloader = new Downloader
             {
                 Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
+                Referrer = "https://bato.to/reader"
             };
             var parser = new ParserHelper();
 
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>http://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
+            var pages = parser.Parse(@"<option value=""(?<Value>http(s)?://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
 
             // transform pages link
             var transformedPages = pages.Select(TransformChapterUrl).ToList();

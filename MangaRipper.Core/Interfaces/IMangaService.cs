@@ -27,6 +27,23 @@ namespace MangaRipper.Core.Interfaces
         bool Of(string link);
 
         /// <summary>
+        /// Override method for Test purpose
+        /// </summary>
+        /// <param name="link"></param>
+        /// <param name="providerUrl"></param>
+        /// <returns></returns>
+        bool Of(string link, string providerUrl);
+
+        /// <summary>
+        /// Check also alternative WebSite links
+        /// Done in case if website was moved, or only mirror is available
+        /// </summary>
+        /// <param name="link">Uri from "Of" method</param>
+        /// <param name="address">Address of MangaProvider</param>
+        /// <returns>Correct link</returns>
+        string CheckWithAlternative(Uri link, string address);
+
+        /// <summary>
         /// Find all chapters inside a manga
         /// </summary>
         /// <param name="manga"></param>

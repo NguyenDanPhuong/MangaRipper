@@ -40,6 +40,8 @@ namespace MangaRipper.Plugin.KissManga
 
         public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
+            base.Configuration(settings);
+
             var settingCollection = settings.ToArray();
             if (settingCollection.Any(i => i.Key.Equals("IV")))
             {
