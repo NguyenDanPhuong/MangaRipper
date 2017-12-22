@@ -11,6 +11,8 @@ using System.Reflection;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Controllers;
 using MangaRipper.Core;
+using MangaRipper.Infrastructure;
+using SimpleInjector.Lifestyles;
 
 namespace MangaRipper
 {
@@ -25,8 +27,6 @@ namespace MangaRipper
         [STAThread]
         private static void Main()
         {
-            // TODO Apply Composition Root to use DI for WinForm
-            // So we can unit test.
             Logger.Info("> Main()");
             var appDomain = AppDomain.CurrentDomain;
             appDomain.UnhandledException += AppDomain_UnhandledException;
@@ -48,26 +48,23 @@ namespace MangaRipper
         private static void Bootstrap()
         {
             container = new Container();
-
-            container.RegisterConditional(typeof(IMyLogger),
-               c => typeof(MyLogger<>).MakeGenericType(c.Consumer.ImplementationType),
+            container.RegisterConditional(typeof(Core.ILogger),
+               c => typeof(NLogLogger<>).MakeGenericType(c.Consumer.ImplementationType),
                Lifestyle.Transient,
                c => true
                );
 
-            var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
+            container.Register(() => new Configuration(configPath));
+
+            var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()
                 .Where(file => file.Extension.ToLower() == ".dll" && file.Name.StartsWith("MangaRipper.Plugin."))
                 .Select(file => Assembly.Load(AssemblyName.GetAssemblyName(file.FullName)));
 
-            container.Register(() => new Configuration(configPath));
             container.RegisterCollection<IMangaService>(pluginAssemblies);
-            container.Register<ServiceManager>(Lifestyle.Singleton);
-            container.Register<WorkerController>(Lifestyle.Singleton);
-            container.Register<FormMain>(Lifestyle.Singleton);
-           
-            container.Verify();
+            container.Register<FormMain>();
+            //container.Verify();
         }
     }
 }

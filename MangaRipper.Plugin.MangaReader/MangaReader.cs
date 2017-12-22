@@ -16,16 +16,18 @@ namespace MangaRipper.Plugin.MangaReader
     /// </summary>
     public class MangaReader : IMangaService
     {
-        private static IMyLogger logger;
+        private static ILogger logger;
+        private readonly Downloader downloader;
+        private readonly ParserHelper parser;
 
-        public MangaReader(IMyLogger myLogger)
+        public MangaReader(ILogger myLogger, Downloader downloader, ParserHelper parser)
         {
             logger = myLogger;
+            this.downloader = downloader;
+            this.parser = parser;
         }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
@@ -40,9 +42,6 @@ namespace MangaRipper.Plugin.MangaReader
         
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
-
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
             var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");

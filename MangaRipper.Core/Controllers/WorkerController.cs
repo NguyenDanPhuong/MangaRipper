@@ -3,7 +3,6 @@ using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,19 +18,24 @@ namespace MangaRipper.Core.Controllers
     /// </summary>
     public class WorkerController
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ServiceManager ServiceManager { get; }
 
         CancellationTokenSource _source;
         readonly SemaphoreSlim _sema;
+        private readonly ILogger logger;
+        private readonly PackageCbzHelper cbz;
+        private readonly Downloader downloader;
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController(ServiceManager sm)
+        public WorkerController(ServiceManager sm, ILogger logger, PackageCbzHelper cbz, Downloader downloader)
         {
-            Logger.Info("> Worker()");
+            this.logger = logger;
+            logger.Info("> Worker()");
             ServiceManager = sm;
+            this.cbz = cbz;
+            this.downloader = downloader;
             _source = new CancellationTokenSource();
             _sema = new SemaphoreSlim(2);
         }
@@ -52,7 +56,7 @@ namespace MangaRipper.Core.Controllers
         /// <returns></returns>
         public async Task RunDownloadTaskAsync(DownloadChapterTask task, IProgress<int> progress)
         {
-            Logger.Info("> DownloadChapter: {0} To: {1}", task.Chapter.Url, task.SaveToFolder);
+            logger.Info($"> DownloadChapter: {task.Chapter.Url} To: {task.SaveToFolder}");
             await Task.Run(async () =>
             {
                 try
@@ -64,7 +68,7 @@ namespace MangaRipper.Core.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex, "Failed to download chapter: {0}", task.Chapter.Url);
+                    logger.Error(ex, $"Failed to download chapter: {task.Chapter.Url}");
                     throw;
                 }
                 finally
@@ -83,7 +87,7 @@ namespace MangaRipper.Core.Controllers
         /// <returns></returns>
         public async Task<IEnumerable<Chapter>> FindChapterListAsync(string mangaPath, IProgress<int> progress)
         {
-            Logger.Info("> FindChapters: {0}", mangaPath);
+            logger.Info($"> FindChapters: {mangaPath}");
             return await Task.Run(async () =>
             {
                 try
@@ -93,7 +97,7 @@ namespace MangaRipper.Core.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex, "Failed to find chapters: {0}", mangaPath);
+                    logger.Error(ex, $"Failed to find chapters: {mangaPath}");
                     throw;
                 }
                 finally
@@ -135,7 +139,7 @@ namespace MangaRipper.Core.Controllers
                     Directory.CreateDirectory(task.SaveToFolder);
                 }
 
-                PackageCbzHelper.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
+                cbz.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
             }
 
             progress.Report(100);
@@ -144,7 +148,7 @@ namespace MangaRipper.Core.Controllers
         private async Task DownloadImages(IEnumerable<string> inputImages, string destination, IProgress<int> progress)
         {
             var images = inputImages.ToArray();
-            Logger.Info($@"Download {images.Length} images into {destination}");
+            logger.Info($@"Download {images.Length} images into {destination}");
 
             var countImage = 0;
             foreach (var image in images)
@@ -159,7 +163,6 @@ namespace MangaRipper.Core.Controllers
 
         private async Task DownloadImage(string image, string destination, int imageNum)
         {
-            var downloader = new Downloader();
             string tempFilePath = Path.GetTempFileName();
             string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
             if (!File.Exists(filePath))

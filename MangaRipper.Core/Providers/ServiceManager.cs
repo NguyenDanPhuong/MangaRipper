@@ -1,5 +1,4 @@
 ﻿using MangaRipper.Core.Interfaces;
-using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using MangaRipper.Core.CustomException;
@@ -10,15 +9,16 @@ namespace MangaRipper.Core.Providers
     /// </summary>
     public class ServiceManager
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         IEnumerable<IMangaService> _services;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public ServiceManager(IEnumerable<IMangaService> mangaServices)
+        public ServiceManager(IEnumerable<IMangaService> mangaServices, ILogger logger)
         {
-            Logger.Info("> ServiceManager.Init()");
+            this.logger = logger;
+            this.logger.Info("> ServiceManager.Init()");
             _services = mangaServices;
         }
 
@@ -41,7 +41,7 @@ namespace MangaRipper.Core.Providers
             IMangaService service = _services.FirstOrDefault(s => s.Of(link));
             if (service == null)
             {
-                Logger.Error("Cannot find service for link: {0}", link);
+                logger.Error($"Cannot find service for link: {link}");
                 throw new MangaRipperException("Cannot find service to download from input site!");
             }
             return service;

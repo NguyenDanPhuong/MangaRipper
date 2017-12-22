@@ -1,21 +1,18 @@
-﻿using NLog;
+﻿using MangaRipper.Core;
+using NLog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Infrastructure
 {
-    public interface IMyLogger
-    {
-        void Info(string message);
-        void Debug(string message);
-        void Fatal(string message);
-        void Fatal(Exception ex);
-    }
-
-    public class MyLogger<T> : IMyLogger
+    public class NLogLogger<T> : Core.ILogger
     {
         private static Logger Logger { get; set; }
 
-        public MyLogger()
+        public NLogLogger()
         {
             var name = typeof(T).Name;
             Logger = LogManager.GetLogger(name);
@@ -39,6 +36,16 @@ namespace MangaRipper.Core
         public void Fatal(Exception ex)
         {
             Logger.Fatal(ex);
+        }
+
+        public void Error(Exception ex, string message)
+        {
+            Logger.Error(ex, message);
+        }
+
+        public void Error(string message)
+        {
+            Logger.Error(message);
         }
     }
 }

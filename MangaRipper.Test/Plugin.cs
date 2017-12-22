@@ -20,11 +20,15 @@ namespace MangaRipper.Test
     public class Plugin
     {
         CancellationTokenSource _source;
+        ILogger _logger;
+        Downloader downloader;
 
         [TestInitialize]
         public void Initialize()
         {
             _source = new CancellationTokenSource();
+            _logger = new Mock<ILogger>().Object;
+            downloader = new Downloader(_logger);
         }
 
         [TestCleanup]
@@ -37,7 +41,7 @@ namespace MangaRipper.Test
         public async Task MangaReader_Test()
         {
             string url = "http://www.mangareader.net/naruto";
-            var service = new MangaReader(new Mock<IMyLogger>().Object);
+            var service = new MangaReader(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             // Test service can find chapters
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -55,7 +59,6 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
             Assert.AreEqual("http://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -66,7 +69,7 @@ namespace MangaRipper.Test
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
             string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
-            var service = new MangaFox(new Mock<IMyLogger>().Object);
+            var service = new MangaFox(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -78,7 +81,6 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q002.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -87,7 +89,7 @@ namespace MangaRipper.Test
         public async Task MangaHere_Test()
         {
             string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
-            var service = new MangaHere(new Mock<IMyLogger>().Object);
+            var service = new MangaHere(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -99,7 +101,6 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
             Assert.IsTrue(images.ToArray()[54].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -110,7 +111,7 @@ namespace MangaRipper.Test
         public async Task Batoto_Test()
         {
             string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
-            var service = new Batoto(null, new Mock<IMyLogger>().Object);
+            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -129,7 +130,6 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000002.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000003.jpg"));
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -138,7 +138,7 @@ namespace MangaRipper.Test
         public async Task Batoto_AllLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, new Mock<IMyLogger>().Object);
+            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -154,7 +154,7 @@ namespace MangaRipper.Test
         public async Task Batoto_EnglishLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, new Mock<IMyLogger>().Object);
+            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -170,7 +170,7 @@ namespace MangaRipper.Test
         public async Task Batoto_GermanEnglishLanguages_Test()
         {
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, new Mock<IMyLogger>().Object);
+            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
 
             service.Configuration(new[] {
                 new KeyValuePair<string, object>("Username", "gufrohepra"),
@@ -188,7 +188,7 @@ namespace MangaRipper.Test
         public async Task MangaStream_Test()
         {
             string url = "https://readms.net/manga/dragon_ball_super";
-            var service = new MangaStream(new Mock<IMyLogger>().Object);
+            var service = new MangaStream(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -200,7 +200,6 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/002.png"));
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
@@ -212,7 +211,7 @@ namespace MangaRipper.Test
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
-            var service = new KissManga(new Mock<IMyLogger>().Object);
+            var service = new KissManga(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -224,7 +223,6 @@ namespace MangaRipper.Test
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-cx66pnwxYF4%2fV8rt3BUIFuI%2fAAAAAAAA408%2fC9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM%2fs16000%2f0001-002.png&imgmax=30000"));
             Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-EfldQUNYKe8%2fV8rt3cmh-nI%2fAAAAAAAA41A%2f_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM%2fs16000%2f0001-003.png&imgmax=30000"));
 
-            var downloader = new Downloader();
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }

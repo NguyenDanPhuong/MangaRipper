@@ -1,5 +1,4 @@
 ﻿using MangaRipper.Core.Models;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +12,14 @@ namespace MangaRipper.Core.Helpers
     /// </summary>
     public class ParserHelper
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger logger;
 
         public delegate Chapter ChapterResolverHandler(string name, string value, Uri adress);
+
+        public ParserHelper(ILogger logger)
+        {
+            this.logger = logger;
+        }
 
         /// <summary>
         /// Looking for chapter information in html code.
@@ -27,15 +31,15 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<Chapter> ParseGroup(string regExp, string input, string nameGroup, string valueGroup)
         {
-            Logger.Info("> ParseGroup: {0}", regExp);
+            logger.Info($"> ParseGroup: {regExp}");
             var list = new List<Chapter>();
             var reg = new Regex(regExp, RegexOptions.IgnoreCase);
             var matches = reg.Matches(input);
 
             if (matches.Count == 0)
             {
-                Logger.Error("Cannot parse below content.");
-                Logger.Error(input);
+                logger.Error("Cannot parse below content.");
+                logger.Error(input);
                 throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser and the URL is supported by MangaRipper.");
             }
 
@@ -47,7 +51,7 @@ namespace MangaRipper.Core.Helpers
                 list.Add(chapter);
             }
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There are {result.Count} item(s).");
+            logger.Info($@"Parse success. There are {result.Count} item(s).");
             return result;
         }
 
@@ -60,20 +64,20 @@ namespace MangaRipper.Core.Helpers
         /// <returns></returns>
         public IEnumerable<string> Parse(string regExp, string input, string groupName)
         {
-            Logger.Info("> Parse: {0}", regExp);
+            logger.Info($"> Parse: {regExp}");
             var reg = new Regex(regExp, RegexOptions.IgnoreCase);
             var matches = reg.Matches(input);
 
             if (matches.Count == 0)
             {
-                Logger.Error("Cannot parse below content.");
-                Logger.Error(input);
+                logger.Error("Cannot parse the below content.");
+                logger.Error(input);
                 throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser.");
             }
 
             var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
             var result = list.Distinct().ToList();
-            Logger.Info($@"Parse success. There are {result.Count} item(s).");
+            logger.Info($@"Parse success. There are {result.Count} item(s).");
             return result;
         }
       

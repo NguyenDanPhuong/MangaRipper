@@ -18,13 +18,16 @@ namespace MangaRipper.Plugin.KissManga
     /// </summary>
     public class KissManga : IMangaService
     {
-        private static IMyLogger _logger;
-
+        private static ILogger _logger;
+        private readonly Downloader downloader;
+        private readonly ParserHelper parser;
         private ScriptEngine _engine = null;
 
-        public KissManga(IMyLogger myLogger)
+        public KissManga(ILogger myLogger, Downloader downloader, ParserHelper parser)
         {
             _logger = myLogger;
+            this.downloader = downloader;
+            this.parser = parser;
             InitializeJurassicEngine();
         }
 
@@ -35,8 +38,6 @@ namespace MangaRipper.Plugin.KissManga
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
@@ -48,8 +49,6 @@ namespace MangaRipper.Plugin.KissManga
 
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
 
             /// Could be secured against changes by capturing the script's path as it exists in the live document instead of assuming the location.

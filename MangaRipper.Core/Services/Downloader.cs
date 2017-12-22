@@ -1,5 +1,4 @@
 ﻿using CloudFlareUtilities;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,11 +16,16 @@ namespace MangaRipper.Core.Services
     /// </summary>
     public class Downloader
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger logger;
+
         public CookieCollection Cookies { get; set; }
         public string Referrer { get; set; }
 
 
+        public Downloader(ILogger logger)
+        {
+            this.logger = logger;
+        }
 
         /// <summary>
         /// Download single web page to string.
@@ -30,7 +34,7 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
-            Logger.Info("> DownloadStringAsync: {0}", url);
+            logger.Info($"> DownloadStringAsync: {url}");
             return await DownloadStringAsyncInternal(url, token);
         }
 
@@ -44,7 +48,7 @@ namespace MangaRipper.Core.Services
         public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var inputUrls = urls.ToArray();
-            Logger.Info("> DownloadStringAsync(IEnumerable) - Total: {0}", inputUrls.Count());
+            logger.Info($"> DownloadStringAsync(IEnumerable) - Total: {inputUrls.Count()}");
             var sb = new StringBuilder();
             var count = 0;
             progress.Report(count);
@@ -79,9 +83,9 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task DownloadToFile(string url, string fileName, CancellationToken token)
         {
-            Logger.Info("> DownloadFileAsync begin: {0} - {1}", url, fileName);
+            logger.Info($"> DownloadFileAsync begin: {url} - {fileName}");
             var result = await DownloadFileAsyncInternal(url, fileName, token);
-            Logger.Info("> DownloadFileAsync result: {0} - {1}", url, result);
+            logger.Info($"> DownloadFileAsync result: {url} - {result}");
         }
 
         private async Task<string> DownloadFileAsyncInternal(string url, string fileName, CancellationToken token)

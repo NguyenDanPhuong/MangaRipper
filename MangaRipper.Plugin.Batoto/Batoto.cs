@@ -19,15 +19,19 @@ namespace MangaRipper.Plugin.Batoto
     /// </summary>
     public class Batoto : IMangaService
     {
-        private IMyLogger Logger;
+        private ILogger Logger;
+        private readonly Downloader downloader;
+        private readonly ParserHelper parser;
         private string _username = "gufrohepra";
         private string _password = "123";
         private string _languagesRegEx;
 
-        public Batoto(Configuration config, IMyLogger myLogger)
+        public Batoto(Configuration config, ILogger myLogger, Downloader downloader, ParserHelper parser)
         {
             Logger = myLogger;
-            if(config == null)
+            this.downloader = downloader;
+            this.parser = parser;
+            if (config == null)
             {
                 return;
             }
@@ -59,7 +63,7 @@ namespace MangaRipper.Plugin.Batoto
                 // For test purpose
                 if (!string.IsNullOrEmpty(languages))
                 {
-                    var languagesRegEx = languages.Replace(" ", String.Empty).Replace(",", "|");                
+                    var languagesRegEx = languages.Replace(" ", String.Empty).Replace(",", "|");
                     _languagesRegEx = "<tr class=\"\\w+ lang_(" + languagesRegEx + ") \\w+\"( style=\"display:none;\")?>\\s*<td style=\"[^\"]+\">\\s*";
                 }
                 else
@@ -83,16 +87,12 @@ namespace MangaRipper.Plugin.Batoto
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader
-            {
-                Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
-            };
-            var parser = new ParserHelper();
+            downloader.Cookies = LoginBatoto(_username, _password);
+            downloader.Referrer = "http://bato.to/reader";
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            
+
             var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
             // Choose only specific languages if it set so in config
             if (!string.IsNullOrEmpty(_languagesRegEx))
@@ -103,16 +103,12 @@ namespace MangaRipper.Plugin.Batoto
             progress.Report(100);
             return chaps;
         }
-        
+
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader
-            {
-                Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
-            };
-            var parser = new ParserHelper();
+            downloader.Cookies = LoginBatoto(_username, _password);
+            downloader.Referrer = "http://bato.to/reader";
 
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);

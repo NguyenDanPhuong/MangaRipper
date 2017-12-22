@@ -16,10 +16,15 @@ namespace MangaRipper.Plugin.MangaFox
     /// </summary>
     public class MangaFox : IMangaService
     {
-        private readonly IMyLogger Logger;
-        public MangaFox(IMyLogger myLogger)
+        private readonly ILogger Logger;
+        private readonly Downloader downloader;
+        private readonly ParserHelper parser;
+
+        public MangaFox(ILogger myLogger, Downloader downloader, ParserHelper parser)
         {
             Logger = myLogger;
+            this.downloader = downloader;
+            this.parser = parser;
         }
         public SiteInformation GetInformation()
         {
@@ -36,10 +41,7 @@ namespace MangaRipper.Plugin.MangaFox
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
-            var downloader = new Downloader();
 
-            var parser = new ParserHelper();
-            
             manga = CheckAndInsertMissingScheme(manga);
 
             // find all chapters in a manga
@@ -49,29 +51,28 @@ namespace MangaRipper.Plugin.MangaFox
 
             // Insert missing URI schemes in each chapter's URI.
             // Provisional solution, the current implementation may not be the best way to go about it.
-            chaps = chaps.Select(chap => {
+            chaps = chaps.Select(chap =>
+            {
                 var newUri = CheckAndInsertMissingScheme(chap.Url);
                 return new Chapter(chap.OriginalName, newUri);
             });
 
             return chaps;
         }
-        
+
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
 
             var pages = (await FindPagesInChapter(chapter.Url, cancellationToken)).ToList();
             var transformedPages = TransformPagesUrl(chapter.Url, pages).ToArray();
-            
+
             // find all images in pages
             var pageData = await downloader.DownloadStringAsync(
                 transformedPages,
                 new Progress<int>(count =>
                 {
-                    var f = (float) count / transformedPages.Count();
+                    var f = (float)count / transformedPages.Count();
                     var i = Convert.ToInt32(f * 100);
                     progress.Report(i);
                 }),
@@ -85,8 +86,6 @@ namespace MangaRipper.Plugin.MangaFox
 
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
-            var downloader = new Downloader();
-            var parser = new ParserHelper();
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             return parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
         }
@@ -96,7 +95,7 @@ namespace MangaRipper.Plugin.MangaFox
             return pages.Select(p =>
             {
                 var value = new Uri(new Uri(chapterUrl), (p + ".html")).AbsoluteUri;
-                
+
                 return value;
             });
         }
