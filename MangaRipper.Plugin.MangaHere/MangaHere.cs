@@ -68,13 +68,13 @@ namespace MangaRipper.Plugin.MangaHere
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaHere), "http://www.mangahere.co", "English");
+            return new SiteInformation(nameof(MangaHere), "http://www.mangahere.cc", "English");
         }
 
         public bool Of(string link)
         {
             var uri = new Uri(link);
-            return uri.Host.Equals("www.mangahere.co");
+            return uri.Host.Equals("www.mangahere.cc");
         }
     }
 }
