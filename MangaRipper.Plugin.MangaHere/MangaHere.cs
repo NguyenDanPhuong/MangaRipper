@@ -5,6 +5,7 @@ using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,20 +20,21 @@ namespace MangaRipper.Plugin.MangaHere
     {
         private static ILogger logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
+        private readonly IXPathSelector selector;
 
-        public MangaHere(ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public MangaHere(ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
+            this.selector = selector;
         }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a class=\"color_0077\" href=\"(?<Value>[^\"]+)\" >\r\n              (?<Name>[^<]+)            </a>", input, "Name", "Value");
+            var chaps = selector.SelectMany(input, "//div[contains(@class,'detail_list')]/ul//a")
+                .Select(n => new Chapter(n.InnerHtml.Trim(), n.Attributes["href"]));
             chaps = chaps.Select(c =>
             {
                 return new Chapter(c.OriginalName, $"http:{c.Url}");
@@ -45,7 +47,9 @@ namespace MangaRipper.Plugin.MangaHere
         {
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>.+</option>", input, "Value");
+            var pages = selector
+                .SelectMany(input, "//section[contains(@class,'readpage_top')]//select[contains(@class,'wid60')]/option")
+                .Select(n => n.Attributes["value"]);
 
             // transform pages link
             pages = pages.Select(p =>
@@ -55,13 +59,21 @@ namespace MangaRipper.Plugin.MangaHere
             }).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
+
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in pages)
             {
-                var f = (float)count / pages.Count();
+                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var node = selector
+                .Select(pageHtml, "//section[contains(@class,'read_img')]/a/img[contains(@id,'image')]");
+               
+                var image = node.Attributes["src"];
+                images.Add(image);
+                var f = (float)++current / pages.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
-            }), cancellationToken);
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\" onload=", pageData, "Value");
+            }
 
             return images;
         }
