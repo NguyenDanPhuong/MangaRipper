@@ -71,14 +71,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomException\MangaRipperException.cs" />
-    <Compile Include="ILogger.cs" />
-    <Compile Include="IXPathSelector.cs" />
-    <Compile Include="IScriptEngine.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IXPathSelector.cs" />
+    <Compile Include="Interfaces\IScriptEngine.cs" />
     <Compile Include="HtmlAtilityPackAdapter.cs" />
     <Compile Include="JurassicScriptEngine.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
+    <Compile Include="Models\IConfiguration.cs" />
     <Compile Include="Providers\ServiceManager.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\Downloader.cs" />

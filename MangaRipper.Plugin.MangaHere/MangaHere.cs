@@ -1,11 +1,8 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.Helpers;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

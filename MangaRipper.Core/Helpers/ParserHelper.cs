@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Interfaces;
 
 namespace MangaRipper.Core.Helpers
 {

@@ -13,6 +13,8 @@ using MangaRipper.Plugin.MangaReader;
 using MangaRipper.Plugin.Batoto;
 using Moq;
 using MangaRipper.Core;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Models;
 
 namespace MangaRipper.Test
 {
@@ -110,14 +112,15 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task Batoto_Test()
         {
-            string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
-            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var configMock = new Mock<IConfiguration>();
+            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
+                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "") });
 
-            service.Configuration(new[] {
-                new KeyValuePair<string, object>("Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Password", "123"),
-                new KeyValuePair<string, object>("Languages", "")
-            });
+            string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
+            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
+
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -137,14 +140,14 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task Batoto_AllLanguages_Test()
         {
-            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var configMock = new Mock<IConfiguration>();
+            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
+                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "") });
 
-            service.Configuration(new[] {
-                new KeyValuePair<string, object>("Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Password", "123"),
-                new KeyValuePair<string, object>("Languages", "")
-            });
+            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
+            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.AreEqual(chapters.Count(), 82);
@@ -153,14 +156,14 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task Batoto_EnglishLanguages_Test()
         {
-            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
 
-            service.Configuration(new[] {
-                new KeyValuePair<string, object>("Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Password", "123"),
-                new KeyValuePair<string, object>("Languages", "English")
-            });
+            var configMock = new Mock<IConfiguration>();
+            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
+                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "English") });
+            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
+            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.AreEqual(32, chapters.Count());
@@ -169,14 +172,13 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task Batoto_GermanEnglishLanguages_Test()
         {
+            var configMock = new Mock<IConfiguration>();
+            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
+                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
+                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "German, English") });
             string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(null, _logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
-
-            service.Configuration(new[] {
-                new KeyValuePair<string, object>("Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Password", "123"),
-                new KeyValuePair<string, object>("Languages", "German, English")
-            });
+            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.AreEqual(32 + 32, chapters.Count());

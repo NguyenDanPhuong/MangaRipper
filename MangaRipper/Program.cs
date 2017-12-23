@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using MangaRipper.Core.Providers;
 using MangaRipper.Forms;
 using NLog;
 using SimpleInjector;
@@ -9,10 +8,8 @@ using MangaRipper.Core.Interfaces;
 using System.Linq;
 using System.Reflection;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Controllers;
 using MangaRipper.Core;
 using MangaRipper.Infrastructure;
-using SimpleInjector.Lifestyles;
 
 namespace MangaRipper
 {
@@ -48,7 +45,7 @@ namespace MangaRipper
         private static void Bootstrap()
         {
             container = new Container();
-            container.RegisterConditional(typeof(Core.ILogger),
+            container.RegisterConditional(typeof(Core.Interfaces.ILogger),
                c => typeof(NLogLogger<>).MakeGenericType(c.Consumer.ImplementationType),
                Lifestyle.Transient,
                c => true
@@ -58,6 +55,7 @@ namespace MangaRipper
             container.Register(() => new Configuration(configPath));
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IScriptEngine, JurassicScriptEngine>();
+            container.Register<IConfiguration, Configuration>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()

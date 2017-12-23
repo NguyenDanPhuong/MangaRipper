@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
@@ -21,16 +20,16 @@ namespace MangaRipper.Plugin.Batoto
     {
         private ILogger Logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
+        private readonly IXPathSelector selector;
         private string _username = "gufrohepra";
         private string _password = "123";
-        private string _languagesRegEx;
+        private List<string> selectedLanguages = new List<string>();
 
-        public Batoto(Configuration config, ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public Batoto(IConfiguration config, ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
             Logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
+            this.selector = selector;
             if (config == null)
             {
                 return;
@@ -38,7 +37,7 @@ namespace MangaRipper.Plugin.Batoto
             Configuration(config.FindConfigByPrefix("Plugin.Batoto"));
         }
 
-        public void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        private void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
         {
             // TODO FIX THIS
             var settingCollection = settings.ToArray();
@@ -60,16 +59,8 @@ namespace MangaRipper.Plugin.Batoto
             {
                 var languages = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Languages")).Value as string;
                 Logger.Info($@"Only the follow languages will be selected: {languages}");
-                // For test purpose
-                if (!string.IsNullOrEmpty(languages))
-                {
-                    var languagesRegEx = languages.Replace(" ", String.Empty).Replace(",", "|");
-                    _languagesRegEx = "<tr class=\"\\w+ lang_(" + languagesRegEx + ") \\w+\"( style=\"display:none;\")?>\\s*<td style=\"[^\"]+\">\\s*";
-                }
-                else
-                {
-                    _languagesRegEx = null;
-                }
+                selectedLanguages = languages.Split(new char[] { ',', '|' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim()).ToList();
             }
         }
 
@@ -92,14 +83,23 @@ namespace MangaRipper.Plugin.Batoto
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-
-            var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
-            // Choose only specific languages if it set so in config
-            if (!string.IsNullOrEmpty(_languagesRegEx))
+            var langs = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//div").Select(n => n.Attributes["title"]).ToList();
+            var chaps = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//a[@title]")
+                .Select(n =>
+                    {
+                        string originalName = n.Attributes["title"];
+                        originalName = originalName.Remove(originalName.LastIndexOf('|')).Trim();
+                        return new Chapter(originalName, n.Attributes["href"]);
+                    }).ToList();
+            for (int i = 0; i < langs.Count(); i++)
             {
-                allLanguagesRegEx = _languagesRegEx + allLanguagesRegEx;
+                chaps[i].Language = langs[i];
             }
-            var chaps = parser.ParseGroup(allLanguagesRegEx, input, "Name", "Value");
+            chaps = chaps.GroupBy(c => c.Url).Select(g => g.First()).ToList();
+            if(selectedLanguages.Count > 0)
+            {
+                chaps = chaps.Where(c => selectedLanguages.Contains(c.Language)).ToList();
+            }
             progress.Report(100);
             return chaps;
         }
@@ -113,8 +113,7 @@ namespace MangaRipper.Plugin.Batoto
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>http://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
-
+            var pages = selector.SelectMany(input, "//select[contains(@name,'page_select')]/option").Select(n => n.Attributes["value"]);
             // transform pages link
             var transformedPages = pages.Select(TransformChapterUrl).ToList();
 
@@ -129,7 +128,8 @@ namespace MangaRipper.Plugin.Batoto
                 }),
                 cancellationToken);
 
-            var images = parser.Parse("img src=\"(?<Value>[^\"]+)\" style=\"z-index: 1003", pageData, "Value");
+            var images = selector.SelectMany(pageData, "//img[contains(@id,'comic_page')]")
+                .Select(n=>n.Attributes["src"]).Distinct();
 
             progress.Report(100);
             return images;

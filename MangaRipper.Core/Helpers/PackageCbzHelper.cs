@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using MangaRipper.Core.Interfaces;
+using System.IO.Compression;
 
 namespace MangaRipper.Core.Helpers
 {

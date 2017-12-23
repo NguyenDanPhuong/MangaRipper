@@ -8,7 +8,7 @@ namespace MangaRipper.Core.Models
     /// <summary>
     /// Configuration for plugins
     /// </summary>
-    public class Configuration
+    public class Configuration : IConfiguration
     {
         private string ConfigFile
         {

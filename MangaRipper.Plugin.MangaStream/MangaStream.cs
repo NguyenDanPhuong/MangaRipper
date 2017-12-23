@@ -7,7 +7,6 @@ using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using MangaRipper.Core;
 
 namespace MangaRipper.Plugin.MangaStream
 {

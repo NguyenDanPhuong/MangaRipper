@@ -1,9 +1,5 @@
 ﻿using Jurassic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MangaRipper.Core.Interfaces;
 
 namespace MangaRipper.Core
 {
@@ -20,9 +16,9 @@ namespace MangaRipper.Core
             engine.Execute(code);
         }
 
-        public T CallGlobalFunction<T>(string functionName, params object[] argumentValues)
+        public TResult CallGlobalFunction<TResult>(string functionName, params object[] argumentValues)
         {
-            return engine.CallGlobalFunction<T>(functionName, argumentValues);
+            return engine.CallGlobalFunction<TResult>(functionName, argumentValues);
         }
     }
 }

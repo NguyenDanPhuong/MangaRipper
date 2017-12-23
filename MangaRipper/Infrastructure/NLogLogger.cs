@@ -1,14 +1,9 @@
-﻿using MangaRipper.Core;
-using NLog;
+﻿using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MangaRipper.Infrastructure
 {
-    public class NLogLogger<T> : Core.ILogger
+    public class NLogLogger<T> : Core.Interfaces.ILogger
     {
         private static Logger Logger { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using MangaRipper.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
