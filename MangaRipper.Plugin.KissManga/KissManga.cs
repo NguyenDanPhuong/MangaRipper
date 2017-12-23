@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Jurassic;
 using MangaRipper.Core;
 
 namespace MangaRipper.Plugin.KissManga
@@ -21,19 +20,14 @@ namespace MangaRipper.Plugin.KissManga
         private static ILogger _logger;
         private readonly Downloader downloader;
         private readonly ParserHelper parser;
-        private ScriptEngine _engine = null;
+        private IScriptEngine _engine;
 
-        public KissManga(ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public KissManga(ILogger myLogger, Downloader downloader, ParserHelper parser, IScriptEngine engine)
         {
             _logger = myLogger;
             this.downloader = downloader;
             this.parser = parser;
-            InitializeJurassicEngine();
-        }
-
-        public void InitializeJurassicEngine()
-        {
-            _engine = new ScriptEngine();
+            this._engine = engine;
         }
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)

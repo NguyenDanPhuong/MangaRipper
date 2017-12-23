@@ -45,7 +45,7 @@ namespace MangaRipper.Plugin.MangaHere
         {
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
+            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>.+</option>", input, "Value");
 
             // transform pages link
             pages = pages.Select(p =>

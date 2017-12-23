@@ -88,15 +88,15 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task MangaHere_Test()
         {
-            string url = "http://www.mangahere.co/manga/the_god_of_high_school/";
+            string url = "http://www.mangahere.cc/manga/the_god_of_high_school/";
             var service = new MangaHere(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("The God Of High School 1", chapter.Name);
-            Assert.AreEqual("http://www.mangahere.co/manga/the_god_of_high_school/c001/", chapter.Url);
+            Assert.AreEqual("http://www.mangahere.cc/manga/the_god_of_high_school/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
-            Assert.AreEqual(55, images.Count());
+            Assert.AreEqual(56, images.Count());
             Assert.IsTrue(images.ToArray()[0].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.01.jpg"));
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
             Assert.IsTrue(images.ToArray()[54].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
@@ -163,7 +163,7 @@ namespace MangaRipper.Test
             });
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.AreEqual(chapters.Count(), 32);
+            Assert.AreEqual(32, chapters.Count());
         }
 
         [TestMethod]
@@ -179,7 +179,7 @@ namespace MangaRipper.Test
             });
 
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.AreEqual(chapters.Count(), 64);
+            Assert.AreEqual(32 + 32, chapters.Count());
         }
 
         #endregion
@@ -211,7 +211,7 @@ namespace MangaRipper.Test
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
-            var service = new KissManga(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var service = new KissManga(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger), new JurassicScriptEngine());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();

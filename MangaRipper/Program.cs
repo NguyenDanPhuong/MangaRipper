@@ -56,6 +56,7 @@ namespace MangaRipper
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
             container.Register(() => new Configuration(configPath));
+            container.Register<IScriptEngine, JurassicScriptEngine>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()
