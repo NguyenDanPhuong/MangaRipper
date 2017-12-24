@@ -164,46 +164,8 @@ namespace MangaRipper.Core.Controllers
 
         private async Task DownloadImage(string image, string destination, int imageNum)
         {
-            string tempFilePath = Path.GetTempFileName();
-            string filePath = Path.Combine(destination, GetFilenameFromUrl(image, imageNum));
-            if (!File.Exists(filePath))
-            {
-                await downloader.DownloadToFile(image, tempFilePath, _source.Token);
-                File.Move(tempFilePath, filePath);
-            }
+            var fileName = await downloader.DownloadToFolder(image, destination, _source.Token);
         }
-
-        /// <summary>
-        /// Use the name from URL, or use the numbers if name is unappropriated
-        /// </summary>
-        /// <param name="url">Image URL</param>
-        /// <param name="imageNum">image's order</param>
-        /// <returns></returns>
-        private string GetFilenameFromUrl(string url, int imageNum)
-        {
-            var uri = new Uri(url);
-            var path = Path.GetFileName(uri.LocalPath);
-            var nameInParam = false;
-
-            // if everything in parameters and path is incorrect
-            // e.g. https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.p.mpcdn.net%2f50%2f531513%2f1.jpg&imgmax=30000
-            string extension = path.Split('.').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
-            if (extension == null)
-            {
-                nameInParam = true;
-                extension = uri.PathAndQuery.Split('.', '&').FirstOrDefault(x => Enum.GetNames(typeof(ImageExtensions)).Contains(x, StringComparer.OrdinalIgnoreCase));
-            }
-
-            // Some names - just a gibberish text which is TOO LONG
-            // e.g. http://2.bp.blogspot.com/MG09qjYxsb3sFsrMt_lTn7f9ulfgcbusQjS5wypyy0aGn0sjL7hZHQhXuS-dXZNn0tuWvdBgKICQ8WI9RFGAgNNpdYglvFdwhJZC7qiClhvEd9toNLpLky19HRRZmSFbv3zq5lw=s0?title=000_1485859774.png
-            if (uri.LocalPath.Length > 50 || nameInParam)
-            {
-                imageNum++;
-                path = imageNum.ToString("0000") + "." + extension;
-            }
-            return path;
-        }
-
 
         private async Task<IEnumerable<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
         {

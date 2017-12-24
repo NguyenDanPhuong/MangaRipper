@@ -36,42 +36,26 @@ namespace MangaRipper.Core.Services
             return await DownloadStringAsyncInternal(url, token);
         }
 
-        public async Task DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
+        public async Task<string> DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
         {
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                var fileNameFromServer = response.Content.Headers.ContentDisposition.FileName.Trim().Trim(new char[] { '"' });
-                var file = Path.Combine(folder, fileNameFromServer);
-                await DownloadToFile(url, file, cancellationToken);
-            }
-        }
-
-        /// <summary>
-        /// Download file and save to folder
-        /// </summary>
-        /// <param name="url">The URL to download</param>
-        /// <param name="fileName">Save to filename</param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task DownloadToFile(string url, string fileName, CancellationToken token)
-        {
-            logger.Info($"> DownloadFileAsync begin: {url} - {fileName}");
-            var result = await DownloadFileAsyncInternal(url, fileName, token);
-            logger.Info($"> DownloadFileAsync result: {url} - {result}");
-        }
-
-        private async Task<string> DownloadFileAsyncInternal(string url, string fileName, CancellationToken token)
-        {
-            var request = CreateRequest();
-            using (var response = await request.GetAsync(url, token))
-            {
+                var fileNameFromServer = response.Content.Headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
+                var fileName = string.IsNullOrEmpty(fileNameFromServer) ?
+                    Path.Combine(folder, GetFilenameFromUrl(url)) : Path.Combine(folder, fileNameFromServer);
                 using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
                     await response.Content.CopyToAsync(streamReader);
-                    return response.StatusCode.ToString();
+                    return fileName;
                 }
             }
+        }
+
+        private string GetFilenameFromUrl(string url)
+        {
+            var uri = new Uri(url);
+            return Path.GetFileName(uri.LocalPath);
         }
 
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
