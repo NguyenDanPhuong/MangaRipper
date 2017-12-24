@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core.Helpers;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using System;
@@ -96,7 +95,7 @@ namespace MangaRipper.Plugin.Batoto
                 chaps[i].Language = langs[i];
             }
             chaps = chaps.GroupBy(c => c.Url).Select(g => g.First()).ToList();
-            if(selectedLanguages.Count > 0)
+            if (selectedLanguages.Count > 0)
             {
                 chaps = chaps.Where(c => selectedLanguages.Contains(c.Language)).ToList();
             }
@@ -113,26 +112,26 @@ namespace MangaRipper.Plugin.Batoto
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            var pages = selector.SelectMany(input, "//select[contains(@name,'page_select')]/option").Select(n => n.Attributes["value"]);
+            var pages = selector.SelectMany(input, "//select[@name='page_select']/option").Select(n => n.Attributes["value"]);
             // transform pages link
             var transformedPages = pages.Select(TransformChapterUrl).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(
-                transformedPages,
-                new Progress<int>((count) =>
-                {
-                    var f = (float)count / transformedPages.Count;
-                    var i = Convert.ToInt32(f * 100);
-                    progress.Report(i);
-                }),
-                cancellationToken);
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in transformedPages)
+            {
+                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var image = selector
+                .Select(pageHtml, "//img[@id='comic_page']").Attributes["src"];
 
-            var images = selector.SelectMany(pageData, "//img[contains(@id,'comic_page')]")
-                .Select(n=>n.Attributes["src"]).Distinct();
-
+                images.Add(image);
+                var f = (float)++current / transformedPages.Count();
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }
             progress.Report(100);
-            return images;
+            return images.Distinct();
         }
 
         private CookieCollection LoginBatoto(string user, string password)

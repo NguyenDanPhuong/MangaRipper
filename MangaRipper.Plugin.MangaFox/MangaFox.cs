@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core.Helpers;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using System;
@@ -61,22 +60,23 @@ namespace MangaRipper.Plugin.MangaFox
         {
             progress.Report(0);
 
-            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken)).ToList();
-            var transformedPages = TransformPagesUrl(chapter.Url, pages).ToArray();
+            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken));
+            pages = TransformPagesUrl(chapter.Url, pages);
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(
-                transformedPages,
-                new Progress<int>(count =>
-                {
-                    var f = (float)count / transformedPages.Count();
-                    var i = Convert.ToInt32(f * 100);
-                    progress.Report(i);
-                }),
-                cancellationToken);
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in pages)
+            {
+                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var image = selector
+                .Select(pageHtml, "//img[@id='image']").Attributes["src"];
 
-            var images = selector.SelectMany(pageData, "//img[contains(@id,'image')]").Select(n=>n.Attributes["src"]);
-
+                images.Add(image);
+                var f = (float)++current / pages.Count();
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }
             progress.Report(100);
             return images;
         }
@@ -84,7 +84,7 @@ namespace MangaRipper.Plugin.MangaFox
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            return selector.SelectMany(input, "//form[contains(@id,'top_bar')]//select[contains(@class,'m')]/option[@value != '0']")
+            return selector.SelectMany(input, "//form[@id='top_bar']//select[contains(@class,'m')]/option[@value != '0']")
                 .Select(n => n.Attributes["value"]);
         }
 

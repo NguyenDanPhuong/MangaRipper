@@ -1,12 +1,9 @@
 ﻿using CloudFlareUtilities;
 using MangaRipper.Core.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,31 +34,6 @@ namespace MangaRipper.Core.Services
         {
             logger.Info($"> DownloadStringAsync: {url}");
             return await DownloadStringAsyncInternal(url, token);
-        }
-
-        /// <summary>
-        /// Download a list of web page.
-        /// </summary>
-        /// <param name="urls">List of URL</param>
-        /// <param name="progress">Progress report callback</param>
-        /// <param name="cancellationToken">Cancellation control</param>
-        /// <returns></returns>
-        public async Task<string> DownloadStringAsync(IEnumerable<string> urls, IProgress<int> progress, CancellationToken cancellationToken)
-        {
-            var inputUrls = urls.ToArray();
-            logger.Info($"> DownloadStringAsync(IEnumerable) - Total: {inputUrls.Count()}");
-            var sb = new StringBuilder();
-            var count = 0;
-            progress.Report(count);
-            foreach (var url in inputUrls)
-            {
-                var input = await DownloadStringAsyncInternal(url, cancellationToken);
-                sb.Append(input);
-                cancellationToken.ThrowIfCancellationRequested();
-                progress.Report(count++);
-            }
-
-            return sb.ToString();
         }
 
         public async Task DownloadToFolder(string url, string folder, CancellationToken cancellationToken)

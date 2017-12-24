@@ -62,10 +62,8 @@ namespace MangaRipper.Plugin.MangaHere
             foreach (var page in pages)
             {
                 var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
-                var node = selector
-                .Select(pageHtml, "//section[contains(@class,'read_img')]/a/img[contains(@id,'image')]");
-               
-                var image = node.Attributes["src"];
+                var image = selector
+                .Select(pageHtml, "//section[contains(@class,'read_img')]/a/img[@id='image']").Attributes["src"];
                 images.Add(image);
                 var f = (float)++current / pages.Count();
                 int i = Convert.ToInt32(f * 100);

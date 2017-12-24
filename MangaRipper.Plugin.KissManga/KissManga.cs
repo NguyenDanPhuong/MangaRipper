@@ -1,5 +1,4 @@
 ﻿using MangaRipper.Core.CustomException;
-using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;

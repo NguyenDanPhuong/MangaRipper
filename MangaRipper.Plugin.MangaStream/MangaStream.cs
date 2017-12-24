@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
@@ -48,14 +47,20 @@ namespace MangaRipper.Plugin.MangaStream
                 .Select(p => $"https://readms.net{p}");
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(pages, new Progress<int>((count) =>
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in pages)
             {
-                var f = (float)count / pages.Count();
+                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var image = selector
+                .Select(pageHtml, "//img[@id='manga-page']")
+                .Attributes["src"];
+
+                images.Add(image);
+                var f = (float)++current / pages.Count();
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
-            }), cancellationToken);
-            var images = selector.SelectMany(pageData, "//img[@id='manga-page']")
-                .Select(n => n.Attributes["src"]);
+            }
             return images.Select(i => $"https:{i}");
         }
 
