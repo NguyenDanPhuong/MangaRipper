@@ -153,16 +153,11 @@ namespace MangaRipper.Core.Controllers
             foreach (var image in images)
             {
                 _source.Token.ThrowIfCancellationRequested();
-                await DownloadImage(image, destination, countImage);
+                await downloader.DownloadToFolder(image, destination, _source.Token);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
             }
-        }
-
-        private async Task DownloadImage(string image, string destination, int imageNum)
-        {
-            var fileName = await downloader.DownloadToFolder(image, destination, _source.Token);
         }
 
         private async Task<IEnumerable<Chapter>> FindChaptersInternal(string mangaPath, IProgress<int> progress)
