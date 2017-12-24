@@ -30,15 +30,10 @@ namespace MangaRipper.Forms
         {
             get
             {
-                return cbUseSeriesFolder.Checked ? SeriesDestination : txtSaveTo.Text;
+                return txtSaveTo.Text;
             }
         }
 
-        private string SeriesDestination
-        {
-            get;
-            set;
-        }
 
         public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
         {
@@ -63,7 +58,6 @@ namespace MangaRipper.Forms
             btnGetChapter.Enabled = true;
             dgvChapter.DataSource = chapters.ToList();
             PrefixLogic();
-            PrepareSpecificDirectory();
         }
 
         private async void btnGetChapter_ClickAsync(object sender, EventArgs e)
@@ -91,7 +85,10 @@ namespace MangaRipper.Forms
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            {
+                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga) : SaveDestination;
+                _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+            }
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
@@ -107,7 +104,10 @@ namespace MangaRipper.Forms
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            {
+                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga) : SaveDestination;
+                _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+            }
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -400,68 +400,6 @@ namespace MangaRipper.Forms
         private void bugReportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
-        }
-
-        /// <summary>
-        /// Formulates a save destination based on the current series and selects it at the current series' save destination if it already exists.
-        /// </summary>
-        private void PrepareSpecificDirectory()
-        {
-            if (dgvChapter.RowCount == 0)
-                return;
-
-            var state = _appConf.LoadCommonSettings();
-
-            string
-                baseSeriesDestination = state.BaseSeriesDestination,
-                series,
-                seriesPath;
-
-            if (!string.IsNullOrWhiteSpace(cbTitleUrl.Text))
-            {
-                Uri seriesUri;
-
-                if (Uri.TryCreate(cbTitleUrl.Text, UriKind.Absolute, out seriesUri))
-                    series = seriesUri.ToString();
-
-                else
-                    series = cbTitleUrl.SelectedItem.ToString();
-            }
-            else
-            {
-                series = cbTitleUrl.Text;
-            }
-
-
-            if (string.IsNullOrWhiteSpace(series))
-            {
-                // TODO Set series-specific directory path to the default value.
-                return;
-            }
-
-            /// If the base series destination hasn't been set, use the 'txtSaveTo.Text' location instead.
-            if (string.IsNullOrEmpty(baseSeriesDestination))
-            {
-                baseSeriesDestination = txtSaveTo.Text;
-            }
-
-            var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
-            series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
-            seriesPath = Path.Combine(baseSeriesDestination, series);
-
-            SeriesDestination = seriesPath;
-
-            FormToolTip.SetToolTip(cbUseSeriesFolder, $"Save chapters to {seriesPath}");
-
-            /* 
-             * Check if the series' directory exists and automatically check 'cbUseSeriesFolder' if it exists. Uncheck
-             * it if it doesn't exist.
-             * 
-             * For the user's convenience, an option could allow saving to the series directory to be opt-out instead of opt-in.
-             * Automatically putting each in its own directory could be troublesome for users who read a lot of one-shot manga.
-            */
-            cbUseSeriesFolder.Checked = Directory.Exists(seriesPath);
-
         }
 
         public void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon)
