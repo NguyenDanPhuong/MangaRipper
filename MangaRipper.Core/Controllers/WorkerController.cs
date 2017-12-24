@@ -65,7 +65,7 @@ namespace MangaRipper.Core.Controllers
                     _source = new CancellationTokenSource();
                     await _sema.WaitAsync();
                     task.IsBusy = true;
-                    await DownloadChapter(task, task.SaveToFolder, progress);
+                    await DownloadChapter(task, progress);
                 }
                 catch (Exception ex)
                 {
@@ -108,7 +108,7 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
-        private async Task DownloadChapter(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
+        private async Task DownloadChapter(DownloadChapterTask task, IProgress<int> progress)
         {
             var chapter = task.Chapter;
             progress.Report(0);
@@ -125,13 +125,11 @@ namespace MangaRipper.Core.Controllers
 
             if (task.Formats.Contains(OutputFormat.Folder))
             {
-                var folderName = chapter.Name;
-                var finalFolder = Path.Combine(mangaLocalPath, folderName);
-                if (!Directory.Exists(finalFolder))
+                if (!Directory.Exists(task.SaveToFolder))
                 {
-                    Directory.CreateDirectory(finalFolder);
+                    Directory.CreateDirectory(task.SaveToFolder);
                 }
-                ExtensionHelper.SuperMove(tempFolder, finalFolder);
+                ExtensionHelper.SuperMove(tempFolder, task.SaveToFolder);
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
@@ -140,7 +138,7 @@ namespace MangaRipper.Core.Controllers
                     Directory.CreateDirectory(task.SaveToFolder);
                 }
 
-                cbz.Create(tempFolder, Path.Combine(task.SaveToFolder, task.Chapter.Name + ".cbz"));
+                cbz.Create(tempFolder, task.SaveToFolder + ".cbz");
             }
 
             progress.Report(100);

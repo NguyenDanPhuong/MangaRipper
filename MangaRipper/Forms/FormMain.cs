@@ -13,6 +13,7 @@ using MangaRipper.Presenters;
 using NLog;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Controllers;
+using MangaRipper.Core.Extensions;
 
 namespace MangaRipper.Forms
 {
@@ -86,7 +87,7 @@ namespace MangaRipper.Forms
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
-                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga) : SaveDestination;
+                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga.RemoveFileNameInvalidChar()) : SaveDestination;
                 _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
             }
         }
@@ -105,7 +106,7 @@ namespace MangaRipper.Forms
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
-                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga) : SaveDestination;
+                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga.RemoveFileNameInvalidChar()) : SaveDestination;
                 _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
             }
         }
