@@ -4,6 +4,7 @@ namespace MangaRipper.Core.Models
 {
     public class Chapter
     {
+        public string Manga { get; set; }
         public string OriginalName { get; }
         public int Prefix { get; set; }
         public string Name => Prefix > 0 ? $"[{Prefix:000}] {OriginalName.RemoveFileNameInvalidChar()}" : OriginalName.RemoveFileNameInvalidChar();

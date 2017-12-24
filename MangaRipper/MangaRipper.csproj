@@ -190,6 +190,10 @@
       <Project>{13EFFE36-DBB8-4573-9260-B601177F66E3}</Project>
       <Name>MangaRipper.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Infrastructure\MangaRipper.Infrastructure.csproj">
+      <Project>{cde86313-3367-4107-8254-4f3420238177}</Project>
+      <Name>MangaRipper.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
