@@ -86,7 +86,6 @@
     <Compile Include="Extensions\ExtensionHelper.cs" />
     <Compile Include="DataTypes\OutputFormat.cs" />
     <Compile Include="Helpers\PackageCbzHelper.cs" />
-    <Compile Include="Helpers\ParserHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SiteInformation.cs" />
     <Compile Include="Controllers\WorkerController.cs" />

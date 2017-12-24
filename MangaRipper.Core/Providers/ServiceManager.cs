@@ -23,15 +23,6 @@ namespace MangaRipper.Core.Providers
         }
 
         /// <summary>
-        /// Get all available services
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<IMangaService> GetMangaServices()
-        {
-            return _services.ToList().AsReadOnly();
-        }
-
-        /// <summary>
         /// Find service base on inputed URL.
         /// </summary>
         /// <param name="link"></param>

@@ -17,13 +17,13 @@ namespace MangaRipper.Plugin.MangaFox
     {
         private readonly ILogger Logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
+        private readonly IXPathSelector selector;
 
-        public MangaFox(ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public MangaFox(ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
             Logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
+            this.selector = selector;
         }
         public SiteInformation GetInformation()
         {
@@ -41,19 +41,17 @@ namespace MangaRipper.Plugin.MangaFox
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
 
-            manga = CheckAndInsertMissingScheme(manga);
-
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\" title=\"(|[^\"]+)\" class=\"tips\">(?<Name>[^<]+)</a>", input, "Name", "Value");
+            var chaps = selector.SelectMany(input, "//*[self::h3 or self::h4]/a")
+                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]));
             progress.Report(100);
 
             // Insert missing URI schemes in each chapter's URI.
             // Provisional solution, the current implementation may not be the best way to go about it.
             chaps = chaps.Select(chap =>
             {
-                var newUri = CheckAndInsertMissingScheme(chap.Url);
-                return new Chapter(chap.OriginalName, newUri);
+                return new Chapter(chap.OriginalName, $"http:{chap.Url}");
             });
 
             return chaps;
@@ -77,7 +75,7 @@ namespace MangaRipper.Plugin.MangaFox
                 }),
                 cancellationToken);
 
-            var images = parser.Parse("<img src=\"(?<Value>[^\"]+)\"[ ]+width=", pageData, "Value");
+            var images = selector.SelectMany(pageData, "//img[contains(@id,'image')]").Select(n=>n.Attributes["src"]);
 
             progress.Report(100);
             return images;
@@ -86,7 +84,8 @@ namespace MangaRipper.Plugin.MangaFox
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            return parser.Parse(@"<option value=""(?<Value>[^""]+)"" (|selected=""selected"")>\d+</option>", input, "Value");
+            return selector.SelectMany(input, "//form[contains(@id,'top_bar')]//select[contains(@class,'m')]/option[@value != '0']")
+                .Select(n => n.Attributes["value"]);
         }
 
         private IEnumerable<string> TransformPagesUrl(string chapterUrl, IEnumerable<string> pages)
@@ -97,35 +96,6 @@ namespace MangaRipper.Plugin.MangaFox
 
                 return value;
             });
-        }
-
-        /// <summary>
-        /// Checks if the URI is missing the HTTP or HTTPS scheme.
-        /// </summary>
-        /// <param name="uri">The URI to check.</param>
-        /// <param name="preferredScheme">The scheme to insert if it is missing one.</param>
-        /// <returns></returns>
-        public string CheckAndInsertMissingScheme(string uri, string preferredScheme = "http")
-        {
-            var missingSchemePattern = "^(?!http[s]:)(?=//)";
-
-            if (System.Text.RegularExpressions.Regex.IsMatch(uri, missingSchemePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-            {
-                // Insert the missing colon if the preferred scheme doesn't end with one.
-                if (!preferredScheme.EndsWith(":"))
-                {
-                    preferredScheme = string.Concat(preferredScheme, ":");
-                }
-
-                // Return the uri with the preferred scheme prefixed.
-                return uri.Insert(0, preferredScheme);
-            }
-            else
-            {
-                // Return the unchanged value.
-                return uri;
-            }
-
         }
     }
 }

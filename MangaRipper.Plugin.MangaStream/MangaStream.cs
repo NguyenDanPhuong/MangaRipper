@@ -17,13 +17,13 @@ namespace MangaRipper.Plugin.MangaStream
     {
         private static ILogger logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
+        private readonly IXPathSelector selector;
 
-        public MangaStream(ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public MangaStream(ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
+            this.selector = selector;
         }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken)
@@ -31,8 +31,8 @@ namespace MangaRipper.Plugin.MangaStream
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            string regEx = "<td><a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a>";
-            var chaps = parser.ParseGroup(regEx, input, "Name", "Value");
+            var chaps = selector.SelectMany(input, "//td/a")
+                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]));
             chaps = chaps.Select(c => new Chapter(c.OriginalName, $"https://readms.net{c.Url}"));
             progress.Report(100);
             return chaps;
@@ -43,9 +43,8 @@ namespace MangaRipper.Plugin.MangaStream
         {
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            string regExPages =
-                "<li><a href=\"(?<Value>/r[^\"]+)\">[^<]+</a>";
-            var pages = parser.Parse(regExPages, input, "Value")
+            var pages = selector.SelectMany(input, "//div[contains(@class,'btn-reader-page')]/ul/li/a")
+                .Select(n => n.Attributes["href"])
                 .Select(p => $"https://readms.net{p}");
 
             // find all images in pages
@@ -55,8 +54,8 @@ namespace MangaRipper.Plugin.MangaStream
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse("<img id=\"manga-page\" src=\"(?<Value>[^\"]+)\"", pageData,
-                "Value");
+            var images = selector.SelectMany(pageData, "//img[@id='manga-page']")
+                .Select(n => n.Attributes["src"]);
             return images.Select(i => $"https:{i}");
         }
 

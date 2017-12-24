@@ -43,7 +43,7 @@ namespace MangaRipper.Test
         public async Task MangaReader_Test()
         {
             string url = "http://www.mangareader.net/naruto";
-            var service = new MangaReader(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var service = new MangaReader(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
             // Test service can find chapters
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -71,7 +71,7 @@ namespace MangaRipper.Test
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
             string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
-            var service = new MangaFox(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var service = new MangaFox(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -190,7 +190,7 @@ namespace MangaRipper.Test
         public async Task MangaStream_Test()
         {
             string url = "https://readms.net/manga/dragon_ball_super";
-            var service = new MangaStream(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger));
+            var service = new MangaStream(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -213,7 +213,7 @@ namespace MangaRipper.Test
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
-            var service = new KissManga(_logger, new Downloader(_logger), new Core.Helpers.ParserHelper(_logger), new JurassicScriptEngine());
+            var service = new KissManga(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter(), new JurassicScriptEngine());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();

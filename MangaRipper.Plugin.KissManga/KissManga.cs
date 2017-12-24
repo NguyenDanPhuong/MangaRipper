@@ -1,4 +1,5 @@
-﻿using MangaRipper.Core.Helpers;
+﻿using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
@@ -18,15 +19,15 @@ namespace MangaRipper.Plugin.KissManga
     {
         private static ILogger _logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
         private IScriptEngine _engine;
+        private readonly IXPathSelector selector;
 
-        public KissManga(ILogger myLogger, Downloader downloader, ParserHelper parser, IScriptEngine engine)
+        public KissManga(ILogger myLogger, Downloader downloader, IXPathSelector selector, IScriptEngine engine)
         {
             _logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
             this._engine = engine;
+            this.selector = selector;
         }
 
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
@@ -34,7 +35,8 @@ namespace MangaRipper.Plugin.KissManga
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<td>\\s+<a\\s+href=\"(?=/Manga/)(?<Value>.[^\"]*)\"\\s+title=\"(?<Name>.[^\"]*)\"", input, "Name", "Value");
+            var chaps = selector.SelectMany(input, "//tr/td/a[@title]")
+                .Select(n => new Chapter(n.InnerHtml.Trim(), n.Attributes["href"]));
             chaps = chaps.Select(c => NameResolver(c.Name, c.Url, new Uri(manga)));
             progress.Report(100);
             return chaps;
@@ -92,7 +94,9 @@ namespace MangaRipper.Plugin.KissManga
 
                 /// As with the script locations, to avoid unnecessary breaking the application, the function name could be captured and invoked 
                 /// in the event it changes.
-                var encryptPages = parser.Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
+                /// 
+
+                var encryptPages = Parse("lstImages.push\\(wrapKA\\(\"(?<Value>.[^\"]*)\"\\)\\)", input, "Value");
 
                 var pages = encryptPages.Select(e =>
                 {
@@ -146,6 +150,25 @@ namespace MangaRipper.Plugin.KissManga
                 name = Regex.Replace(name, "\\s+Read\\s+Online$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             }
             return new Chapter(name, urle.AbsoluteUri);
+        }
+
+        private IEnumerable<string> Parse(string regExp, string input, string groupName)
+        {
+            _logger.Info($"> Parse: {regExp}");
+            var reg = new Regex(regExp, RegexOptions.IgnoreCase);
+            var matches = reg.Matches(input);
+
+            if (matches.Count == 0)
+            {
+                _logger.Error("Cannot parse the below content.");
+                _logger.Error(input);
+                throw new MangaRipperException("Parse content failed! Please check if you can access this content on your browser.");
+            }
+
+            var list = (from Match match in matches select match.Groups[groupName].Value.Trim()).ToList();
+            var result = list.Distinct().ToList();
+            _logger.Info($@"Parse success. There are {result.Count} item(s).");
+            return result;
         }
     }
 }

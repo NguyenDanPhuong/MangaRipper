@@ -17,20 +17,21 @@ namespace MangaRipper.Plugin.MangaReader
     {
         private static ILogger logger;
         private readonly Downloader downloader;
-        private readonly ParserHelper parser;
+        private readonly IXPathSelector selector;
 
-        public MangaReader(ILogger myLogger, Downloader downloader, ParserHelper parser)
+        public MangaReader(ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.parser = parser;
+            this.selector = selector;
         }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = parser.ParseGroup("<a href=\"(?<Value>[^\"]+)\">(?<Name>[^<]+)</a> :", input, "Name", "Value");
+            var chaps = selector.SelectMany(input, "//table[@id='listing']//a")
+                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]));
             // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
             // transform pages link
@@ -43,7 +44,8 @@ namespace MangaRipper.Plugin.MangaReader
         {
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>[^""]+)""(| selected=""selected"")>\d+</option>", input, "Value");
+            var pages = selector.SelectMany(input, "//select[@id='pageMenu']/option")
+                .Select(n => n.Attributes["value"]);
 
             // transform pages link
             pages = pages.Select(p =>
@@ -59,7 +61,7 @@ namespace MangaRipper.Plugin.MangaReader
                 int i = Convert.ToInt32(f * 100);
                 progress.Report(i);
             }), cancellationToken);
-            var images = parser.Parse(@"<img id=""img"" width=""\d+"" height=""\d+"" src=""(?<Value>[^""]+)""", pageData, "Value");
+            var images = selector.SelectMany(pageData, "//img[@id='img']").Select(n => n.Attributes["src"]);
 
             return images;
         }
