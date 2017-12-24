@@ -29,12 +29,18 @@ namespace MangaRipper.Plugin.MangaReader
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var chaps = selector.SelectMany(input, "//table[@id='listing']//a")
-                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]));
+            var title = selector.Select(input, "//h2[@class='aname']").InnerHtml;
+            var chaps = selector
+                .SelectMany(input, "//table[@id='listing']//a")
+                .Select(n =>
+                {
+                    string url = n.Attributes["href"];
+                    var resultUrl = new Uri(new Uri(manga), url).AbsoluteUri;
+                    return new Chapter(n.InnerHtml, resultUrl) { Manga = title };
+                });
             // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
             // transform pages link
-            chaps = chaps.Select(c => new Chapter(c.Name, new Uri(new Uri(manga), c.Url).AbsoluteUri)).ToList();
             progress.Report(100);
             return chaps;
         }

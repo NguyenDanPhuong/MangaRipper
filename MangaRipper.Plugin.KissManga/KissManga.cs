@@ -34,9 +34,16 @@ namespace MangaRipper.Plugin.KissManga
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            var title = selector.Select(input, "//a[@class='bigChar']").InnerHtml;
             var chaps = selector.SelectMany(input, "//tr/td/a[@title]")
-                .Select(n => new Chapter(n.InnerHtml.Trim(), n.Attributes["href"]));
-            chaps = chaps.Select(c => NameResolver(c.Name, c.Url, new Uri(manga)));
+                .Select(n =>
+                {
+                    string name = n.InnerHtml.Trim();
+                    string url = n.Attributes["href"];
+                    var chap = NameResolver(name, url, new Uri(manga));
+                    chap.Manga = title;
+                    return chap;
+                });
             progress.Report(100);
             return chaps;
         }

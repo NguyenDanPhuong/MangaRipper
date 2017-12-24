@@ -82,13 +82,14 @@ namespace MangaRipper.Plugin.Batoto
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            var title = selector.Select(input, "//h1").InnerHtml.Trim();
             var langs = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//div").Select(n => n.Attributes["title"]).ToList();
             var chaps = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//a[@title]")
                 .Select(n =>
                     {
                         string originalName = n.Attributes["title"];
                         originalName = originalName.Remove(originalName.LastIndexOf('|')).Trim();
-                        return new Chapter(originalName, n.Attributes["href"]);
+                        return new Chapter(originalName, n.Attributes["href"]) { Manga = title };
                     }).ToList();
             for (int i = 0; i < langs.Count(); i++)
             {

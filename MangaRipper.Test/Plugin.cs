@@ -49,6 +49,7 @@ namespace MangaRipper.Test
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             // Test chapters are in correct order.
             var chapter = chapters.Last();
+            Assert.AreEqual("Naruto", chapter.Manga);
             Assert.AreEqual("Naruto 1", chapter.Name);
             Assert.AreEqual("http://www.mangareader.net/naruto/1", chapter.Url);
             // Test there're no duplicated chapters.
@@ -75,6 +76,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
+            Assert.AreEqual("Tian Jiang Xian Shu Nan Manga", chapter.Manga);
             Assert.AreEqual("Tian Jiang Xian Shu Nan 1", chapter.Name);
             Assert.AreEqual("http://mangafox.la/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
@@ -95,6 +97,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
+            Assert.AreEqual("The God Of High School", chapter.Manga);
             Assert.AreEqual("The God Of High School 1", chapter.Name);
             Assert.AreEqual("http://www.mangahere.cc/manga/the_god_of_high_school/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
@@ -121,10 +124,10 @@ namespace MangaRipper.Test
             string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
             var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
 
-
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
+            Assert.AreEqual("21st Century Boys", chapter.Manga);
             Assert.AreEqual("Vol.01 Ch.01 Read Online", chapter.Name);
             Assert.AreEqual("https://bato.to/reader#900d11d96d1466f2", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
@@ -194,6 +197,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
+            Assert.AreEqual("Dragon Ball Super", chapter.Manga);
             Assert.AreEqual("001 - The God of Destruction's Prophetic Dream", chapter.Name);
             Assert.AreEqual("https://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
@@ -217,6 +221,7 @@ namespace MangaRipper.Test
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
+            Assert.AreEqual("Onepunch-Man", chapter.Manga);
             Assert.AreEqual("Onepunch-Man 001", chapter.Name);
             Assert.AreEqual("http://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);

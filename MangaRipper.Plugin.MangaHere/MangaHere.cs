@@ -30,11 +30,12 @@ namespace MangaRipper.Plugin.MangaHere
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
             var chaps = selector.SelectMany(input, "//div[contains(@class,'detail_list')]/ul//a")
                 .Select(n => new Chapter(n.InnerHtml.Trim(), n.Attributes["href"]));
             chaps = chaps.Select(c =>
             {
-                return new Chapter(c.OriginalName, $"http:{c.Url}");
+                return new Chapter(c.OriginalName, $"http:{c.Url}") { Manga = title };
             });
             progress.Report(100);
             return chaps;

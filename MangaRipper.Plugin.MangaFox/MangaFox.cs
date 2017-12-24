@@ -42,15 +42,17 @@ namespace MangaRipper.Plugin.MangaFox
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
             var chaps = selector.SelectMany(input, "//*[self::h3 or self::h4]/a")
-                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]));
+                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]) { Manga = title });
             progress.Report(100);
 
             // Insert missing URI schemes in each chapter's URI.
             // Provisional solution, the current implementation may not be the best way to go about it.
             chaps = chaps.Select(chap =>
             {
-                return new Chapter(chap.OriginalName, $"http:{chap.Url}");
+                chap.Url = $"http:{chap.Url}";
+                return chap;
             });
 
             return chaps;
