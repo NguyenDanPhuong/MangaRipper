@@ -45,18 +45,13 @@ namespace MangaRipper.Plugin.MangaHere
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
             var pages = selector
-                .SelectMany(input, "//section[contains(@class,'readpage_top')]//select[contains(@class,'wid60')]/option")
-                .Select(n => n.Attributes["value"]);
-
-            // transform pages link
-            pages = pages.Select(p =>
-            {
-                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
-                return value;
-            }).ToList();
+                .SelectMany(input, "//section[contains(@class,'readpage_top')]//select[contains(@class,'wid60')]/option[not(text()='Featured')]")
+                .Select(n =>
+                {
+                    return new Uri(new Uri(chapter.Url), n.Attributes["value"]).AbsoluteUri;
+                });
 
             // find all images in pages
-
             int current = 0;
             var images = new List<string>();
             foreach (var page in pages)

@@ -27,15 +27,6 @@ namespace MangaRipper.Forms
         private IEnumerable<IMangaService> MangaServices;
         private WorkerController worker;
 
-        private string SaveDestination
-        {
-            get
-            {
-                return txtSaveTo.Text;
-            }
-        }
-
-
         public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
         {
             InitializeComponent();
@@ -87,8 +78,20 @@ namespace MangaRipper.Forms
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
-                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga.RemoveFileNameInvalidChar()) : SaveDestination;
+                var savePath = GetSavePath(item);
                 _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+            }
+        }
+
+        private string GetSavePath(Chapter chapter)
+        {
+            if (cbUseSeriesFolder.Checked)
+            {
+                return Path.Combine(txtSaveTo.Text, chapter.Manga.RemoveFileNameInvalidChar(), chapter.DisplayName.RemoveFileNameInvalidChar());
+            }
+            else
+            {
+                return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
             }
         }
 
@@ -104,10 +107,10 @@ namespace MangaRipper.Forms
             var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter)row.DataBoundItem).ToList();
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
-            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+            foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
-                var savePath = cbUseSeriesFolder.Checked ? Path.Combine(SaveDestination, item.Manga.RemoveFileNameInvalidChar()) : SaveDestination;
-                _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+                var savePath = GetSavePath(chapter);
+                _downloadQueue.Add(new DownloadChapterTask(chapter, savePath, formats));
             }
         }
 
@@ -193,7 +196,7 @@ namespace MangaRipper.Forms
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
         {
-            saveDestinationDirectoryBrowser.SelectedPath = SaveDestination;
+            saveDestinationDirectoryBrowser.SelectedPath = txtSaveTo.Text;
 
             DialogResult dr = saveDestinationDirectoryBrowser.ShowDialog(this);
             if (dr == DialogResult.OK)
@@ -205,13 +208,13 @@ namespace MangaRipper.Forms
 
         private void btnOpenFolder_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(SaveDestination))
+            if (Directory.Exists(txtSaveTo.Text))
             {
-                Process.Start(SaveDestination);
+                Process.Start(txtSaveTo.Text);
             }
             else
             {
-                MessageBox.Show($"Directory \"{SaveDestination}\" doesn't exist.");
+                MessageBox.Show($"Directory \"{txtSaveTo.Text}\" doesn't exist.");
             }
         }
 
@@ -253,7 +256,7 @@ namespace MangaRipper.Forms
                 Logger.Error(ex, ex.Message);
             }
 
-            if (string.IsNullOrWhiteSpace(SaveDestination))
+            if (string.IsNullOrWhiteSpace(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             _downloadQueue = _appConf.LoadDownloadChapterTasks();

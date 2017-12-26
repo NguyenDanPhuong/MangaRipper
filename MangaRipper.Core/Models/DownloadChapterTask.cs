@@ -32,7 +32,7 @@ namespace MangaRipper.Core.Models
         public DownloadChapterTask(Chapter chapter, string saveToFolder, IEnumerable<OutputFormat> formats)
         {
             Chapter = chapter;
-            SaveToFolder = Path.Combine(saveToFolder, chapter.DisplayName.RemoveFileNameInvalidChar());
+            SaveToFolder = saveToFolder;
             Formats = formats;
         }
     }

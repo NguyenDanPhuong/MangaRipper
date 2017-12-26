@@ -63,6 +63,8 @@ namespace MangaRipper
 
             container.RegisterCollection<IMangaService>(pluginAssemblies);
             container.Register<FormMain>();
+
+            container.RegisterDecorator<IXPathSelector, XPathSelectorDecorator>();
             //container.Verify();
         }
     }
