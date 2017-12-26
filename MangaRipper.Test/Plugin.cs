@@ -101,7 +101,7 @@ namespace MangaRipper.Test
             Assert.AreEqual("The God Of High School 1", chapter.DisplayName);
             Assert.AreEqual("http://www.mangahere.cc/manga/the_god_of_high_school/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
-            Assert.AreEqual(56, images.Count());
+            Assert.AreEqual(55, images.Count());
             Assert.IsTrue(images.ToArray()[0].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.01.jpg"));
             Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
             Assert.IsTrue(images.ToArray()[54].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
