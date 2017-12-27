@@ -133,11 +133,6 @@ namespace MangaRipper.Core.Controllers
             }
             if (task.Formats.Contains(OutputFormat.CBZ))
             {
-                if (!Directory.Exists(task.SaveToFolder))
-                {
-                    Directory.CreateDirectory(task.SaveToFolder);
-                }
-
                 cbz.Create(tempFolder, task.SaveToFolder + ".cbz");
             }
 
