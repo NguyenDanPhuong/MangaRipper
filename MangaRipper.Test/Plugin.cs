@@ -89,6 +89,7 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
+        [Ignore]
         [TestMethod]
         public async Task MangaHere_Test()
         {
