@@ -43,7 +43,7 @@ namespace MangaRipper.Plugin.MangaFox
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
-            var chaps = selector.SelectMany(input, "//*[self::h3 or self::h4]/a")
+            var chaps = selector.SelectMany(input, "//*[self::h3 or self::h4]/a[@class='tips']")
                 .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]) { Manga = title });
             progress.Report(100);
 
