@@ -55,6 +55,7 @@ namespace MangaRipper
             container.Register<IConfiguration>(() => new Configuration(configPath));
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IScriptEngine, JurassicScriptEngine>();
+            container.Register<IRetry, Retry>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()

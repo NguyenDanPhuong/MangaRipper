@@ -89,12 +89,11 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
-        [Ignore]
         [TestMethod]
         public async Task MangaHere_Test()
         {
             string url = "http://www.mangahere.cc/manga/the_god_of_high_school/";
-            var service = new MangaHere(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
+            var service = new MangaHere(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter(), new Retry());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();

@@ -75,6 +75,7 @@
     <Compile Include="Interfaces\IXPathSelector.cs" />
     <Compile Include="Interfaces\IScriptEngine.cs" />
     <Compile Include="HtmlAtilityPackAdapter.cs" />
+    <Compile Include="IRetry.cs" />
     <Compile Include="JurassicScriptEngine.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Models\IConfiguration.cs" />
     <Compile Include="Providers\ServiceManager.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
+    <Compile Include="Retry.cs" />
     <Compile Include="Services\Downloader.cs" />
     <Compile Include="Extensions\ExtensionHelper.cs" />
     <Compile Include="DataTypes\OutputFormat.cs" />
