@@ -11,7 +11,6 @@ namespace MangaRipper.Core.Interfaces
     /// </summary>
     public interface IMangaService
     {
-        void Configuration(IEnumerable<KeyValuePair<string, object>> settings);
         /// <summary>
         /// The information of service
         /// </summary>

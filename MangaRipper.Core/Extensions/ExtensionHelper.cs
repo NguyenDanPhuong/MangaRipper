@@ -30,9 +30,17 @@ namespace MangaRipper.Core.Extensions
         public static void CopyFolderAndAllSubItems(DirectoryInfo source, DirectoryInfo destination)
         {
             foreach (DirectoryInfo dir in source.GetDirectories())
+            {
                 CopyFolderAndAllSubItems(dir, destination.CreateSubdirectory(dir.Name));
+            }
             foreach (FileInfo file in source.GetFiles())
-                file.CopyTo(Path.Combine(destination.FullName, file.Name));
+            {
+                string destFileName = Path.Combine(destination.FullName, file.Name);
+                if (!File.Exists(destFileName))
+                {
+                    file.CopyTo(destFileName);
+                }
+            }
         }
 
         /// <summary>

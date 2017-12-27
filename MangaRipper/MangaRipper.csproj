@@ -77,13 +77,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.8\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Octokit, Version=0.24.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Octokit.0.24.0\lib\net45\Octokit.dll</HintPath>
+    <Reference Include="Octokit, Version=0.28.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.28.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -113,6 +116,7 @@
     <Compile Include="Helpers\ApplicationConfiguration.cs" />
     <Compile Include="Helpers\CommonSettings.cs" />
     <Compile Include="Helpers\UpdateNotification.cs" />
+    <Compile Include="Infrastructure\NLogLogger.cs" />
     <Compile Include="Presenters\IMainView.cs" />
     <Compile Include="Presenters\MainViewPresenter.cs" />
     <Compile Include="Program.cs" />
@@ -185,6 +189,10 @@
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
       <Project>{13EFFE36-DBB8-4573-9260-B601177F66E3}</Project>
       <Name>MangaRipper.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Infrastructure\MangaRipper.Infrastructure.csproj">
+      <Project>{cde86313-3367-4107-8254-4f3420238177}</Project>
+      <Name>MangaRipper.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Providers;
 using MangaRipper.Helpers;
 using MangaRipper.Presenters;
 using NLog;
+using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Controllers;
+using MangaRipper.Core.Extensions;
 
 namespace MangaRipper.Forms
 {
@@ -22,25 +24,15 @@ namespace MangaRipper.Forms
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
+        private IEnumerable<IMangaService> MangaServices;
+        private WorkerController worker;
 
-        private string SaveDestination
-        {
-            get
-            {
-                return cbUseSeriesFolder.Checked ? SeriesDestination : txtSaveTo.Text;
-            }
-        }
-
-        private string SeriesDestination
-        {
-            get;
-            set;
-        }
-
-        public FormMain()
+        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
         {
             InitializeComponent();
-            Presenter = new MainViewPresenter(this);
+            MangaServices = mangaServices;
+            worker = wc;
+            Presenter = new MainViewPresenter(this, wc);
         }
 
         public void SetChaptersProgress(string progress)
@@ -58,7 +50,6 @@ namespace MangaRipper.Forms
             btnGetChapter.Enabled = true;
             dgvChapter.DataSource = chapters.ToList();
             PrefixLogic();
-            PrepareSpecificDirectory();
         }
 
         private async void btnGetChapter_ClickAsync(object sender, EventArgs e)
@@ -86,7 +77,22 @@ namespace MangaRipper.Forms
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            {
+                var savePath = GetSavePath(item);
+                _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+            }
+        }
+
+        private string GetSavePath(Chapter chapter)
+        {
+            if (cbUseSeriesFolder.Checked)
+            {
+                return Path.Combine(txtSaveTo.Text, chapter.Manga.RemoveFileNameInvalidChar(), chapter.DisplayName.RemoveFileNameInvalidChar());
+            }
+            else
+            {
+                return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
+            }
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
@@ -101,8 +107,11 @@ namespace MangaRipper.Forms
             var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter)row.DataBoundItem).ToList();
             items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
             items.Reverse();
-            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
-                _downloadQueue.Add(new DownloadChapterTask(item, SaveDestination, formats));
+            foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+            {
+                var savePath = GetSavePath(chapter);
+                _downloadQueue.Add(new DownloadChapterTask(chapter, savePath, formats));
+            }
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -152,7 +161,6 @@ namespace MangaRipper.Forms
             while (_downloadQueue.Count > 0)
             {
                 var chapter = _downloadQueue.First();
-                var worker = Framework.GetWorker();
 
                 await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
                 {
@@ -183,12 +191,12 @@ namespace MangaRipper.Forms
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            Framework.GetWorker().Cancel();
+            worker.Cancel();
         }
 
         private void btnChangeSaveTo_Click(object sender, EventArgs e)
         {
-            saveDestinationDirectoryBrowser.SelectedPath = SaveDestination;
+            saveDestinationDirectoryBrowser.SelectedPath = txtSaveTo.Text;
 
             DialogResult dr = saveDestinationDirectoryBrowser.ShowDialog(this);
             if (dr == DialogResult.OK)
@@ -200,13 +208,13 @@ namespace MangaRipper.Forms
 
         private void btnOpenFolder_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(SaveDestination))
+            if (Directory.Exists(txtSaveTo.Text))
             {
-                Process.Start(SaveDestination);
+                Process.Start(txtSaveTo.Text);
             }
             else
             {
-                MessageBox.Show($"Directory \"{SaveDestination}\" doesn't exist.");
+                MessageBox.Show($"Directory \"{txtSaveTo.Text}\" doesn't exist.");
             }
         }
 
@@ -237,7 +245,7 @@ namespace MangaRipper.Forms
 
             try
             {
-                foreach (var service in Framework.GetMangaServices())
+                foreach (var service in MangaServices)
                 {
                     var infor = service.GetInformation();
                     dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
@@ -248,7 +256,7 @@ namespace MangaRipper.Forms
                 Logger.Error(ex, ex.Message);
             }
 
-            if (string.IsNullOrWhiteSpace(SaveDestination))
+            if (string.IsNullOrWhiteSpace(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             _downloadQueue = _appConf.LoadDownloadChapterTasks();
@@ -398,71 +406,20 @@ namespace MangaRipper.Forms
             Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/wiki/Bug-Report");
         }
 
-        /// <summary>
-        /// Formulates a save destination based on the current series and selects it at the current series' save destination if it already exists.
-        /// </summary>
-        private void PrepareSpecificDirectory()
-        {
-            if (dgvChapter.RowCount == 0)
-                return;
-
-            var state = _appConf.LoadCommonSettings();
-
-            string
-                baseSeriesDestination = state.BaseSeriesDestination,
-                series,
-                seriesPath;
-
-            if (!string.IsNullOrWhiteSpace(cbTitleUrl.Text))
-            {
-                Uri seriesUri;
-
-                if (Uri.TryCreate(cbTitleUrl.Text, UriKind.Absolute, out seriesUri))
-                    series = seriesUri.ToString();
-
-                else
-                    series = cbTitleUrl.SelectedItem.ToString();
-            }
-            else
-            {
-                series = cbTitleUrl.Text;
-            }
-
-
-            if (string.IsNullOrWhiteSpace(series))
-            {
-                // TODO Set series-specific directory path to the default value.
-                return;
-            }
-
-            /// If the base series destination hasn't been set, use the 'txtSaveTo.Text' location instead.
-            if (string.IsNullOrEmpty(baseSeriesDestination))
-            {
-                baseSeriesDestination = txtSaveTo.Text;
-            }
-
-            var item = (Chapter)dgvChapter.Rows[0].DataBoundItem;
-            series = Core.Extensions.ExtensionHelper.RemoveFileNameInvalidChar(item.Name.Substring(0, item.Name.LastIndexOf(" ")).Trim());
-            seriesPath = Path.Combine(baseSeriesDestination, series);
-
-            SeriesDestination = seriesPath;
-
-            FormToolTip.SetToolTip(cbUseSeriesFolder, $"Save chapters to {seriesPath}");
-
-            /* 
-             * Check if the series' directory exists and automatically check 'cbUseSeriesFolder' if it exists. Uncheck
-             * it if it doesn't exist.
-             * 
-             * For the user's convenience, an option could allow saving to the series directory to be opt-out instead of opt-in.
-             * Automatically putting each in its own directory could be troublesome for users who read a lot of one-shot manga.
-            */
-            cbUseSeriesFolder.Checked = Directory.Exists(seriesPath);
-
-        }
-
         public void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             MessageBox.Show(text, caption, buttons, icon);
+        }
+
+        public void EnableTheButtonsAfterError()
+        {
+            btnGetChapter.Enabled = true;
+            btnDownload.Enabled = true;
+        }
+
+        private void contributorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/graphs/contributors");
         }
     }
 }

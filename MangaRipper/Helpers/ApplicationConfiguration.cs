@@ -50,6 +50,10 @@ namespace MangaRipper.Helpers
 
         public void SaveDownloadChapterTasks(BindingList<DownloadChapterTask> tasks)
         {
+            foreach (var task in tasks)
+            {
+                task.IsBusy = false;
+            }
             SaveObject(tasks, DownloadChapterTasksFile);
         }
 
