@@ -1,8 +1,6 @@
-﻿using MangaRipper.Core.Helpers;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,115 +15,124 @@ namespace MangaRipper.Plugin.Batoto
     /// <summary>
     /// Support find chapters, images from Batoto
     /// </summary>
-    public class Batoto : MangaService
+    public class Batoto : IMangaService
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private ILogger Logger;
+        private readonly Downloader downloader;
+        private readonly IXPathSelector selector;
         private string _username = "gufrohepra";
         private string _password = "123";
-        private string _languagesRegEx;
+        private List<string> selectedLanguages = new List<string>();
 
-        public override void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        public Batoto(IConfiguration config, ILogger myLogger, Downloader downloader, IXPathSelector selector)
         {
-            var settingCollection = settings.ToArray();
-            if (settingCollection.Any(i => i.Key.Equals("Username")))
+            Logger = myLogger;
+            this.downloader = downloader;
+            this.selector = selector;
+            if (config == null)
             {
-                var user = settingCollection.First(i => i.Key.Equals("Username")).Value;
+                return;
+            }
+            Configuration(config.FindConfigByPrefix("Plugin.Batoto"));
+        }
+
+        private void Configuration(IEnumerable<KeyValuePair<string, object>> settings)
+        {
+            // TODO FIX THIS
+            var settingCollection = settings.ToArray();
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Username")))
+            {
+                var user = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Username")).Value;
                 Logger.Info($@"Current Username: {_username}. New Username: {user}");
                 _username = user as string;
             }
 
-            if (settingCollection.Any(i => i.Key.Equals("Password")))
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Password")))
             {
-                var pass = settingCollection.First(i => i.Key.Equals("Password")).Value;
+                var pass = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Password")).Value;
                 Logger.Info($@"Current Password: {_password}. New Password: {pass}");
                 _password = pass as string;
             }
 
-            if (settingCollection.Any(i => i.Key.Equals("Languages")))
+            if (settingCollection.Any(i => i.Key.Equals("Plugin.Batoto.Languages")))
             {
-                var languages = settingCollection.First(i => i.Key.Equals("Languages")).Value as string;
+                var languages = settingCollection.First(i => i.Key.Equals("Plugin.Batoto.Languages")).Value as string;
                 Logger.Info($@"Only the follow languages will be selected: {languages}");
-                // For test purpose
-                if (!string.IsNullOrEmpty(languages))
-                {
-                    var languagesRegEx = languages.Replace(" ", String.Empty).Replace(",", "|");                
-                    _languagesRegEx = "<tr class=\"\\w+ lang_(" + languagesRegEx + ") \\w+\"( style=\"display:none;\")?>\\s*<td style=\"[^\"]+\">\\s*";
-                }
-                else
-                {
-                    _languagesRegEx = null;
-                }
+                selectedLanguages = languages.Split(new char[] { ',', '|' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim()).ToList();
             }
         }
 
-        public override SiteInformation GetInformation()
+        public SiteInformation GetInformation()
         {
             return new SiteInformation(nameof(Batoto), "http://bato.to", "Multiple Languages");
         }
 
-        public override bool Of(string link)
+        public bool Of(string link)
         {
             var uri = new Uri(link);
             return uri.Host.Equals("bato.to");
         }
 
-        public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader
-            {
-                Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
-            };
-            var parser = new ParserHelper();
+            downloader.Cookies = LoginBatoto(_username, _password);
+            downloader.Referrer = "http://bato.to/reader";
 
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            
-            var allLanguagesRegEx = "<a href=\"(?<Value>https://bato.to/reader#[^\"]+)\" title=\"(?<Name>[^|]+)";
-            // Choose only specific languages if it set so in config
-            if (!string.IsNullOrEmpty(_languagesRegEx))
+            var title = selector.Select(input, "//h1").InnerHtml.Trim();
+            var langs = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//div").Select(n => n.Attributes["title"]).ToList();
+            var chaps = selector.SelectMany(input, "//tr[contains(@class,'chapter_row')]//a[@title]")
+                .Select(n =>
+                    {
+                        string originalName = n.Attributes["title"];
+                        originalName = originalName.Remove(originalName.LastIndexOf('|')).Trim();
+                        return new Chapter(originalName, n.Attributes["href"]) { Manga = title };
+                    }).ToList();
+            for (int i = 0; i < langs.Count(); i++)
             {
-                allLanguagesRegEx = _languagesRegEx + allLanguagesRegEx;
+                chaps[i].Language = langs[i];
             }
-            var chaps = parser.ParseGroup(allLanguagesRegEx, input, "Name", "Value");
+            chaps = chaps.GroupBy(c => c.Url).Select(g => g.First()).ToList();
+            if (selectedLanguages.Count > 0)
+            {
+                chaps = chaps.Where(c => selectedLanguages.Contains(c.Language)).ToList();
+            }
             progress.Report(100);
             return chaps;
         }
-        
-        public override async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+
+        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var downloader = new Downloader
-            {
-                Cookies = LoginBatoto(_username, _password),
-                Referrer = "http://bato.to/reader"
-            };
-            var parser = new ParserHelper();
+            downloader.Cookies = LoginBatoto(_username, _password);
+            downloader.Referrer = "http://bato.to/reader";
 
             // find all pages in a chapter
             var chapterUrl = TransformChapterUrl(chapter.Url);
             var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            var pages = parser.Parse(@"<option value=""(?<Value>http://bato.to/reader#[^""]+)""[^>]+>page", input, "Value");
-
+            var pages = selector.SelectMany(input, "//select[@name='page_select']/option").Select(n => n.Attributes["value"]);
             // transform pages link
             var transformedPages = pages.Select(TransformChapterUrl).ToList();
 
             // find all images in pages
-            var pageData = await downloader.DownloadStringAsync(
-                transformedPages,
-                new Progress<int>((count) =>
-                {
-                    var f = (float)count / transformedPages.Count;
-                    var i = Convert.ToInt32(f * 100);
-                    progress.Report(i);
-                }),
-                cancellationToken);
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in transformedPages)
+            {
+                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var image = selector
+                .Select(pageHtml, "//img[@id='comic_page']").Attributes["src"];
 
-            var images = parser.Parse("img src=\"(?<Value>[^\"]+)\" style=\"z-index: 1003", pageData, "Value");
-
+                images.Add(image);
+                var f = (float)++current / transformedPages.Count();
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }
             progress.Report(100);
-            return images;
+            return images.Distinct();
         }
 
         private CookieCollection LoginBatoto(string user, string password)

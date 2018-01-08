@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper", "MangaRipper\MangaRipper.csproj", "{E4C5D602-ED1E-4C04-B845-74EC5A58530D}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA38E249-11BB-4145-A06C-F51D281497F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaStream", "MangaRipper.Plugin.MangaStream\MangaRipper.Plugin.MangaStream.csproj", "{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Infrastructure", "MangaRipper.Infrastructure\MangaRipper.Infrastructure.csproj", "{CDE86313-3367-4107-8254-4F3420238177}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +139,18 @@ Global
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|x86.ActiveCfg = Release|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Release|x86.Build.0 = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDE86313-3367-4107-8254-4F3420238177}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,13 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jurassic.2.2.1\lib\net35\Jurassic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.8\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -50,7 +43,6 @@
   <ItemGroup>
     <Compile Include="KissManga.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="KissMangaTextDecryption.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -62,11 +54,6 @@
       <Project>{13effe36-dbb8-4573-9260-b601177f66e3}</Project>
       <Name>MangaRipper.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -81,8 +68,7 @@
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(SolutionDir)MangaRipper\$(OutDir)Plugins\" mkdir "$(SolutionDir)MangaRipper\$(OutDir)Plugins\"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).dll"
-copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"
-copy /Y "$(TargetDir)Jurassic.dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\Jurassic.dll"</PostBuildEvent>
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
