@@ -75,7 +75,7 @@
     <Compile Include="Interfaces\IXPathSelector.cs" />
     <Compile Include="Interfaces\IScriptEngine.cs" />
     <Compile Include="HtmlAtilityPackAdapter.cs" />
-    <Compile Include="IRetry.cs" />
+    <Compile Include="Interfaces\IRetry.cs" />
     <Compile Include="JurassicScriptEngine.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SiteInformation.cs" />
     <Compile Include="Controllers\WorkerController.cs" />
+    <Compile Include="Interfaces\IDownloader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

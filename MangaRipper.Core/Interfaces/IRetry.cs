@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Interfaces
 {
     public interface IRetry
     {

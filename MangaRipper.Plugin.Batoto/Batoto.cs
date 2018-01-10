@@ -1,6 +1,5 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,13 +17,13 @@ namespace MangaRipper.Plugin.Batoto
     public class Batoto : IMangaService
     {
         private ILogger Logger;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
         private string _username = "gufrohepra";
         private string _password = "123";
         private List<string> selectedLanguages = new List<string>();
 
-        public Batoto(IConfiguration config, ILogger myLogger, Downloader downloader, IXPathSelector selector)
+        public Batoto(IConfiguration config, ILogger myLogger, IDownloader downloader, IXPathSelector selector)
         {
             Logger = myLogger;
             this.downloader = downloader;

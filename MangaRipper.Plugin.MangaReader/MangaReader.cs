@@ -1,6 +1,5 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +14,10 @@ namespace MangaRipper.Plugin.MangaReader
     public class MangaReader : IMangaService
     {
         private static ILogger logger;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public MangaReader(ILogger myLogger, Downloader downloader, IXPathSelector selector)
+        public MangaReader(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;

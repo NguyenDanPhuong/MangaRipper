@@ -1,7 +1,6 @@
 ﻿using MangaRipper.Core.CustomException;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +16,11 @@ namespace MangaRipper.Plugin.KissManga
     public class KissManga : IMangaService
     {
         private static ILogger _logger;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
         private IScriptEngine _engine;
         private readonly IXPathSelector selector;
 
-        public KissManga(ILogger myLogger, Downloader downloader, IXPathSelector selector, IScriptEngine engine)
+        public KissManga(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IScriptEngine engine)
         {
             _logger = myLogger;
             this.downloader = downloader;
