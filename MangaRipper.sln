@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper", "MangaRipper\MangaRipper.csproj", "{E4C5D602-ED1E-4C04-B845-74EC5A58530D}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Test", "MangaRipper.Test\MangaRipper.Test.csproj", "{CF6D034E-8BFD-4799-AEFD-2589F58D1C1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaFox", "MangaRipper.Plugin.MangaFox\MangaRipper.Plugin.MangaFox.csproj", "{F5D529B4-CBB6-46E2-9D32-25CEF8365318}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.Batoto", "MangaRipper.Plugin.Batoto\MangaRipper.Plugin.Batoto.csproj", "{0DA63C57-4A0F-497E-9322-935AF18506B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaHere", "MangaRipper.Plugin.MangaHere\MangaRipper.Plugin.MangaHere.csproj", "{B7F65DA6-A435-46F8-8867-778A48FAB8CF}"
 EndProject
@@ -79,18 +77,6 @@ Global
 		{F5D529B4-CBB6-46E2-9D32-25CEF8365318}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F5D529B4-CBB6-46E2-9D32-25CEF8365318}.Release|x86.ActiveCfg = Release|Any CPU
 		{F5D529B4-CBB6-46E2-9D32-25CEF8365318}.Release|x86.Build.0 = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Debug|x86.Build.0 = Debug|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|x86.ActiveCfg = Release|Any CPU
-		{0DA63C57-4A0F-497E-9322-935AF18506B1}.Release|x86.Build.0 = Release|Any CPU
 		{B7F65DA6-A435-46F8-8867-778A48FAB8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7F65DA6-A435-46F8-8867-778A48FAB8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F65DA6-A435-46F8-8867-778A48FAB8CF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -157,7 +143,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5D529B4-CBB6-46E2-9D32-25CEF8365318} = {AA38E249-11BB-4145-A06C-F51D281497F5}
-		{0DA63C57-4A0F-497E-9322-935AF18506B1} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{B7F65DA6-A435-46F8-8867-778A48FAB8CF} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{FE632CBC-EBBB-4509-B760-8CA031F87160} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01} = {AA38E249-11BB-4145-A06C-F51D281497F5}

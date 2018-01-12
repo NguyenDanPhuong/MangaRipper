@@ -11,7 +11,6 @@ This software helps you download manga (Japanese Comic) from several websites fo
 - KissManga
 - MangaFox
 - MangaHere
-- Batoto
 - MangaReader
 - MangaShare
 - MangaStream
