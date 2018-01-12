@@ -3,17 +3,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
-using MangaRipper.Core.Services;
+using MangaRipper.Core.Interfaces;
 using System.Collections.Generic;
 using MangaRipper.Plugin.MangaStream;
 using MangaRipper.Plugin.KissManga;
 using MangaRipper.Plugin.MangaHere;
 using MangaRipper.Plugin.MangaFox;
 using MangaRipper.Plugin.MangaReader;
-using MangaRipper.Plugin.Batoto;
 using Moq;
 using MangaRipper.Core;
-using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 
 namespace MangaRipper.Test
@@ -30,7 +28,7 @@ namespace MangaRipper.Test
         {
             _source = new CancellationTokenSource();
             _logger = new Mock<ILogger>().Object;
-            downloader = new Downloader(_logger);
+            downloader = new Downloader();
         }
 
         [TestCleanup]
@@ -43,7 +41,7 @@ namespace MangaRipper.Test
         public async Task MangaReader_Test()
         {
             string url = "http://www.mangareader.net/naruto";
-            var service = new MangaReader(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
+            var service = new MangaReader(_logger, new Downloader(), new HtmlAtilityPackAdapter());
             // Test service can find chapters
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
@@ -72,7 +70,7 @@ namespace MangaRipper.Test
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
             string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
-            var service = new MangaFox(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
+            var service = new MangaFox(_logger, new Downloader(), new HtmlAtilityPackAdapter(), new Retry());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -93,7 +91,7 @@ namespace MangaRipper.Test
         public async Task MangaHere_Test()
         {
             string url = "http://www.mangahere.cc/manga/the_god_of_high_school/";
-            var service = new MangaHere(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter(), new Retry());
+            var service = new MangaHere(_logger, new Downloader(), new HtmlAtilityPackAdapter(), new Retry());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -110,90 +108,11 @@ namespace MangaRipper.Test
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
 
-        #region Batoto
-
-        [TestMethod]
-        public async Task Batoto_Test()
-        {
-            var configMock = new Mock<IConfiguration>();
-            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
-                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "") });
-
-            string url = "http://bato.to/comic/_/comics/21st-century-boys-r1591";
-            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
-
-            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
-            var chapter = chapters.Last();
-            Assert.AreEqual("21st Century Boys", chapter.Manga);
-            Assert.AreEqual("Vol.01 Ch.01 Read Online", chapter.DisplayName);
-            Assert.AreEqual("https://bato.to/reader#900d11d96d1466f2", chapter.Url);
-            var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
-            Assert.AreEqual(31, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000002.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("http://img.bato.to/comics/2014/10/08/2/read54357eb5e1ca9/img000003.jpg"));
-
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
-            Assert.IsNotNull(imageString, "Cannot download image!");
-        }
-
-        [TestMethod]
-        public async Task Batoto_AllLanguages_Test()
-        {
-            var configMock = new Mock<IConfiguration>();
-            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
-                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "") });
-
-            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
-
-            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.AreEqual(chapters.Count(), 82);
-        }
-
-        [TestMethod]
-        public async Task Batoto_EnglishLanguages_Test()
-        {
-
-            var configMock = new Mock<IConfiguration>();
-            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
-                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "English") });
-            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
-
-            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.AreEqual(32, chapters.Count());
-        }
-
-        [TestMethod]
-        public async Task Batoto_GermanEnglishLanguages_Test()
-        {
-            var configMock = new Mock<IConfiguration>();
-            configMock.Setup(c => c.FindConfigByPrefix(It.IsAny<string>())).Returns(new[] {
-                new KeyValuePair<string, object>("Plugin.Batoto.Username", "gufrohepra"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Password", "123"),
-                new KeyValuePair<string, object>("Plugin.Batoto.Languages", "German, English") });
-            string url = "https://bato.to/comic/_/comics/bitter-virgin-r110";
-            var service = new Batoto(configMock.Object, _logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
-
-            var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.AreEqual(32 + 32, chapters.Count());
-        }
-
-        #endregion
-
         [TestMethod]
         public async Task MangaStream_Test()
         {
             string url = "https://readms.net/manga/dragon_ball_super";
-            var service = new MangaStream(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter());
+            var service = new MangaStream(_logger, new Downloader(), new HtmlAtilityPackAdapter());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
@@ -217,7 +136,7 @@ namespace MangaRipper.Test
         public async Task KissManga_Test()
         {
             string url = "http://kissmanga.com/Manga/Onepunch-Man";
-            var service = new KissManga(_logger, new Downloader(_logger), new HtmlAtilityPackAdapter(), new JurassicScriptEngine());
+            var service = new KissManga(_logger, new Downloader(), new HtmlAtilityPackAdapter(), new JurassicScriptEngine());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();

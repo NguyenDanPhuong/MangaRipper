@@ -1,5 +1,4 @@
 ﻿using CloudFlareUtilities;
-using MangaRipper.Core.Interfaces;
 using System;
 using System.IO;
 using System.Net;
@@ -7,23 +6,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Services
+namespace MangaRipper.Core.Interfaces
 {
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class Downloader
+    public class Downloader : IDownloader
     {
-        private readonly ILogger logger;
-
         public CookieCollection Cookies { get; set; }
         public string Referrer { get; set; }
-
-
-        public Downloader(ILogger logger)
-        {
-            this.logger = logger;
-        }
 
         /// <summary>
         /// Download single web page to string.
@@ -32,7 +23,6 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
-            logger.Info($"> DownloadStringAsync: {url}");
             return await DownloadStringAsyncInternal(url, token);
         }
 

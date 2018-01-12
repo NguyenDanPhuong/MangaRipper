@@ -2,7 +2,7 @@
 using MangaRipper.Core.Helpers;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
-using MangaRipper.Core.Services;
+using MangaRipper.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Extensions;
-using MangaRipper.Core.Interfaces;
 
 namespace MangaRipper.Core.Controllers
 {
@@ -26,11 +25,11 @@ namespace MangaRipper.Core.Controllers
         readonly SemaphoreSlim _sema;
         private readonly ILogger logger;
         private readonly PackageCbzHelper cbz;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController(ServiceManager sm, ILogger logger, PackageCbzHelper cbz, Downloader downloader)
+        public WorkerController(ServiceManager sm, ILogger logger, PackageCbzHelper cbz, IDownloader downloader)
         {
             this.logger = logger;
             logger.Info("> Worker()");

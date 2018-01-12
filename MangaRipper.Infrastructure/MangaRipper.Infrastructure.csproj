@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="XPathSelectorDecorator.cs" />
+    <Compile Include="DownloadLogging.cs" />
+    <Compile Include="XPathSelectorLogging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

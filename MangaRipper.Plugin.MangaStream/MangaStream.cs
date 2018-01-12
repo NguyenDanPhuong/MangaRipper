@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Services;
 
 namespace MangaRipper.Plugin.MangaStream
 {
@@ -15,10 +14,10 @@ namespace MangaRipper.Plugin.MangaStream
     public class MangaStream : IMangaService
     {
         private static ILogger logger;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public MangaStream(ILogger myLogger, Downloader downloader, IXPathSelector selector)
+        public MangaStream(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;

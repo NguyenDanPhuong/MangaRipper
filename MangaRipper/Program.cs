@@ -53,6 +53,7 @@ namespace MangaRipper
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
             container.Register<IConfiguration>(() => new Configuration(configPath));
+            container.Register<IDownloader, Downloader>();
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IScriptEngine, JurassicScriptEngine>();
             container.Register<IRetry, Retry>();
@@ -65,7 +66,8 @@ namespace MangaRipper
             container.RegisterCollection<IMangaService>(pluginAssemblies);
             container.Register<FormMain>();
 
-            container.RegisterDecorator<IXPathSelector, XPathSelectorDecorator>();
+            container.RegisterDecorator<IXPathSelector, XPathSelectorLogging>();
+            container.RegisterDecorator<IDownloader, DownloadLogging>();
             //container.Verify();
         }
     }

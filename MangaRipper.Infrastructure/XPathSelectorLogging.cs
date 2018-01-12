@@ -4,12 +4,12 @@ using MangaRipper.Core.Interfaces;
 
 namespace MangaRipper.Infrastructure
 {
-    public class XPathSelectorDecorator : IXPathSelector
+    public class XPathSelectorLogging : IXPathSelector
     {
         private readonly IXPathSelector decoratee;
         private readonly ILogger logger;
 
-        public XPathSelectorDecorator(IXPathSelector decoratee, ILogger logger)
+        public XPathSelectorLogging(IXPathSelector decoratee, ILogger logger)
         {
             this.decoratee = decoratee;
             this.logger = logger;
