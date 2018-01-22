@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using MangaRipper.Core.Interfaces;
-using System.Collections.Generic;
 using MangaRipper.Plugin.MangaStream;
 using MangaRipper.Plugin.KissManga;
 using MangaRipper.Plugin.MangaHere;
@@ -12,7 +11,6 @@ using MangaRipper.Plugin.MangaFox;
 using MangaRipper.Plugin.MangaReader;
 using Moq;
 using MangaRipper.Core;
-using MangaRipper.Core.Models;
 
 namespace MangaRipper.Test
 {

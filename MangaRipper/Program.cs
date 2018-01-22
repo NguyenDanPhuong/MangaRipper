@@ -10,6 +10,7 @@ using System.Reflection;
 using MangaRipper.Core.Models;
 using MangaRipper.Core;
 using MangaRipper.Infrastructure;
+using MangaRipper.Core.Outputers;
 
 namespace MangaRipper
 {
@@ -50,6 +51,9 @@ namespace MangaRipper
                Lifestyle.Transient,
                c => true
                );
+
+
+            container.Register<IOutputFactory, OutputFactory>();
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
             container.Register<IConfiguration>(() => new Configuration(configPath));
