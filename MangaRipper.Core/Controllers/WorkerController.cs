@@ -17,7 +17,7 @@ namespace MangaRipper.Core.Controllers
     public class WorkerController
     {
 
-        public ServiceManager serviceManager { get; }
+        private ServiceManager serviceManager { get; }
 
         CancellationTokenSource cancelSource;
         readonly SemaphoreSlim semaphore;
