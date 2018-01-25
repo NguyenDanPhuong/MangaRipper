@@ -88,20 +88,19 @@ namespace MangaRipper.Test
         [TestMethod]
         public async Task MangaHere_Test()
         {
-            string url = "http://www.mangahere.cc/manga/the_god_of_high_school/";
+            string url = "http://www.mangahere.cc/manga/deathtopia/";
             var service = new MangaHere(_logger, new Downloader(), new HtmlAtilityPackAdapter(), new Retry());
             var chapters = await service.FindChapters(url, new Progress<int>(), _source.Token);
-            Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
+            Assert.AreEqual(66, chapters.Count(), "Cannot find chapters.");
             var chapter = chapters.Last();
-            Assert.AreEqual("The God Of High School", chapter.Manga);
-            Assert.AreEqual("The God Of High School 1", chapter.DisplayName);
-            Assert.AreEqual("http://www.mangahere.cc/manga/the_god_of_high_school/c001/", chapter.Url);
+            Assert.AreEqual("Deathtopia", chapter.Manga);
+            Assert.AreEqual("Deathtopia 1", chapter.DisplayName);
+            Assert.AreEqual("http://www.mangahere.cc/manga/deathtopia/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), _source.Token);
-            Assert.AreEqual(55, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.01.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.02.jpg"));
-            Assert.IsTrue(images.ToArray()[54].StartsWith("https://mhcdn.secure.footprint.net/store/manga/9275/001.0/compressed/m001.55.jpg"));
-
+            Assert.AreEqual(59, images.Count());
+            Assert.IsTrue(images.ToArray()[0].StartsWith("https://mhcdn.secure.footprint.net/store/manga/14771/001.0/compressed/uimg001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("https://mhcdn.secure.footprint.net/store/manga/14771/001.0/compressed/uimg002.jpg"));
+            Assert.IsTrue(images.ToArray()[58].StartsWith("https://mhcdn.secure.footprint.net/store/manga/14771/001.0/compressed/uimg059.jpg"));
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], _source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
         }
