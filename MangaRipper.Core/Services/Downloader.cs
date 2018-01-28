@@ -47,7 +47,16 @@ namespace MangaRipper.Core.Interfaces
             var uri = new Uri(url);
             var result = Path.GetFileName(uri.LocalPath);
             if (!result.Contains("."))
-                result = url.Substring(url.LastIndexOf("/")+1).Trim('\r', ' ');
+            {
+                var urlParameter = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("url");
+                if (!string.IsNullOrWhiteSpace(urlParameter))
+                {
+                    uri = new Uri(urlParameter);
+                    result = Path.GetFileName(uri.LocalPath);
+                }
+                else
+                    result = url.Substring(url.LastIndexOf("/") + 1).Trim('\r', ' ');
+            }
 
             System.IO.FileInfo fi = null;
             try
