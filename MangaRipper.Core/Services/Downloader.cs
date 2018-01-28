@@ -23,7 +23,7 @@ namespace MangaRipper.Core.Interfaces
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
-            return await DownloadStringAsyncInternal(url, token);
+            return await DownloadStringAsyncInternal(url, token); 
         }
 
         public async Task<string> DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
