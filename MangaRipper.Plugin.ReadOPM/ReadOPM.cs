@@ -29,22 +29,20 @@ namespace MangaRipper.Plugin.ReadOPM
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//h1").InnerHtml;
             var chaps = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a")
                 .Select(n =>
                 {
                     string url = n.Attributes["href"];
-                    string name = null;//selector.Select(n.InnerHtml, "//span[contains(@class, 'chapter__no')]").InnerHtml;
-                    return new Chapter(name, url) { Manga = "One Punch Man" };
+                    return new Chapter(null, url) { Manga = "One Punch Man" };
                 }).ToList();
 
-            var chap_names = selector
+            var chap_numbers = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a/span[contains(@class, 'chapter__no')]")
                 .Select(n => n.InnerHtml)
                 .ToList();
 
-            chaps.ForEach(c => c.Name = chap_names[chaps.IndexOf(c)]);
+            chaps.ForEach(c => c.Name = "One Punch Man " + chap_numbers[chaps.IndexOf(c)]);
 
             progress.Report(100);
             return chaps;

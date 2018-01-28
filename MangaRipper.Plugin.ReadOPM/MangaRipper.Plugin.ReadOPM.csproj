@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
-      <Project>{13EFFE36-DBB8-4573-9260-B601177F66E3}</Project>
+      <Project>{13effe36-dbb8-4573-9260-b601177f66e3}</Project>
       <Name>MangaRipper.Core</Name>
     </ProjectReference>
   </ItemGroup>
