@@ -16,9 +16,6 @@ namespace MangaRipper.Infrastructure
             this.logger = logger;
         }
 
-        CookieCollection IDownloader.Cookies { get => downloader.Cookies; set => downloader.Cookies = value; }
-        string IDownloader.Referrer { get => downloader.Referrer; set => downloader.Referrer = value; }
-
         public Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
             logger.Info($"> DownloadStringAsync: {url}");

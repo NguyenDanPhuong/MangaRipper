@@ -13,9 +13,6 @@ namespace MangaRipper.Core.Interfaces
     /// </summary>
     public class Downloader : IDownloader
     {
-        public CookieCollection Cookies { get; set; }
-        public string Referrer { get; set; }
-
         /// <summary>
         /// Download single web page to string.
         /// </summary>
@@ -66,15 +63,9 @@ namespace MangaRipper.Core.Interfaces
                 AllowAutoRedirect = false,
                 CookieContainer = new CookieContainer()
             };
-            if (Cookies != null)
-                firstHandle.CookieContainer.Add(Cookies);
 
             var cloudFlareHandler = new ClearanceHandler(firstHandle);
             var request = new HttpClient(cloudFlareHandler);
-            if (Referrer != null)
-            {
-                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
-            }
             return request;
         }
     }
