@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net.Http.Headers;
 
 namespace MangaRipper.Core.FilenameDetectors
@@ -26,7 +27,8 @@ namespace MangaRipper.Core.FilenameDetectors
             }
             else
             {
-                return Path.GetFileName(url);
+                var uri = new Uri(url);
+                return Path.GetFileName(uri.LocalPath);
             }
         }
     }
