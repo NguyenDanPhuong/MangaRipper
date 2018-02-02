@@ -29,7 +29,7 @@ namespace MangaRipper.Core.Interfaces
             using (var response = await request.GetAsync(url, cancellationToken))
             {
                 var fileNameFromServer = response.Content.Headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
-                var fileName = string.IsNullOrEmpty(fileNameFromServer) ?
+                var fileName = (string.IsNullOrEmpty(fileNameFromServer) || fileNameFromServer.EndsWith(".txt")) ?
                     Path.Combine(folder, GetFilenameFromUrl(url)) : Path.Combine(folder, fileNameFromServer);
                 using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
@@ -42,7 +42,33 @@ namespace MangaRipper.Core.Interfaces
         private string GetFilenameFromUrl(string url)
         {
             var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
+            var result = Path.GetFileName(uri.LocalPath);
+            if (!result.Contains("."))
+            {
+                var urlParameter = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("url");
+                if (!string.IsNullOrWhiteSpace(urlParameter))
+                {
+                    uri = new Uri(urlParameter);
+                    result = Path.GetFileName(uri.LocalPath);
+                }
+                else
+                    result = url.Substring(url.LastIndexOf("/") + 1).Trim('\r', ' ');
+            }
+
+            System.IO.FileInfo fi = null;
+            try
+            {
+                fi = new System.IO.FileInfo(result);
+            }
+            catch (ArgumentException) { }
+            catch (System.IO.PathTooLongException) { }
+            catch (NotSupportedException) { }
+            if (ReferenceEquals(fi, null))
+            {
+                // file name is not valid
+                return "invalid_filename";
+            }
+            return result;
         }
 
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
