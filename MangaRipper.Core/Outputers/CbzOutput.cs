@@ -6,7 +6,7 @@ namespace MangaRipper.Core.Outputers
     {
         public void CreateOutput(string sourceFolder, string destinationFolder)
         {
-            ZipFile.CreateFromDirectory(sourceFolder, destinationFolder + ".zip");
+            ZipFile.CreateFromDirectory(sourceFolder, destinationFolder + ".cbz");
         }
     }
 }

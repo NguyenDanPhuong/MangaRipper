@@ -46,12 +46,6 @@ namespace MangaRipper.Core.Interfaces
             }
         }
 
-        private string GetFilenameFromUrl(string url)
-        {
-            var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
-        }
-
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
         {
             var request = CreateRequest();
