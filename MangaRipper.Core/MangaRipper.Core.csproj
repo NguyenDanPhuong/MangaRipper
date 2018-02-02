@@ -96,6 +96,8 @@
     <Compile Include="Models\SiteInformation.cs" />
     <Compile Include="Controllers\WorkerController.cs" />
     <Compile Include="Interfaces\IDownloader.cs" />
+    <Compile Include="FilenameDetectors\GoogleProxyFilenameDetector.cs" />
+    <Compile Include="FilenameDetectors\FilenameDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

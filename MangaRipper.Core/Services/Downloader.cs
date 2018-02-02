@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using MangaRipper.Core.FilenameDetectors;
 using System;
 using System.IO;
 using System.Net;
@@ -13,6 +14,13 @@ namespace MangaRipper.Core.Interfaces
     /// </summary>
     public class Downloader : IDownloader
     {
+        private readonly FilenameDetector filenameDetector;
+
+        public Downloader(FilenameDetector filenameDetector)
+        {
+            this.filenameDetector = filenameDetector;
+        }
+
         /// <summary>
         /// Download single web page to string.
         /// </summary>
@@ -28,13 +36,12 @@ namespace MangaRipper.Core.Interfaces
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                var fileNameFromServer = response.Content.Headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
-                var fileName = (string.IsNullOrEmpty(fileNameFromServer) || fileNameFromServer.EndsWith(".txt")) ?
-                    Path.Combine(folder, GetFilenameFromUrl(url)) : Path.Combine(folder, fileNameFromServer);
-                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                var filename = filenameDetector.GetFilename(url, response.Content.Headers);
+                var fileNameWithPath = Path.Combine(folder, filename);
+                using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
                 {
                     await response.Content.CopyToAsync(streamReader);
-                    return fileName;
+                    return fileNameWithPath;
                 }
             }
         }
@@ -42,33 +49,7 @@ namespace MangaRipper.Core.Interfaces
         private string GetFilenameFromUrl(string url)
         {
             var uri = new Uri(url);
-            var result = Path.GetFileName(uri.LocalPath);
-            if (!result.Contains("."))
-            {
-                var urlParameter = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("url");
-                if (!string.IsNullOrWhiteSpace(urlParameter))
-                {
-                    uri = new Uri(urlParameter);
-                    result = Path.GetFileName(uri.LocalPath);
-                }
-                else
-                    result = url.Substring(url.LastIndexOf("/") + 1).Trim('\r', ' ');
-            }
-
-            System.IO.FileInfo fi = null;
-            try
-            {
-                fi = new System.IO.FileInfo(result);
-            }
-            catch (ArgumentException) { }
-            catch (System.IO.PathTooLongException) { }
-            catch (NotSupportedException) { }
-            if (ReferenceEquals(fi, null))
-            {
-                // file name is not valid
-                return "invalid_filename";
-            }
-            return result;
+            return Path.GetFileName(uri.LocalPath);
         }
 
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
