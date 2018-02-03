@@ -15,21 +15,20 @@ namespace MangaRipper.Core.FilenameDetectors
 
         public string GetFilename(string url, HttpContentHeaders headers)
         {
+            var googleProxyName = googleProxyFilenameParser.ParseFilename(url);
+            if (!string.IsNullOrEmpty(googleProxyName))
+            {
+                return googleProxyName;
+            }
+
             var fileNameFromServer = headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
             if (!string.IsNullOrEmpty(fileNameFromServer))
             {
-                var googleProxyName = googleProxyFilenameParser.ParseFilename(url);
-                if (!string.IsNullOrEmpty(googleProxyName))
-                {
-                    return googleProxyName;
-                }
                 return fileNameFromServer;
             }
-            else
-            {
-                var uri = new Uri(url);
-                return Path.GetFileName(uri.LocalPath);
-            }
+
+            var uri = new Uri(url);
+            return Path.GetFileName(uri.LocalPath);
         }
     }
 }
