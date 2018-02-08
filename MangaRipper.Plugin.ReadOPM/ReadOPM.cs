@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using MangaRipper.Core.Models;
 namespace MangaRipper.Plugin.ReadOPM
 {
     /// <summary>
-    /// Support find chapters, images from MangaStream
+    /// Support find chapters, images from readopm
     /// </summary>
     public class ReadOPM : IMangaService
     {
@@ -54,7 +55,14 @@ namespace MangaRipper.Plugin.ReadOPM
             // find all pages in a chapter
             string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
             var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
-                .Select(n => n.Attributes["src"]);
+                .Select(n => n.Attributes["src"])
+                .Where(src =>
+                {
+                    Uri validatedUri;
+                    return !string.IsNullOrWhiteSpace(src)
+                    && Uri.TryCreate(src, UriKind.Absolute, out validatedUri)
+                    && !string.IsNullOrWhiteSpace(Path.GetFileName(validatedUri.LocalPath));
+                });
 
             return images;
         }
