@@ -1,7 +1,5 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
-using MangaRipper.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +15,11 @@ namespace MangaRipper.Plugin.MangaHere
     public class MangaHere : IMangaService
     {
         private static ILogger logger;
-        private readonly Downloader downloader;
+        private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
 
-        public MangaHere(ILogger myLogger, Downloader downloader, IXPathSelector selector, IRetry retry)
+        public MangaHere(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry)
         {
             logger = myLogger;
             this.downloader = downloader;

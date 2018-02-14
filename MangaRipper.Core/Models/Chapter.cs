@@ -1,6 +1,4 @@
-﻿using MangaRipper.Core.Extensions;
-
-namespace MangaRipper.Core.Models
+﻿namespace MangaRipper.Core.Models
 {
     public class Chapter
     {

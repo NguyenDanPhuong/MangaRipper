@@ -1,5 +1,5 @@
 ﻿using CloudFlareUtilities;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.FilenameDetectors;
 using System;
 using System.IO;
 using System.Net;
@@ -7,22 +7,18 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Services
+namespace MangaRipper.Core.Interfaces
 {
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class Downloader
+    public class Downloader : IDownloader
     {
-        private readonly ILogger logger;
+        private readonly FilenameDetector filenameDetector;
 
-        public CookieCollection Cookies { get; set; }
-        public string Referrer { get; set; }
-
-
-        public Downloader(ILogger logger)
+        public Downloader(FilenameDetector filenameDetector)
         {
-            this.logger = logger;
+            this.filenameDetector = filenameDetector;
         }
 
         /// <summary>
@@ -32,7 +28,6 @@ namespace MangaRipper.Core.Services
         /// <returns></returns>
         public async Task<string> DownloadStringAsync(string url, CancellationToken token)
         {
-            logger.Info($"> DownloadStringAsync: {url}");
             return await DownloadStringAsyncInternal(url, token);
         }
 
@@ -41,21 +36,14 @@ namespace MangaRipper.Core.Services
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                var fileNameFromServer = response.Content.Headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
-                var fileName = string.IsNullOrEmpty(fileNameFromServer) ?
-                    Path.Combine(folder, GetFilenameFromUrl(url)) : Path.Combine(folder, fileNameFromServer);
-                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                var filename = filenameDetector.GetFilename(url, response.Content.Headers);
+                var fileNameWithPath = Path.Combine(folder, filename);
+                using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
                 {
                     await response.Content.CopyToAsync(streamReader);
-                    return fileName;
+                    return fileNameWithPath;
                 }
             }
-        }
-
-        private string GetFilenameFromUrl(string url)
-        {
-            var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
         }
 
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
@@ -76,15 +64,9 @@ namespace MangaRipper.Core.Services
                 AllowAutoRedirect = false,
                 CookieContainer = new CookieContainer()
             };
-            if (Cookies != null)
-                firstHandle.CookieContainer.Add(Cookies);
 
             var cloudFlareHandler = new ClearanceHandler(firstHandle);
             var request = new HttpClient(cloudFlareHandler);
-            if (Referrer != null)
-            {
-                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
-            }
             return request;
         }
     }

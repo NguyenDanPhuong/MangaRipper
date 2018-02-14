@@ -1,7 +1,4 @@
-﻿using MangaRipper.Core.DataTypes;
-using MangaRipper.Core.Extensions;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace MangaRipper.Core.Models
