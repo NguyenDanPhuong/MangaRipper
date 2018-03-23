@@ -239,6 +239,7 @@ namespace MangaRipper.Forms
             cbTitleUrl.Text = state.Url;
             cbSaveCbz.Checked = state.CbzChecked;
             checkBoxForPrefix.Checked = state.PrefixChecked;
+            cbSaveAsCount.Checked = state.CounterChecked;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
@@ -312,6 +313,7 @@ namespace MangaRipper.Forms
             appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
             appConfig.PrefixChecked = checkBoxForPrefix.Checked;
+            appConfig.CounterChecked = cbSaveAsCount.Checked;
             _appConf.SaveCommonSettings(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
