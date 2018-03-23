@@ -31,12 +31,25 @@ namespace MangaRipper.Core.Interfaces
             return await DownloadStringAsyncInternal(url, token);
         }
 
-        public async Task<string> DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
+        /// <summary>
+        /// Download the file to specific (temp) folder
+        /// </summary>
+        /// <param name="url">Image's Url</param>
+        /// <param name="folder">Temporary folder to keep the downloaded images</param>
+        /// <param name="count">Image order. Used for naming</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Path to the image</returns>
+        public async Task<string> DownloadToFolder(string url, string folder, int count,  CancellationToken cancellationToken)
         {
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
                 var filename = filenameDetector.GetFilename(url, response.Content.Headers);
+                // change the filename only if count is positive
+                if (count >= 0)
+                {
+                    filename = count.ToString("D3") + filename.Substring(filename.LastIndexOf('.'));
+                }
                 var fileNameWithPath = Path.Combine(folder, filename);
                 using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
                 {

@@ -3,6 +3,7 @@
     public enum OutputFormat
     {
         Folder,
-        CBZ
+        CBZ,
+        Counter
     }
 }

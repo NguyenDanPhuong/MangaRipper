@@ -118,18 +118,31 @@ namespace MangaRipper.Core.Controllers
             var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(tempFolder);
 
-            await DownloadImages(images, tempFolder, progress);
+            // Should we use counter?
+            var useCounter = task.Formats.Any(x => x == OutputFormat.Counter);
+            await DownloadImages(images, tempFolder, useCounter, progress);
 
             foreach (var format in task.Formats)
             {
                 var factory = outputFactory.CreateOutput(format);
-                factory.CreateOutput(tempFolder, task.SaveToFolder);
+                if (factory != null)
+                {
+                    factory.CreateOutput(tempFolder, task.SaveToFolder);
+                }
             }
 
             progress.Report(100);
         }
 
-        private async Task DownloadImages(IEnumerable<string> inputImages, string destination, IProgress<int> progress)
+        /// <summary>
+        /// Download all images
+        /// </summary>
+        /// <param name="inputImages">Array with images' Url in string format</param>
+        /// <param name="destination">Path on disc which is in Temp folder</param>
+        /// <param name="useCounter">Should we replace the file names with the counter</param>
+        /// <param name="progress">Progress percentage</param>
+        /// <returns></returns>
+        private async Task DownloadImages(IEnumerable<string> inputImages, string destination, bool useCounter, IProgress<int> progress)
         {
             var images = inputImages.ToArray();
             logger.Info($@"Download {images.Length} images into {destination}");
@@ -138,7 +151,9 @@ namespace MangaRipper.Core.Controllers
             foreach (var image in images)
             {
                 cancelSource.Token.ThrowIfCancellationRequested();
-                await downloader.DownloadToFolder(image, destination, cancelSource.Token);
+                // Figure out if the "Counter" should be used
+                var count = useCounter ? countImage : -1;
+                await downloader.DownloadToFolder(image, destination, count, cancelSource.Token);                
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);

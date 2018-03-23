@@ -22,10 +22,10 @@ namespace MangaRipper.Infrastructure
             return downloader.DownloadStringAsync(url, token);
         }
 
-        public Task<string> DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
+        public Task<string> DownloadToFolder(string url, string folder, int count, CancellationToken cancellationToken)
         {
             logger.Info($"> DownloadToFolder: {url}. Folder: {folder}");
-            return downloader.DownloadToFolder(url, folder, cancellationToken);
+            return downloader.DownloadToFolder(url, folder, count, cancellationToken);
         }
     }
 }

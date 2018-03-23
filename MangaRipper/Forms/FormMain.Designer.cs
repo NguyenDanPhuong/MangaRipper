@@ -52,6 +52,7 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewLinkColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvChapter = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.saveDestinationDirectoryBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.cbTitleUrl = new System.Windows.Forms.ComboBox();
             this.btnAddBookmark = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbDestination = new System.Windows.Forms.Label();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbSaveAsCount = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -111,9 +112,9 @@
             // btnAdd
             // 
             this.btnAdd.Font = new System.Drawing.Font("Webdings", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.btnAdd.Location = new System.Drawing.Point(443, 55);
+            this.btnAdd.Location = new System.Drawing.Point(457, 55);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(62, 33);
+            this.btnAdd.Size = new System.Drawing.Size(48, 33);
             this.btnAdd.TabIndex = 8;
             this.btnAdd.Text = "4";
             this.FormToolTip.SetToolTip(this.btnAdd, "Add selected chapters");
@@ -123,9 +124,9 @@
             // btnAddAll
             // 
             this.btnAddAll.Font = new System.Drawing.Font("Webdings", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.btnAddAll.Location = new System.Drawing.Point(443, 94);
+            this.btnAddAll.Location = new System.Drawing.Point(457, 94);
             this.btnAddAll.Name = "btnAddAll";
-            this.btnAddAll.Size = new System.Drawing.Size(62, 32);
+            this.btnAddAll.Size = new System.Drawing.Size(48, 32);
             this.btnAddAll.TabIndex = 9;
             this.btnAddAll.Text = "8";
             this.FormToolTip.SetToolTip(this.btnAddAll, "Add all chapters");
@@ -228,7 +229,7 @@
             // btnChangeSaveTo
             // 
             this.btnChangeSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnChangeSaveTo.Location = new System.Drawing.Point(312, 301);
+            this.btnChangeSaveTo.Location = new System.Drawing.Point(326, 301);
             this.btnChangeSaveTo.Name = "btnChangeSaveTo";
             this.btnChangeSaveTo.Size = new System.Drawing.Size(30, 23);
             this.btnChangeSaveTo.TabIndex = 13;
@@ -240,7 +241,7 @@
             // btnOpenFolder
             // 
             this.btnOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOpenFolder.Location = new System.Drawing.Point(348, 301);
+            this.btnOpenFolder.Location = new System.Drawing.Point(362, 301);
             this.btnOpenFolder.Name = "btnOpenFolder";
             this.btnOpenFolder.Size = new System.Drawing.Size(89, 23);
             this.btnOpenFolder.TabIndex = 14;
@@ -288,13 +289,13 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvSupportedSites.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvSupportedSites.Location = new System.Drawing.Point(12, 405);
+            this.dgvSupportedSites.Location = new System.Drawing.Point(15, 405);
             this.dgvSupportedSites.MultiSelect = false;
             this.dgvSupportedSites.Name = "dgvSupportedSites";
             this.dgvSupportedSites.ReadOnly = true;
             this.dgvSupportedSites.RowHeadersVisible = false;
             this.dgvSupportedSites.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSupportedSites.Size = new System.Drawing.Size(425, 169);
+            this.dgvSupportedSites.Size = new System.Drawing.Size(436, 169);
             this.dgvSupportedSites.TabIndex = 15;
             this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSupportedSites_CellContentClick);
             // 
@@ -343,8 +344,18 @@
             this.dgvChapter.ReadOnly = true;
             this.dgvChapter.RowHeadersVisible = false;
             this.dgvChapter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvChapter.Size = new System.Drawing.Size(425, 240);
+            this.dgvChapter.Size = new System.Drawing.Size(439, 240);
             this.dgvChapter.TabIndex = 6;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn4.DataPropertyName = "DisplayName";
+            this.dataGridViewTextBoxColumn4.HeaderText = "Chapter Name";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // cbTitleUrl
             // 
@@ -397,7 +408,7 @@
             // 
             this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbUseSeriesFolder.AutoSize = true;
-            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
+            this.cbUseSeriesFolder.Location = new System.Drawing.Point(115, 17);
             this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
             this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
             this.cbUseSeriesFolder.TabIndex = 29;
@@ -416,11 +427,12 @@
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.cbSaveAsCount);
             this.groupBox1.Controls.Add(this.cbSaveFolder);
             this.groupBox1.Controls.Add(this.cbSaveCbz);
             this.groupBox1.Location = new System.Drawing.Point(12, 358);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(161, 41);
+            this.groupBox1.Size = new System.Drawing.Size(198, 41);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Save As";
@@ -431,7 +443,7 @@
             this.cbSaveFolder.AutoSize = true;
             this.cbSaveFolder.Checked = true;
             this.cbSaveFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveFolder.Location = new System.Drawing.Point(25, 17);
+            this.cbSaveFolder.Location = new System.Drawing.Point(6, 17);
             this.cbSaveFolder.Name = "cbSaveFolder";
             this.cbSaveFolder.Size = new System.Drawing.Size(59, 17);
             this.cbSaveFolder.TabIndex = 27;
@@ -442,7 +454,7 @@
             // 
             this.cbSaveCbz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbSaveCbz.AutoSize = true;
-            this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
+            this.cbSaveCbz.Location = new System.Drawing.Point(71, 17);
             this.cbSaveCbz.Name = "cbSaveCbz";
             this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
             this.cbSaveCbz.TabIndex = 28;
@@ -454,9 +466,9 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.checkBoxForPrefix);
             this.groupBox2.Controls.Add(this.cbUseSeriesFolder);
-            this.groupBox2.Location = new System.Drawing.Point(179, 358);
+            this.groupBox2.Location = new System.Drawing.Point(205, 358);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(258, 41);
+            this.groupBox2.Size = new System.Drawing.Size(246, 41);
             this.groupBox2.TabIndex = 30;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "File manipulation";
@@ -550,19 +562,20 @@
             this.txtSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtSaveTo.Location = new System.Drawing.Point(15, 330);
             this.txtSaveTo.Name = "txtSaveTo";
-            this.txtSaveTo.Size = new System.Drawing.Size(422, 22);
+            this.txtSaveTo.Size = new System.Drawing.Size(436, 22);
             this.txtSaveTo.TabIndex = 35;
             this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaveTo_KeyPress);
             // 
-            // dataGridViewTextBoxColumn4
+            // cbSaveAsCount
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "DisplayName";
-            this.dataGridViewTextBoxColumn4.HeaderText = "Chapter Name";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cbSaveAsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSaveAsCount.AutoSize = true;
+            this.cbSaveAsCount.Location = new System.Drawing.Point(123, 17);
+            this.cbSaveAsCount.Name = "cbSaveAsCount";
+            this.cbSaveAsCount.Size = new System.Drawing.Size(68, 17);
+            this.cbSaveAsCount.TabIndex = 29;
+            this.cbSaveAsCount.Text = "Counter";
+            this.cbSaveAsCount.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -661,5 +674,6 @@
         private System.Windows.Forms.TextBox txtSaveTo;
         private System.Windows.Forms.ToolStripMenuItem contributorsToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.CheckBox cbSaveAsCount;
     }
 }

@@ -185,6 +185,9 @@ namespace MangaRipper.Forms
             if (cbSaveCbz.Checked)
                 outputFormats.Add(OutputFormat.CBZ);
 
+            if (cbSaveAsCount.Checked)
+                outputFormats.Add(OutputFormat.Counter);
+
             return outputFormats;
         }
 
