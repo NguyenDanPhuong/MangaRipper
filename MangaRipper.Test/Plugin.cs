@@ -68,19 +68,19 @@ namespace MangaRipper.Test
         {
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
-            string url = "http://mangafox.la/manga/tian_jiang_xian_shu_nan/";
+            string url = "http://fanfox.net/manga/tian_jiang_xian_shu_nan/";
             var service = new MangaFox(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.IsTrue(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.AreEqual("Tian Jiang Xian Shu Nan Manga", chapter.Manga);
             Assert.AreEqual("Tian Jiang Xian Shu Nan 1", chapter.DisplayName);
-            Assert.AreEqual("http://mangafox.la/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
+            Assert.AreEqual("http://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(15, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q001.jpg"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q002.jpg"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("https://lmfcdn.secure.footprint.net/store/manga/19803/001.0/compressed/q003.jpg"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");
