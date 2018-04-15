@@ -4,6 +4,7 @@ using MangaRipper.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace MangaRipper.Plugin.NHentai
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(NHentai), SiteUrl, "English");
+            return new SiteInformation(nameof(NHentai), SiteUrl, "English, Japanese");
         }
 
         public bool Of(string link)
@@ -53,7 +54,41 @@ namespace MangaRipper.Plugin.NHentai
 
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken));
+
+            // find all images in pages
+            int current = 0;
+            var images = new List<string>();
+            foreach (var page in pages)
+            {
+                string image = await retry.DoAsync(() => DownloadAndParseImage(page, cancellationToken), TimeSpan.FromSeconds(3));
+                images.Add(image);
+                var f = (float)++current / pages.Count();
+                int i = Convert.ToInt32(f * 100);
+                progress.Report(i);
+            }
+            progress.Report(100);
+            return images;
+        }
+
+        private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
+        {
+            var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
+
+            // <div...id="thumbnail-container"><div class="thumb-container"><a...href="/g/93922/1/">
+            var links = selector.SelectMany(input, "//div[@id='thumbnail-container']//div[contains(@class, 'thumb-container')]//a")
+                .Select(n => SiteUrl + n.Attributes["href"]);
+
+            return links.ToArray();
+        }
+
+        private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)
+        {
+            var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+            // <div id="content"><div...id="page-container"><section id="image-container"...><img>
+            var image = selector
+            .Select(pageHtml, "//div[@id='content']//div[@id='page-container']//section[@id='image-container']//img").Attributes["src"];
+            return image;
         }
 
         #region Private methods
@@ -63,24 +98,24 @@ namespace MangaRipper.Plugin.NHentai
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
 
             // In case if you open the chapter itself
-            var title = selector.Select(input, "//div[contains(@id,'content')]//h1").InnerHtml;
+            var title = selector.Select(input, "//div[@id='content']//h1").InnerHtml;
 
             // If you open the page with number of chapters (artist/character/Group/Tags)
             if (title.Contains("<span"))
             {
                 // Title consist of three parts. e.g. [Character] [nobuna oda] [(6)]
                 // Take the first two
-                var titleType = selector.Select(input, "//div[contains(@id,'content')]//h1//span").InnerHtml;
-                var titleName = selector.Select(input, "//div[contains(@id,'content')]//h1//span[2]").InnerHtml;
+                var titleType = selector.Select(input, "//div[@id='content']//h1//span").InnerHtml;
+                var titleName = selector.Select(input, "//div[@id='content']//h1//span[2]").InnerHtml;
                 title = titleType + " - " + titleName;
 
-                var chaps = selector.SelectMany(input, "//div[contains(@class,'container')]//a")
-                .Select(n =>
-                {
-                    string name = NameResolver(n.InnerHtml);
-                    string url = SiteUrl + n.Attributes["href"];
-                    return new Chapter(name, url) { Manga = title };
-                });
+                var chaps = selector.SelectMany(input, "//div[contains(@class, 'container')]//a")
+                        .Select(n =>
+                        {
+                            string name = NameResolver(n.InnerHtml);
+                            string url = SiteUrl + n.Attributes["href"];
+                            return new Chapter(name, url) { Manga = title };
+                        });
 
                 return chaps;
             }
@@ -100,7 +135,7 @@ namespace MangaRipper.Plugin.NHentai
         private string NameResolver(string text)
         {
             var htmlAdapter = new HtmlAtilityPackAdapter();
-            return htmlAdapter.Select(text, "//div[contains(@class,'caption')]").InnerHtml;
+            return htmlAdapter.Select(text, "//div[contains(@class, 'caption')]").InnerHtml;
         }
 
         #endregion
