@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using System;
 using System.Collections.Generic;

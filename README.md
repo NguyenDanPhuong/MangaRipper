@@ -13,7 +13,6 @@ This software helps you download manga (Japanese Comic) from several websites fo
 - MangaHere
 - MangaReader
 - MangaShare
-- MangaStream
 
 ### [Download](https://github.com/NguyenDanPhuong/MangaRipper/releases/latest)
 
@@ -22,6 +21,8 @@ This software helps you download manga (Japanese Comic) from several websites fo
 Help is appreciated. Please create pull request to develop branch.
 
 ## Software Design:
+
+Onion architecture, plugin architecture.
 
 ### Overview:
 

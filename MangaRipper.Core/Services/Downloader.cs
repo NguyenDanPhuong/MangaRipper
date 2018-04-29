@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using MangaRipper.Core.FilenameDetectors;
 using System;
 using System.IO;
 using System.Net;
@@ -13,8 +14,12 @@ namespace MangaRipper.Core.Interfaces
     /// </summary>
     public class Downloader : IDownloader
     {
-        public CookieCollection Cookies { get; set; }
-        public string Referrer { get; set; }
+        private readonly FilenameDetector filenameDetector;
+
+        public Downloader(FilenameDetector filenameDetector)
+        {
+            this.filenameDetector = filenameDetector;
+        }
 
         /// <summary>
         /// Download single web page to string.
@@ -31,21 +36,14 @@ namespace MangaRipper.Core.Interfaces
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                var fileNameFromServer = response.Content.Headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
-                var fileName = string.IsNullOrEmpty(fileNameFromServer) ?
-                    Path.Combine(folder, GetFilenameFromUrl(url)) : Path.Combine(folder, fileNameFromServer);
-                using (var streamReader = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                var filename = filenameDetector.GetFilename(url, response.Content.Headers);
+                var fileNameWithPath = Path.Combine(folder, filename);
+                using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
                 {
                     await response.Content.CopyToAsync(streamReader);
-                    return fileName;
+                    return fileNameWithPath;
                 }
             }
-        }
-
-        private string GetFilenameFromUrl(string url)
-        {
-            var uri = new Uri(url);
-            return Path.GetFileName(uri.LocalPath);
         }
 
         private async Task<string> DownloadStringAsyncInternal(string url, CancellationToken cancellationToken)
@@ -66,15 +64,9 @@ namespace MangaRipper.Core.Interfaces
                 AllowAutoRedirect = false,
                 CookieContainer = new CookieContainer()
             };
-            if (Cookies != null)
-                firstHandle.CookieContainer.Add(Cookies);
 
             var cloudFlareHandler = new ClearanceHandler(firstHandle);
             var request = new HttpClient(cloudFlareHandler);
-            if (Referrer != null)
-            {
-                request.DefaultRequestHeaders.Referrer = new Uri(Referrer);
-            }
             return request;
         }
     }

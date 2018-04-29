@@ -17,33 +17,6 @@ namespace MangaRipper.Core.Extensions
         }
 
         /// <summary>
-        /// Directory.Move in C# cannot move across disk volume.
-        /// So we have this SUPER MOVE!!! :)
-        /// </summary>
-        /// <param name="sourcePath"></param>
-        /// <param name="destinationPath"></param>
-        public static void SuperMove(string sourcePath, string destinationPath)
-        {
-            CopyFolderAndAllSubItems(new DirectoryInfo(sourcePath), new DirectoryInfo(destinationPath));
-        }
-
-        public static void CopyFolderAndAllSubItems(DirectoryInfo source, DirectoryInfo destination)
-        {
-            foreach (DirectoryInfo dir in source.GetDirectories())
-            {
-                CopyFolderAndAllSubItems(dir, destination.CreateSubdirectory(dir.Name));
-            }
-            foreach (FileInfo file in source.GetFiles())
-            {
-                string destFileName = Path.Combine(destination.FullName, file.Name);
-                if (!File.Exists(destFileName))
-                {
-                    file.CopyTo(destFileName);
-                }
-            }
-        }
-
-        /// <summary>
         /// Replaces the user's name with a generic placeholder to protect their privacy.
         /// </summary>
         /// <param name="input"></param>
@@ -58,7 +31,6 @@ namespace MangaRipper.Core.Extensions
             {
                 throw new System.ArgumentNullException("Value cannot be null.");
             }
-
         }
     }
 }

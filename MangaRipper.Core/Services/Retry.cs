@@ -7,7 +7,7 @@ namespace MangaRipper.Core
 {
     public class Retry : IRetry
     {
-        public async Task<T> DoAsync<T>(Func<Task<T>> action, TimeSpan retryInterval, int maxAttemptCount = 3)
+        public async Task<T> DoAsync<T>(Func<Task<T>> action, TimeSpan retryInterval, int maxAttemptCount = 5)
         {
             var exceptions = new List<Exception>();
 

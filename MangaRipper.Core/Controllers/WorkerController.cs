@@ -1,6 +1,4 @@
-﻿using MangaRipper.Core.DataTypes;
-using MangaRipper.Core.Helpers;
-using MangaRipper.Core.Models;
+﻿using MangaRipper.Core.Models;
 using MangaRipper.Core.Providers;
 using MangaRipper.Core.Interfaces;
 using System;
@@ -9,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MangaRipper.Core.Extensions;
+using MangaRipper.Core.Outputers;
 
 namespace MangaRipper.Core.Controllers
 {
@@ -19,25 +17,25 @@ namespace MangaRipper.Core.Controllers
     public class WorkerController
     {
 
-        public ServiceManager ServiceManager { get; }
+        private ServiceManager serviceManager { get; }
 
-        CancellationTokenSource _source;
-        readonly SemaphoreSlim _sema;
+        CancellationTokenSource cancelSource;
+        readonly SemaphoreSlim semaphore;
         private readonly ILogger logger;
-        private readonly PackageCbzHelper cbz;
+        private readonly IOutputFactory outputFactory;
         private readonly IDownloader downloader;
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController(ServiceManager sm, ILogger logger, PackageCbzHelper cbz, IDownloader downloader)
+        public WorkerController(ServiceManager sm, ILogger logger, IOutputFactory outputFactory, IDownloader downloader)
         {
             this.logger = logger;
             logger.Info("> Worker()");
-            ServiceManager = sm;
-            this.cbz = cbz;
+            serviceManager = sm;
+            this.outputFactory = outputFactory;
             this.downloader = downloader;
-            _source = new CancellationTokenSource();
-            _sema = new SemaphoreSlim(2);
+            cancelSource = new CancellationTokenSource();
+            semaphore = new SemaphoreSlim(2);
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace MangaRipper.Core.Controllers
         /// </summary>
         public void Cancel()
         {
-            _source.Cancel();
+            cancelSource.Cancel();
         }
 
         /// <summary>
@@ -61,8 +59,8 @@ namespace MangaRipper.Core.Controllers
             {
                 try
                 {
-                    _source = new CancellationTokenSource();
-                    await _sema.WaitAsync();
+                    cancelSource = new CancellationTokenSource();
+                    await semaphore.WaitAsync();
                     task.IsBusy = true;
                     await DownloadChapter(task, progress);
                 }
@@ -74,7 +72,7 @@ namespace MangaRipper.Core.Controllers
                 finally
                 {
                     task.IsBusy = false;
-                    _sema.Release();
+                    semaphore.Release();
                 }
             });
         }
@@ -92,7 +90,7 @@ namespace MangaRipper.Core.Controllers
             {
                 try
                 {
-                    await _sema.WaitAsync();
+                    await semaphore.WaitAsync();
                     return await FindChaptersInternal(mangaPath, progress);
                 }
                 catch (Exception ex)
@@ -102,7 +100,7 @@ namespace MangaRipper.Core.Controllers
                 }
                 finally
                 {
-                    _sema.Release();
+                    semaphore.Release();
                 }
             });
         }
@@ -111,28 +109,21 @@ namespace MangaRipper.Core.Controllers
         {
             var chapter = task.Chapter;
             progress.Report(0);
-            var service = ServiceManager.GetService(chapter.Url);
+            var service = serviceManager.GetService(chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
-            }), _source.Token);
+            }), cancelSource.Token);
 
             var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(tempFolder);
 
             await DownloadImages(images, tempFolder, progress);
 
-            if (task.Formats.Contains(OutputFormat.Folder))
+            foreach (var format in task.Formats)
             {
-                if (!Directory.Exists(task.SaveToFolder))
-                {
-                    Directory.CreateDirectory(task.SaveToFolder);
-                }
-                ExtensionHelper.SuperMove(tempFolder, task.SaveToFolder);
-            }
-            if (task.Formats.Contains(OutputFormat.CBZ))
-            {
-                cbz.Create(tempFolder, task.SaveToFolder + ".cbz");
+                var factory = outputFactory.CreateOutput(format);
+                factory.CreateOutput(tempFolder, task.SaveToFolder);
             }
 
             progress.Report(100);
@@ -146,8 +137,8 @@ namespace MangaRipper.Core.Controllers
             var countImage = 0;
             foreach (var image in images)
             {
-                _source.Token.ThrowIfCancellationRequested();
-                await downloader.DownloadToFolder(image, destination, _source.Token);
+                cancelSource.Token.ThrowIfCancellationRequested();
+                await downloader.DownloadToFolder(image, destination, cancelSource.Token);
                 countImage++;
                 int i = Convert.ToInt32((float)countImage / images.Count() * 100 / 2);
                 progress.Report(50 + i);
@@ -158,8 +149,8 @@ namespace MangaRipper.Core.Controllers
         {
             progress.Report(0);
             // let service find all chapters in manga
-            var service = ServiceManager.GetService(mangaPath);
-            var chapters = await service.FindChapters(mangaPath, progress, _source.Token);
+            var service = serviceManager.GetService(mangaPath);
+            var chapters = await service.FindChapters(mangaPath, progress, cancelSource.Token);
             progress.Report(100);
             return chapters;
         }

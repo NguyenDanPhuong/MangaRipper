@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MangaRipper.Core.DataTypes;
 using MangaRipper.Core.Models;
 using MangaRipper.Helpers;
 using MangaRipper.Presenters;

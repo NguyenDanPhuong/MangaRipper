@@ -1,4 +1,4 @@
-﻿namespace MangaRipper.Core.DataTypes
+﻿namespace MangaRipper.Core.Models
 {
     public enum OutputFormat
     {
