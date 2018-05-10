@@ -11,6 +11,7 @@ using MangaRipper.Core.Models;
 using MangaRipper.Core;
 using MangaRipper.Infrastructure;
 using MangaRipper.Core.Outputers;
+using MangaRipper.Core.Renaming;
 
 namespace MangaRipper
 {
@@ -61,6 +62,8 @@ namespace MangaRipper
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IScriptEngine, JurassicScriptEngine>();
             container.Register<IRetry, Retry>();
+
+            container.Register<IRenamer, RenameByCounter>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()

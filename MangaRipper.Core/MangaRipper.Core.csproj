@@ -79,6 +79,8 @@
     <Compile Include="Outputers\IOutputer.cs" />
     <Compile Include="Outputers\IOutputFactory.cs" />
     <Compile Include="Outputers\OutputFactory.cs" />
+    <Compile Include="Renaming\IRenamer.cs" />
+    <Compile Include="Renaming\RenameByCounter.cs" />
     <Compile Include="Services\HtmlAtilityPackAdapter.cs" />
     <Compile Include="Interfaces\IRetry.cs" />
     <Compile Include="Services\JurassicScriptEngine.cs" />

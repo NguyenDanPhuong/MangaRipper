@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MangaRipper.Core.Renaming;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MangaRipper.Core.Models
