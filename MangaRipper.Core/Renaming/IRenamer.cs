@@ -2,6 +2,6 @@
 {
     public interface IRenamer
     {
-        void Run();
+        void Run(string folderPath);
     }
 }

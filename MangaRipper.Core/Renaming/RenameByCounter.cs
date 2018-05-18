@@ -9,20 +9,21 @@ namespace MangaRipper.Core.Renaming
 {
     public class RenameByCounter : IRenamer
     {
-        private readonly string folderPath;
+        private readonly IFileManipulation fileManipulation;
 
-        public RenameByCounter(string folderPath)
+        public RenameByCounter(IFileManipulation fileManipulation)
         {
-            this.folderPath = folderPath;
+            this.fileManipulation = fileManipulation;
         }
-        public void Run()
+
+        public void Run(string folderPath)
         {
-            var files = Directory.GetFiles(folderPath);
+            var files = fileManipulation.GetFiles(folderPath);
             for (int i = 0; i < files.Length; i++)
             {
                 var file = new FileInfo(files[i]);
-                var newFile = Path.Combine(file.DirectoryName, i.ToString() + file.Extension);
-                File.Move(file.FullName, newFile);
+                var newFile = Path.Combine(file.DirectoryName, (i + 1).ToString() + file.Extension);
+                fileManipulation.Rename(file.FullName, newFile);
             }
         }
     }
