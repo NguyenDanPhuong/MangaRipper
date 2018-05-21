@@ -27,12 +27,12 @@ namespace MangaRipper.Test
             });
             var counterRename = new RenameByCounter(mock.Object);
             counterRename.Run("C:\\TestPath");
-            mock.Verify(f => f.Rename(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(5));
-            mock.Verify(f => f.Rename("C:\\TestPath\\abc1.jpg", "C:\\TestPath\\1.jpg"), Times.Once());
-            mock.Verify(f => f.Rename("C:\\TestPath\\abc2.jpg", "C:\\TestPath\\2.jpg"), Times.Once());
-            mock.Verify(f => f.Rename("C:\\TestPath\\abc3.jpg", "C:\\TestPath\\3.jpg"), Times.Once());
-            mock.Verify(f => f.Rename("C:\\TestPath\\abc4.jpg", "C:\\TestPath\\4.jpg"), Times.Once());
-            mock.Verify(f => f.Rename("C:\\TestPath\\abc5.jpg", "C:\\TestPath\\5.jpg"), Times.Once());
+            mock.Verify(f => f.Move(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(5));
+            mock.Verify(f => f.Move("C:\\TestPath\\abc1.jpg", "C:\\TestPath\\1.jpg"), Times.Once());
+            mock.Verify(f => f.Move("C:\\TestPath\\abc2.jpg", "C:\\TestPath\\2.jpg"), Times.Once());
+            mock.Verify(f => f.Move("C:\\TestPath\\abc3.jpg", "C:\\TestPath\\3.jpg"), Times.Once());
+            mock.Verify(f => f.Move("C:\\TestPath\\abc4.jpg", "C:\\TestPath\\4.jpg"), Times.Once());
+            mock.Verify(f => f.Move("C:\\TestPath\\abc5.jpg", "C:\\TestPath\\5.jpg"), Times.Once());
         }
     }
 }

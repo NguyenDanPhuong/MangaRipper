@@ -52,6 +52,7 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewLinkColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvChapter = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.saveDestinationDirectoryBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.cbTitleUrl = new System.Windows.Forms.ComboBox();
             this.btnAddBookmark = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbDestination = new System.Windows.Forms.Label();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbFileCounter = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -346,6 +347,16 @@
             this.dgvChapter.Size = new System.Drawing.Size(425, 240);
             this.dgvChapter.TabIndex = 6;
             // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn4.DataPropertyName = "DisplayName";
+            this.dataGridViewTextBoxColumn4.HeaderText = "Chapter Name";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // cbTitleUrl
             // 
             this.cbTitleUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -554,21 +565,23 @@
             this.txtSaveTo.TabIndex = 35;
             this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaveTo_KeyPress);
             // 
-            // dataGridViewTextBoxColumn4
+            // cbFileCounter
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "DisplayName";
-            this.dataGridViewTextBoxColumn4.HeaderText = "Chapter Name";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.cbFileCounter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbFileCounter.AutoSize = true;
+            this.cbFileCounter.Location = new System.Drawing.Point(443, 375);
+            this.cbFileCounter.Name = "cbFileCounter";
+            this.cbFileCounter.Size = new System.Drawing.Size(87, 17);
+            this.cbFileCounter.TabIndex = 36;
+            this.cbFileCounter.Text = "File counter";
+            this.cbFileCounter.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 610);
+            this.Controls.Add(this.cbFileCounter);
             this.Controls.Add(this.lbDestination);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -661,5 +674,6 @@
         private System.Windows.Forms.TextBox txtSaveTo;
         private System.Windows.Forms.ToolStripMenuItem contributorsToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.CheckBox cbFileCounter;
     }
 }

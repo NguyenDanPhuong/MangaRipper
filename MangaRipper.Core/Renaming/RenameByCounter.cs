@@ -23,7 +23,7 @@ namespace MangaRipper.Core.Renaming
             {
                 var file = new FileInfo(files[i]);
                 var newFile = Path.Combine(file.DirectoryName, (i + 1).ToString() + file.Extension);
-                fileManipulation.Rename(file.FullName, newFile);
+                fileManipulation.Move(file.FullName, newFile);
             }
         }
     }

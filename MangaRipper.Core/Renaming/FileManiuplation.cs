@@ -7,19 +7,16 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Core.Renaming
 {
-    class FileManiuplation : IFileManipulation
+    public class FileManiuplation : IFileManipulation
     {
         public string[] GetFiles(string path)
         {
             return Directory.GetFiles(path);
         }
 
-        public void Move(string sourcePath, string destinationPath)
+        public void Move(string sourceFilename, string destFilename)
         {
-        }
-
-        public void Rename(string original, string newName)
-        {
+            File.Move(sourceFilename, destFilename);
         }
     }
 }

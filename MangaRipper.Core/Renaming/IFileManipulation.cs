@@ -8,8 +8,7 @@ namespace MangaRipper.Core.Renaming
 {
     public interface IFileManipulation
     {
-        void Move(string sourcePath, string destinationPath);
-        void Rename(string original, string newName);
+        void Move(string sourceFilename, string destFilename);
         string[] GetFiles(string path);
     }
 }

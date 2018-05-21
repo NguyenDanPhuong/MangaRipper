@@ -63,6 +63,7 @@ namespace MangaRipper
             container.Register<IScriptEngine, JurassicScriptEngine>();
             container.Register<IRetry, Retry>();
 
+            container.Register<IFileManipulation, FileManiuplation>();
             container.Register<IRenamer, RenameByCounter>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
@@ -70,11 +71,11 @@ namespace MangaRipper
                 .Where(file => file.Extension.ToLower() == ".dll" && file.Name.StartsWith("MangaRipper.Plugin."))
                 .Select(file => Assembly.Load(AssemblyName.GetAssemblyName(file.FullName)));
 
-            container.RegisterCollection<IMangaService>(pluginAssemblies);
-            container.Register<FormMain>();
+            container.Collection.Register<IMangaService>(pluginAssemblies);
 
             container.RegisterDecorator<IXPathSelector, XPathSelectorLogging>();
             container.RegisterDecorator<IDownloader, DownloadLogging>();
+            container.Register<FormMain>();
             //container.Verify();
         }
     }
