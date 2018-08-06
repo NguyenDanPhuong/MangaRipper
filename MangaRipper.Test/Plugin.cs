@@ -148,9 +148,9 @@ namespace MangaRipper.Test
             Assert.AreEqual("http://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.AreEqual(28, images.Count());
-            Assert.IsTrue(images.ToArray()[0].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-daAIY2sJQcE%2fV8rt280634I%2fAAAAAAAA404%2fLd1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM%2fs16000%2f0001-001.png&imgmax=30000"));
-            Assert.IsTrue(images.ToArray()[1].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-cx66pnwxYF4%2fV8rt3BUIFuI%2fAAAAAAAA408%2fC9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM%2fs16000%2f0001-002.png&imgmax=30000"));
-            Assert.IsTrue(images.ToArray()[2].StartsWith("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=http%3a%2f%2f2.bp.blogspot.com%2f-EfldQUNYKe8%2fV8rt3cmh-nI%2fAAAAAAAA41A%2f_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM%2fs16000%2f0001-003.png&imgmax=30000"));
+            Assert.IsTrue(images.ToArray()[0].StartsWith("http://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png"));
+            Assert.IsTrue(images.ToArray()[1].StartsWith("http://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png"));
+            Assert.IsTrue(images.ToArray()[2].StartsWith("http://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png"));
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.IsNotNull(imageString, "Cannot download image!");

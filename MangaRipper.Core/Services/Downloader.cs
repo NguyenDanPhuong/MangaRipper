@@ -63,7 +63,7 @@ namespace MangaRipper.Core.Interfaces
         {
             var cookieContainer = new CookieContainer();
             // Set CloudFlare cookies if we have one
-            if (CacheProvider.Instance.CacheExists("__cfduid"))
+            if (CacheProvider.Instance.CacheExists("__cfduid") && CacheProvider.Instance.CacheExists("cf_clearance"))
             {
                 cookieContainer.Add(CacheProvider.Instance.GetCacheValue("__cfduid"));
                 cookieContainer.Add(CacheProvider.Instance.GetCacheValue("cf_clearance"));
