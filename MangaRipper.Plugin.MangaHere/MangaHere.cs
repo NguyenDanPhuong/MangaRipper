@@ -98,7 +98,7 @@ namespace MangaRipper.Plugin.MangaHere
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaHere), "http://www.mangahere.cc", "English");
+            return new SiteInformation(nameof(MangaHere), "https://www.mangahere.cc", "English");
         }
 
         public bool Of(string link)

@@ -70,7 +70,7 @@ namespace MangaRipper.Plugin.MangaStream
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaStream), "http://readms.net/manga", "English");
+            return new SiteInformation(nameof(MangaStream), "https://readms.net/manga", "English");
         }
 
         public bool Of(string link)

@@ -69,7 +69,7 @@ namespace MangaRipper.Plugin.ReadOPM
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(ReadOPM), "http://ww3.readopm.com/", "English");
+            return new SiteInformation(nameof(ReadOPM), "https://ww3.readopm.com/", "English");
         }
 
         public bool Of(string link)

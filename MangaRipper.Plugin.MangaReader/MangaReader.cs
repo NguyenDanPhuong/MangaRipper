@@ -78,7 +78,7 @@ namespace MangaRipper.Plugin.MangaReader
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaReader), "http://www.mangareader.net", "English");
+            return new SiteInformation(nameof(MangaReader), "https://www.mangareader.net", "English");
         }
 
         public bool Of(string link)
