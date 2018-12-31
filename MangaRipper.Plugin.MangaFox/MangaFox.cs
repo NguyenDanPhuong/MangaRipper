@@ -27,7 +27,7 @@ namespace MangaRipper.Plugin.MangaFox
         }
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaFox), "http://fanfox.net", "English");
+            return new SiteInformation(nameof(MangaFox), "https://fanfox.net", "English");
         }
 
         public bool Of(string link)

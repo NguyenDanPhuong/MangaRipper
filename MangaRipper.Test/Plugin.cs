@@ -61,7 +61,7 @@ namespace MangaRipper.Test
         {
             // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
             // If we test with a licensed manga, this test will failed.
-            string url = "http://fanfox.net/manga/tian_jiang_xian_shu_nan/";
+            string url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/";
             var service = new MangaFox(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
             Assert.True(service.Of(url));
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
@@ -69,12 +69,12 @@ namespace MangaRipper.Test
             var chapter = chapters.Last();
             Assert.Equal("Tian Jiang Xian Shu Nan Manga", chapter.Manga);
             Assert.Equal("Tian Jiang Xian Shu Nan 1", chapter.DisplayName);
-            Assert.Equal("http://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
+            Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(15, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg"));
-            Assert.True(images.ToArray()[1].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg"));
-            Assert.True(images.ToArray()[2].StartsWith("http://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg"));
+            Assert.True(images.ToArray()[0].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg"));
+            Assert.True(images.ToArray()[1].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg"));
+            Assert.True(images.ToArray()[2].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg"));
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
@@ -83,7 +83,7 @@ namespace MangaRipper.Test
         [Fact]
         public async Task MangaHere_Test()
         {
-            string url = "http://www.mangahere.cc/manga/deathtopia/";
+            string url = "https://www.mangahere.cc/manga/deathtopia/";
             var service = new MangaHere(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
             Assert.True(service.Of(url));
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
@@ -91,7 +91,7 @@ namespace MangaRipper.Test
             var chapter = chapters.Last();
             Assert.Equal("Deathtopia", chapter.Manga);
             Assert.Equal("Deathtopia 1", chapter.DisplayName);
-            Assert.Equal("http://www.mangahere.cc/manga/deathtopia/c001/", chapter.Url);
+            Assert.Equal("https://www.mangahere.cc/manga/deathtopia/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(59, images.Count());
             Assert.True(images.ToArray()[0].StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg001.jpg"));
@@ -129,7 +129,7 @@ namespace MangaRipper.Test
 #endif
         public async Task KissManga_Test()
         {
-            string url = "http://kissmanga.com/Manga/Onepunch-Man";
+            string url = "https://kissmanga.com/Manga/Onepunch-Man";
             var service = new KissManga(logger, downloader, new HtmlAtilityPackAdapter(), new JurassicScriptEngine());
             Assert.True(service.Of(url));
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
@@ -137,12 +137,12 @@ namespace MangaRipper.Test
             var chapter = chapters.Last();
             Assert.Equal("Onepunch-Man", chapter.Manga);
             Assert.Equal("Onepunch-Man 001", chapter.DisplayName);
-            Assert.Equal("http://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
+            Assert.Equal("https://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(28, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("http://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png"));
-            Assert.True(images.ToArray()[1].StartsWith("http://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png"));
-            Assert.True(images.ToArray()[2].StartsWith("http://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png"));
+            Assert.True(images.ToArray()[0].StartsWith("https://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png"));
+            Assert.True(images.ToArray()[1].StartsWith("https://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png"));
+            Assert.True(images.ToArray()[2].StartsWith("https://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png"));
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);

@@ -57,7 +57,7 @@ namespace MangaRipper.Plugin.KissManga
 
             if (Regex.IsMatch(input, concatedPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled))
             {
-                string funcUri = "http://kissmanga.com/Scripts/lo.js";
+                string funcUri = "https://kissmanga.com/Scripts/lo.js";
                 string decryptFunc = await downloader.DownloadStringAsync(funcUri, cancellationToken);
 
                 /// Execute CryptoJS (ca.js) from saved resources to reduce HTTP requests.
@@ -137,7 +137,7 @@ namespace MangaRipper.Plugin.KissManga
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation("KissManga", "http://kissmanga.com/", "English");
+            return new SiteInformation("KissManga", "https://kissmanga.com/", "English");
         }
 
         public bool Of(string link)
