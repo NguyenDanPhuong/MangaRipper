@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MangaRipper.Test</RootNamespace>
     <AssemblyName>MangaRipper.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -20,6 +20,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -108,6 +109,10 @@
     <ProjectReference Include="..\MangaRipper.Plugin.MangaStream\MangaRipper.Plugin.MangaStream.csproj">
       <Project>{746524a7-e0ee-4240-a9a2-dd7bccbccf5b}</Project>
       <Name>MangaRipper.Plugin.MangaStream</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Plugin.NHentai\MangaRipper.Plugin.NHentai.csproj">
+      <Project>{9f550135-8265-469c-b5b5-bccea4d5bc3b}</Project>
+      <Name>MangaRipper.Plugin.NHentai</Name>
     </ProjectReference>
     <ProjectReference Include="..\MangaRipper\MangaRipper.csproj">
       <Project>{e4c5d602-ed1e-4c04-b845-74ec5a58530d}</Project>
