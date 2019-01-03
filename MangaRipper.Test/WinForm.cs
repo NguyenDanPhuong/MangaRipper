@@ -1,29 +1,15 @@
 ﻿using MangaRipper.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace MangaRipper.Test
 {
-    [TestClass]
     public class WinForm
     {
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-
-        }
-
-        [TestMethod]
+        [Fact]
         public void UpdateNotificationTest()
         {
             var buildNumber = UpdateNotification.GetLatestBuildNumber("1.2.333");
-            Assert.AreEqual(333, buildNumber);
+            Assert.Equal(333, buildNumber);
         }
     }
 }

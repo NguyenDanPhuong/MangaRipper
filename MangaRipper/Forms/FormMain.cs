@@ -13,6 +13,7 @@ using NLog;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Extensions;
+using MangaRipper.Core.Renaming;
 
 namespace MangaRipper.Forms
 {
@@ -25,12 +26,14 @@ namespace MangaRipper.Forms
         private MainViewPresenter Presenter;
         private IEnumerable<IMangaService> MangaServices;
         private WorkerController worker;
+        private readonly IRenamer renamer;
 
-        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
+        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc, IRenamer renamer)
         {
             InitializeComponent();
             MangaServices = mangaServices;
             worker = wc;
+            this.renamer = renamer;
             Presenter = new MainViewPresenter(this, wc);
         }
 
@@ -78,7 +81,12 @@ namespace MangaRipper.Forms
             foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
                 var savePath = GetSavePath(item);
-                _downloadQueue.Add(new DownloadChapterTask(item, savePath, formats));
+                var task = new DownloadChapterTask(item, savePath, formats);
+                if (cbFileCounter.Checked)
+                {
+                    task.Renamer = renamer;
+                }
+                _downloadQueue.Add(task);
             }
         }
 
@@ -109,7 +117,12 @@ namespace MangaRipper.Forms
             foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
             {
                 var savePath = GetSavePath(chapter);
-                _downloadQueue.Add(new DownloadChapterTask(chapter, savePath, formats));
+                var task = new DownloadChapterTask(chapter, savePath, formats);
+                if (cbFileCounter.Checked)
+                {
+                    task.Renamer = renamer;
+                }
+                _downloadQueue.Add(task);
             }
         }
 
