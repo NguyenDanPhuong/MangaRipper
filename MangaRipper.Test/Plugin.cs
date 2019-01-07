@@ -8,6 +8,7 @@ using MangaRipper.Plugin.KissManga;
 using MangaRipper.Plugin.MangaHere;
 using MangaRipper.Plugin.MangaFox;
 using MangaRipper.Plugin.MangaReader;
+using MangaRipper.Plugin.NHentai;
 using Moq;
 using MangaRipper.Core;
 using MangaRipper.Core.FilenameDetectors;
@@ -143,6 +144,29 @@ namespace MangaRipper.Test
             Assert.True(images.ToArray()[0].StartsWith("https://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png"));
             Assert.True(images.ToArray()[1].StartsWith("https://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png"));
             Assert.True(images.ToArray()[2].StartsWith("https://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png"));
+
+            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            Assert.NotNull(imageString);
+        }
+
+        [Fact]
+        public async Task NHentai_Test()
+        {
+            string url = "https://nhentai.net/g/247893/";
+            var service = new NHentai(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
+            Assert.True(service.Of(url));
+            var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
+            Assert.True(chapters.Any(), "Cannot find chapters.");
+            // Well, it's one chapter per url
+            var chapter = chapters.Last();
+            Assert.Equal("[Korotsuke] Koopa Hime | Bowsette (New Super Mario Bros. U Deluxe) [English] {darknight}", chapter.Manga);
+            Assert.Equal("[Korotsuke] Koopa Hime | Bowsette (New Super Mario Bros. U Deluxe) [English] {darknight}", chapter.DisplayName);
+            Assert.Equal("https://nhentai.net/g/247893/", chapter.Url);
+            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
+            Assert.Equal(5, images.Count());
+            Assert.True(images.ToArray()[0].StartsWith("https://i.nhentai.net/galleries/1291586/1.jpg"));
+            Assert.True(images.ToArray()[1].StartsWith("https://i.nhentai.net/galleries/1291586/2.jpg"));
+            Assert.True(images.ToArray()[2].StartsWith("https://i.nhentai.net/galleries/1291586/3.jpg"));
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);

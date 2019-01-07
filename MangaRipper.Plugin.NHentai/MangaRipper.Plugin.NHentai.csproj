@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F5D529B4-CBB6-46E2-9D32-25CEF8365318}</ProjectGuid>
+    <ProjectGuid>{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MangaRipper.Plugin.MangaFox</RootNamespace>
-    <AssemblyName>MangaRipper.Plugin.MangaFox</AssemblyName>
+    <RootNamespace>MangaRipper.Plugin.NHentai</RootNamespace>
+    <AssemblyName>MangaRipper.Plugin.NHentai</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MangaFox.cs" />
+    <Compile Include="NHentai.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +56,4 @@
 copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).dll"
 copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
