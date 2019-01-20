@@ -19,7 +19,7 @@ namespace MangaRipper.Test
     public class Plugin
     {
         CancellationTokenSource source;
-        ILogger logger;
+        readonly ILogger logger;
         Downloader downloader;
 
         public Plugin()
@@ -73,9 +73,9 @@ namespace MangaRipper.Test
             Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(15, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg"));
-            Assert.True(images.ToArray()[1].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg"));
-            Assert.True(images.ToArray()[2].StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg"));
+            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
@@ -95,9 +95,9 @@ namespace MangaRipper.Test
             Assert.Equal("https://www.mangahere.cc/manga/deathtopia/c001/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(59, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg001.jpg"));
-            Assert.True(images.ToArray()[1].StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg002.jpg"));
-            Assert.True(images.ToArray()[58].StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg059.jpg"));
+            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg059.jpg", images.ToArray()[58]);
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
@@ -116,18 +116,16 @@ namespace MangaRipper.Test
             Assert.Equal("https://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(17, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001.jpg"));
-            Assert.True(images.ToArray()[1].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001a.jpg"));
-            Assert.True(images.ToArray()[2].StartsWith("https://img.mangastream.com/cdn/manga/107/2831/002.png"));
+            Assert.StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001a.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://img.mangastream.com/cdn/manga/107/2831/002.png", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
 
+#if DEBUG
         [Fact]
-#if !DEBUG
-        [Ignore]
-#endif
         public async Task KissManga_Test()
         {
             string url = "https://kissmanga.com/Manga/Onepunch-Man";
@@ -141,13 +139,14 @@ namespace MangaRipper.Test
             Assert.Equal("https://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(28, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("https://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png"));
-            Assert.True(images.ToArray()[1].StartsWith("https://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png"));
-            Assert.True(images.ToArray()[2].StartsWith("https://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png"));
+            Assert.StartsWith("https://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png", images.ToArray()[0]);
+            Assert.StartsWith("https://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png", images.ToArray()[1]);
+            Assert.StartsWith("https://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
+#endif
 
         [Fact]
         public async Task NHentai_Test()
@@ -164,9 +163,9 @@ namespace MangaRipper.Test
             Assert.Equal("https://nhentai.net/g/247893/", chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(5, images.Count());
-            Assert.True(images.ToArray()[0].StartsWith("https://i.nhentai.net/galleries/1291586/1.jpg"));
-            Assert.True(images.ToArray()[1].StartsWith("https://i.nhentai.net/galleries/1291586/2.jpg"));
-            Assert.True(images.ToArray()[2].StartsWith("https://i.nhentai.net/galleries/1291586/3.jpg"));
+            Assert.StartsWith("https://i.nhentai.net/galleries/1291586/1.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://i.nhentai.net/galleries/1291586/2.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://i.nhentai.net/galleries/1291586/3.jpg", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
