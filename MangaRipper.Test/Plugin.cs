@@ -4,7 +4,6 @@ using System.Threading;
 using System.Linq;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Plugin.MangaStream;
-using MangaRipper.Plugin.KissManga;
 using MangaRipper.Plugin.MangaHere;
 using MangaRipper.Plugin.MangaReader;
 using MangaRipper.Plugin.NHentai;
@@ -98,30 +97,6 @@ namespace MangaRipper.Test
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
-
-#if DEBUG
-        [Fact]
-        public async Task KissManga_Test()
-        {
-            string url = "https://kissmanga.com/Manga/Onepunch-Man";
-            var service = new KissManga(logger, downloader, new HtmlAtilityPackAdapter(), new JurassicScriptEngine());
-            Assert.True(service.Of(url));
-            var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
-            Assert.True(chapters.Any(), "Cannot find chapters.");
-            var chapter = chapters.Last();
-            Assert.Equal("Onepunch-Man", chapter.Manga);
-            Assert.Equal("Onepunch-Man 001", chapter.DisplayName);
-            Assert.Equal("https://kissmanga.com/Manga/Onepunch-Man/Punch-001?id=369844", chapter.Url);
-            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
-            Assert.Equal(28, images.Count());
-            Assert.StartsWith("https://2.bp.blogspot.com/-daAIY2sJQcE/V8rt280634I/AAAAAAAA404/Ld1A6XZGrvcKioYmulO4MG8RcbPJf8zagCHM/s16000/0001-001.png", images.ToArray()[0]);
-            Assert.StartsWith("https://2.bp.blogspot.com/-cx66pnwxYF4/V8rt3BUIFuI/AAAAAAAA408/C9nPR0AhT-oiTLiUzrKoo_K4JpGhv8OHACHM/s16000/0001-002.png", images.ToArray()[1]);
-            Assert.StartsWith("https://2.bp.blogspot.com/-EfldQUNYKe8/V8rt3cmh-nI/AAAAAAAA41A/_O27IwHy_FkjCy8epn_zhccCy-6KRyCTwCHM/s16000/0001-003.png", images.ToArray()[2]);
-
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
-            Assert.NotNull(imageString);
-        }
-#endif
 
         [Fact]
         public async Task NHentai_Test()

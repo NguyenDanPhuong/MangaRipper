@@ -69,8 +69,10 @@ namespace MangaRipper.Test
         [Fact]
         public async void FindImages()
         {
-            var chapter = new Chapter("Ch.001", "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html");
-            chapter.Manga = "Tian Jiang Xian Shu Nan";
+            var chapter = new Chapter("Ch.001", "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html")
+            {
+                Manga = "Tian Jiang Xian Shu Nan"
+            };
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(15, images.Count());
             Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);

@@ -17,7 +17,7 @@ namespace MangaRipper.Core.Controllers
     public class WorkerController
     {
 
-        private ServiceManager serviceManager { get; }
+        private ServiceManager ServiceManager { get; }
 
         CancellationTokenSource cancelSource;
         readonly SemaphoreSlim semaphore;
@@ -31,7 +31,7 @@ namespace MangaRipper.Core.Controllers
         {
             this.logger = logger;
             logger.Info("> Worker()");
-            serviceManager = sm;
+            ServiceManager = sm;
             this.outputFactory = outputFactory;
             this.downloader = downloader;
             cancelSource = new CancellationTokenSource();
@@ -109,7 +109,7 @@ namespace MangaRipper.Core.Controllers
         {
             var chapter = task.Chapter;
             progress.Report(0);
-            var service = serviceManager.GetService(chapter.Url);
+            var service = ServiceManager.GetService(chapter.Url);
             var images = await service.FindImages(chapter, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
@@ -154,7 +154,7 @@ namespace MangaRipper.Core.Controllers
         {
             progress.Report(0);
             // let service find all chapters in manga
-            var service = serviceManager.GetService(mangaPath);
+            var service = ServiceManager.GetService(mangaPath);
             var chapters = await service.FindChapters(mangaPath, progress, cancelSource.Token);
             progress.Report(100);
             return chapters;

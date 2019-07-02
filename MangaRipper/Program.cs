@@ -60,7 +60,6 @@ namespace MangaRipper
             container.Register<IConfiguration>(() => new Configuration(configPath));
             container.Register<IDownloader, Downloader>();
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
-            container.Register<IScriptEngine, JurassicScriptEngine>();
             container.Register<IRetry, Retry>();
 
             container.Register<IFileManipulation, FileManiuplation>();

@@ -41,13 +41,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jurassic.2.2.2\lib\net35\Jurassic.dll</HintPath>
-    </Reference>
-    <Reference Include="Moq, Version=4.10.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.10.1\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.12.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.12.0\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -97,10 +94,6 @@
     <ProjectReference Include="..\MangaRipper.Core\MangaRipper.Core.csproj">
       <Project>{13effe36-dbb8-4573-9260-b601177f66e3}</Project>
       <Name>MangaRipper.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MangaRipper.Plugin.KissManga\MangaRipper.Plugin.KissManga.csproj">
-      <Project>{ce21343f-3c7f-4161-94a5-3a7ccdd9cf01}</Project>
-      <Name>MangaRipper.Plugin.KissManga</Name>
     </ProjectReference>
     <ProjectReference Include="..\MangaRipper.Plugin.MangaFox\MangaRipper.Plugin.MangaFox.csproj">
       <Project>{f5d529b4-cbb6-46e2-9d32-25cef8365318}</Project>

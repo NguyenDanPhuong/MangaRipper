@@ -50,6 +50,9 @@
       <Name>MangaRipper.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\" mkdir "$(SolutionDir)\MangaRipper\$(OutDir)Plugins\"
