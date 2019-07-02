@@ -12,6 +12,7 @@ using MangaRipper.Core;
 using MangaRipper.Infrastructure;
 using MangaRipper.Core.Outputers;
 using MangaRipper.Core.Renaming;
+using MangaRipper.Core.FilenameDetectors;
 
 namespace MangaRipper
 {
@@ -61,6 +62,10 @@ namespace MangaRipper
             container.Register<IDownloader, Downloader>();
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IRetry, Retry>();
+
+            container.Register<IFilenameDetector, FilenameDetector>();
+            container.Register<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>();
+            
 
             container.Register<IFileManipulation, FileManiuplation>();
             container.Register<IRenamer, RenameByCounter>();
