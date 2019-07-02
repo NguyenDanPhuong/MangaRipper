@@ -16,9 +16,9 @@ namespace MangaRipper.Core.Interfaces
     /// </summary>
     public class Downloader : IDownloader
     {
-        private readonly FilenameDetector filenameDetector;
+        private readonly IFilenameDetector filenameDetector;
 
-        public Downloader(FilenameDetector filenameDetector)
+        public Downloader(IFilenameDetector filenameDetector)
         {
             this.filenameDetector = filenameDetector;
         }

@@ -6,7 +6,6 @@ using MangaRipper.Core.Interfaces;
 using MangaRipper.Plugin.MangaStream;
 using MangaRipper.Plugin.KissManga;
 using MangaRipper.Plugin.MangaHere;
-using MangaRipper.Plugin.MangaFox;
 using MangaRipper.Plugin.MangaReader;
 using MangaRipper.Plugin.NHentai;
 using Moq;
@@ -52,30 +51,6 @@ namespace MangaRipper.Test
             Assert.Equal("https://i10.mangareader.net/naruto/1/naruto-1564773.jpg", images.ToArray()[0]);
             Assert.Equal("https://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
             Assert.Equal("https://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
-
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
-            Assert.NotNull(imageString);
-        }
-
-        [Fact]
-        public async Task MangaFox_Test()
-        {
-            // Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
-            // If we test with a licensed manga, this test will failed.
-            string url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/";
-            var service = new MangaFox(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
-            Assert.True(service.Of(url));
-            var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
-            Assert.True(chapters.Any(), "Cannot find chapters.");
-            var chapter = chapters.Last();
-            Assert.Equal("Tian Jiang Xian Shu Nan Manga", chapter.Manga);
-            Assert.Equal("Tian Jiang Xian Shu Nan 1", chapter.DisplayName);
-            Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
-            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
-            Assert.Equal(15, images.Count());
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);

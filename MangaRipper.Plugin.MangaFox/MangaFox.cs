@@ -52,7 +52,7 @@ namespace MangaRipper.Plugin.MangaFox
             // Provisional solution, the current implementation may not be the best way to go about it.
             chaps = chaps.Select(chap =>
             {
-                chap.Url = $"http:{chap.Url}";
+                chap.Url = $"https://fanfox.net{chap.Url}";
                 return chap;
             });
 
@@ -62,9 +62,17 @@ namespace MangaRipper.Plugin.MangaFox
         private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
         {
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
-            var chaps = selector.SelectMany(input, "//*[self::h3 or self::h4]/a[@class='tips']")
-                .Select(n => new Chapter(n.InnerHtml, n.Attributes["href"]) { Manga = title });
+            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerHtml;
+            var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
+            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerHtml).ToList();
+
+            var chaps = new List<Chapter>();
+            for (int i = 0; i < hrefs.Count(); i++)
+            {
+                var chap = new Chapter(texts[i], hrefs[i]) { Manga = title };
+                chaps.Add(chap);
+            }
+
             return chaps;
         }
 

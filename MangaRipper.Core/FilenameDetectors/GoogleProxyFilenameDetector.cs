@@ -8,7 +8,7 @@ using System.Web;
 
 namespace MangaRipper.Core.FilenameDetectors
 {
-    public class GoogleProxyFilenameDetector
+    public class GoogleProxyFilenameDetector : IGoogleProxyFilenameDetector
     {
         public string ParseFilename(string url)
         {

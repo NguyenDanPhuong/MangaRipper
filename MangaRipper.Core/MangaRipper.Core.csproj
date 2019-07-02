@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomException\MangaRipperException.cs" />
+    <Compile Include="FilenameDetectors\IFilenameDetector.cs" />
+    <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IXPathSelector.cs" />
     <Compile Include="Interfaces\IScriptEngine.cs" />
