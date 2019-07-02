@@ -58,9 +58,8 @@ namespace MangaRipper.Plugin.ReadOPM
                 .Select(n => n.Attributes["src"])
                 .Where(src =>
                 {
-                    Uri validatedUri;
                     return !string.IsNullOrWhiteSpace(src)
-                    && Uri.TryCreate(src, UriKind.Absolute, out validatedUri)
+                    && Uri.TryCreate(src, UriKind.Absolute, out Uri validatedUri)
                     && !string.IsNullOrWhiteSpace(Path.GetFileName(validatedUri.LocalPath));
                 });
 

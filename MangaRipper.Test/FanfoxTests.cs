@@ -112,7 +112,7 @@ namespace MangaRipper.Test
                         }
                         return false;
                     }
-                    catch (NoSuchElementException ex)
+                    catch (NoSuchElementException)
                     {
                         nextButton = null;
                         return true;
