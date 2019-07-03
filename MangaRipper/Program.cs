@@ -13,6 +13,9 @@ using MangaRipper.Infrastructure;
 using MangaRipper.Core.Outputers;
 using MangaRipper.Core.Renaming;
 using MangaRipper.Core.FilenameDetectors;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 
 namespace MangaRipper
 {
@@ -20,7 +23,6 @@ namespace MangaRipper
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static Container container;
-
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -48,12 +50,21 @@ namespace MangaRipper
         private static void Bootstrap()
         {
             container = new Container();
+
             container.RegisterConditional(typeof(Core.Interfaces.ILogger),
                c => typeof(NLogLogger<>).MakeGenericType(c.Consumer.ImplementationType),
                Lifestyle.Transient,
                c => true
                );
 
+
+            container.Register<RemoteWebDriver>(()=> {
+                var options = new ChromeOptions();
+                //options.AddArgument("--window-size=1920,1080");
+                //options.AddArgument("--start-maximized");
+                //options.AddArgument("--headless");
+                return new ChromeDriver(options);
+            }, Lifestyle.Singleton);
 
             container.Register<IOutputFactory, OutputFactory>();
 

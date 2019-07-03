@@ -1,5 +1,8 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +20,19 @@ namespace MangaRipper.Plugin.MangaFox
         private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
+        private readonly RemoteWebDriver webDriver;
 
-        public MangaFox(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry)
+        public WebDriverWait Wait { get; }
+
+        public MangaFox(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver webDriver)
         {
             Logger = myLogger;
             this.downloader = downloader;
             this.selector = selector;
             this.retry = retry;
+            this.webDriver = webDriver;
+            Wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(10));
+
         }
         public SiteInformation GetInformation()
         {
@@ -80,22 +89,43 @@ namespace MangaRipper.Plugin.MangaFox
         {
             progress.Report(0);
 
-            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken));
-            pages = TransformPagesUrl(chapter.Url, pages);
+            webDriver.Url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html";
+            var img = webDriver.FindElementByXPath("//img[@class='reader-main-img']");
+            var imgList = new List<string>();
+            var src = img.GetAttribute("src");
+            imgList.Add(src);
 
-            // find all images in pages
-            int current = 0;
-            var images = new List<string>();
-            foreach (var page in pages)
+            var nextButton = webDriver.FindElementByXPath("//a[@data-page][text()='>']");
+            do
             {
-                string image = await retry.DoAsync(() => DownloadAndParseImage(page, cancellationToken), TimeSpan.FromSeconds(3));
-                images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
+                var currentDatapage = nextButton.GetAttribute("data-page");
+                nextButton.Click();
+                var src2 = img.GetAttribute("src");
+                imgList.Add(src2);
+
+                Wait.Until(driver =>
+                {
+                    try
+                    {
+                        var currentNext = webDriver.FindElementByXPath("//a[@data-page][text()='>']");
+                        if (currentNext.GetAttribute("data-page") != currentDatapage)
+                        {
+                            nextButton = currentNext;
+                            return true;
+                        }
+                        return false;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        nextButton = null;
+                        return true;
+                    }
+                });
+
             }
+            while (nextButton != null && nextButton.Displayed);
             progress.Report(100);
-            return images;
+            return imgList;
         }
 
         private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)

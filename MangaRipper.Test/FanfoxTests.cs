@@ -43,7 +43,7 @@ namespace MangaRipper.Test
 
 
             downloader = new Downloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaFox(logger.Object, downloader, new HtmlAtilityPackAdapter(), new Retry());
+            service = new MangaFox(logger.Object, downloader, new HtmlAtilityPackAdapter(), new Retry(), ChromeDriver);
         }
 
         public void Dispose()
@@ -75,53 +75,12 @@ namespace MangaRipper.Test
             };
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
             Assert.Equal(15, images.Count());
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
-            Assert.StartsWith("https://a.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
+            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
 
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
-        }
-
-        [Fact]
-        public void Test()
-        {
-            ChromeDriver.Url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html";
-            var img = ChromeDriver.FindElementByXPath("//img[@class='reader-main-img']");
-            var imgList = new List<string>();
-            var src = img.GetAttribute("src");
-            imgList.Add(src);
-
-            var nextButton = ChromeDriver.FindElementByXPath("//a[@data-page][text()='>']");
-            do
-            {
-                var currentDatapage = nextButton.GetAttribute("data-page");
-                nextButton.Click();
-                var src2 = img.GetAttribute("src");
-                imgList.Add(src2);
-
-                Wait.Until(driver =>
-                {
-                    try
-                    {
-                        var currentNext = ChromeDriver.FindElementByXPath("//a[@data-page][text()='>']");
-                        if (currentNext.GetAttribute("data-page") != currentDatapage)
-                        {
-                            nextButton = currentNext;
-                            return true;
-                        }
-                        return false;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        nextButton = null;
-                        return true;
-                    }
-                });
-
-            }
-            while (nextButton != null && nextButton.Displayed);
-
         }
     }
 }
