@@ -23,6 +23,7 @@ namespace MangaRipper
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static Container container;
+        static ChromeDriver driver;
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -38,6 +39,9 @@ namespace MangaRipper
 
             Bootstrap();
             Application.Run(container.GetInstance<FormMain>());
+
+            driver.Close();
+            driver.Quit();
             Logger.Info("< Main()");
         }
 
@@ -45,10 +49,14 @@ namespace MangaRipper
         {
             var ex = (Exception)e.ExceptionObject;
             Logger.Fatal(ex, "Unhandled Exception");
+            driver.Close();
+            driver.Quit();
         }
 
         private static void Bootstrap()
         {
+            InitChromeDriver();
+
             container = new Container();
 
             container.RegisterConditional(typeof(Core.Interfaces.ILogger),
@@ -57,14 +65,7 @@ namespace MangaRipper
                c => true
                );
 
-
-            container.Register<RemoteWebDriver>(()=> {
-                var options = new ChromeOptions();
-                //options.AddArgument("--window-size=1920,1080");
-                //options.AddArgument("--start-maximized");
-                //options.AddArgument("--headless");
-                return new ChromeDriver(options);
-            }, Lifestyle.Singleton);
+            container.Register<RemoteWebDriver>(() => driver);
 
             container.Register<IOutputFactory, OutputFactory>();
 
@@ -76,7 +77,7 @@ namespace MangaRipper
 
             container.Register<IFilenameDetector, FilenameDetector>();
             container.Register<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>();
-            
+
 
             container.Register<IFileManipulation, FileManiuplation>();
             container.Register<IRenamer, RenameByCounter>();
@@ -92,6 +93,17 @@ namespace MangaRipper
             container.RegisterDecorator<IDownloader, DownloadLogging>();
             container.Register<FormMain>();
             //container.Verify();
+        }
+
+        private static void InitChromeDriver()
+        {
+            var options = new ChromeOptions();
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--headless");
+            var driverService = ChromeDriverService.CreateDefaultService();
+            driverService.HideCommandPromptWindow = true;
+            driver = new ChromeDriver(driverService, options);
         }
     }
 }

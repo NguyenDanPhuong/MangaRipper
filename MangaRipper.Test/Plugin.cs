@@ -56,27 +56,6 @@ namespace MangaRipper.Test
         }
 
         [Fact]
-        public async Task MangaHere_Test()
-        {
-            string url = "https://www.mangahere.cc/manga/deathtopia/";
-            var service = new MangaHere(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
-            Assert.True(service.Of(url));
-            var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
-            Assert.Equal(66, chapters.Count());
-            var chapter = chapters.Last();
-            Assert.Equal("Deathtopia", chapter.Manga);
-            Assert.Equal("Deathtopia 1", chapter.DisplayName);
-            Assert.Equal("https://www.mangahere.cc/manga/deathtopia/c001/", chapter.Url);
-            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
-            Assert.Equal(59, images.Count());
-            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
-            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);
-            Assert.StartsWith("https://mangatown.secure.footprint.net/store/manga/14771/001.0/compressed/uimg059.jpg", images.ToArray()[58]);
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
-            Assert.NotNull(imageString);
-        }
-
-        [Fact]
         public async Task MangaStream_Test()
         {
             string url = "https://readms.net/manga/dragon_ball_super";

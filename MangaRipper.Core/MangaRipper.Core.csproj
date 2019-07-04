@@ -114,7 +114,6 @@
     <Compile Include="Outputers\IOutputer.cs" />
     <Compile Include="Outputers\IOutputFactory.cs" />
     <Compile Include="Outputers\OutputFactory.cs" />
-    <Compile Include="Providers\CacheProvider.cs" />
     <Compile Include="Renaming\FileManiuplation.cs" />
     <Compile Include="Renaming\IFileManipulation.cs" />
     <Compile Include="Renaming\IRenamer.cs" />

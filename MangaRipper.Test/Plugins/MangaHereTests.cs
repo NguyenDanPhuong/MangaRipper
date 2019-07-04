@@ -3,6 +3,7 @@ using MangaRipper.Core.FilenameDetectors;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Plugin.MangaFox;
+using MangaRipper.Plugin.MangaHere;
 using Moq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -15,35 +16,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MangaRipper.Test
+namespace MangaRipper.Test.Plugins
 {
-    /// <summary>
-    /// Test with unlicensed manga. Appveyor CI is US based and cannot access licensed manga in the US. 
-    /// If we test with a licensed manga, this test will failed.
-    /// </summary>
-    public class FanfoxTests : IDisposable
+
+    public class MangaHereTests : IDisposable
     {
         readonly ChromeDriver ChromeDriver;
         private readonly WebDriverWait Wait;
         readonly Mock<ILogger> logger = new Mock<ILogger>();
         readonly IDownloader downloader;
-        readonly MangaFox service;
+        readonly MangaHere service;
         private readonly CancellationTokenSource source;
 
-        public FanfoxTests()
+        public MangaHereTests()
         {
             source = new CancellationTokenSource();
 
             var options = new ChromeOptions();
-            options.AddArgument("--window-size=1920,1080");
-            options.AddArgument("--start-maximized");
-            options.AddArgument("--headless");
+            //options.AddArgument("--window-size=1920,1080");
+            //options.AddArgument("--start-maximized");
+            //options.AddArgument("--headless");
             ChromeDriver = new ChromeDriver(options);
             Wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(10));
 
 
             downloader = new Downloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaFox(logger.Object, downloader, new HtmlAtilityPackAdapter(), new Retry(), ChromeDriver);
+            service = new MangaHere(logger.Object, downloader, new HtmlAtilityPackAdapter(), new Retry(), ChromeDriver);
         }
 
         public void Dispose()
@@ -55,30 +53,29 @@ namespace MangaRipper.Test
         [Fact]
         public async void FindChapters()
         {
-            string url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/";
+            string url = "https://www.mangahere.cc/manga/deathtopia/";
             Assert.True(service.Of(url));
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
-            Assert.True(chapters.Any(), "Cannot find chapters.");
+            Assert.Equal(66, chapters.Count());
             var chapter = chapters.Last();
-            Assert.Equal("Tian Jiang Xian Shu Nan", chapter.Manga);
-            Assert.Equal("Ch.001", chapter.DisplayName);
-            Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
+            Assert.Equal("Deathtopia", chapter.Manga);
+            Assert.Equal("Ch.001 - Those People", chapter.DisplayName);
+            Assert.Equal("https://www.mangahere.cc/manga/deathtopia/c001/1.html", chapter.Url);
         }
 
 
         [Fact]
         public async void FindImages()
         {
-            var chapter = new Chapter("Ch.001", "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html")
+            var chapter = new Chapter("Ch.001 - Those People", "https://www.mangahere.cc/manga/deathtopia/c001/1.html")
             {
-                Manga = "Tian Jiang Xian Shu Nan"
+                Manga = "Deathtopia"
             };
             var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
-            Assert.Equal(15, images.Count());
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
-
+            Assert.Equal(59, images.Count());
+            Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg059.jpg", images.ToArray()[58]);
             string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }

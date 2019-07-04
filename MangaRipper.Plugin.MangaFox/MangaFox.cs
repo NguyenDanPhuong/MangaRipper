@@ -88,8 +88,7 @@ namespace MangaRipper.Plugin.MangaFox
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-
-            webDriver.Url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html";
+            webDriver.Url = chapter.Url;
             var img = webDriver.FindElementByXPath("//img[@class='reader-main-img']");
             var imgList = new List<string>();
             var src = img.GetAttribute("src");
@@ -125,7 +124,7 @@ namespace MangaRipper.Plugin.MangaFox
             }
             while (nextButton != null && nextButton.Displayed);
             progress.Report(100);
-            return imgList;
+            return await Task.FromResult(imgList);
         }
 
         private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)

@@ -1,5 +1,8 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +21,17 @@ namespace MangaRipper.Plugin.MangaHere
         private readonly IDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
+        private readonly RemoteWebDriver driver;
+        private WebDriverWait Wait;
 
-        public MangaHere(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry)
+        public MangaHere(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver driver)
         {
             logger = myLogger;
             this.downloader = downloader;
             this.selector = selector;
             this.retry = retry;
+            this.driver = driver;
+            Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
         public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
@@ -41,39 +48,63 @@ namespace MangaRipper.Plugin.MangaHere
         private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
         {
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
-            var chaps = selector.SelectMany(input, "//div[contains(@class,'detail_list')]/ul//a")
-                .Select(n =>
-                {
-                    return new Chapter(n.InnerHtml.Trim(), $"http:{n.Attributes["href"]}") { Manga = title };
-                });
+            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerHtml;
+            var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
+            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerHtml).ToList();
+
+            var chaps = new List<Chapter>();
+            for (int i = 0; i < hrefs.Count(); i++)
+            {
+                var chap = new Chapter(texts[i], $"https://www.mangahere.cc{hrefs[i]}") { Manga = title };
+                chaps.Add(chap);
+            }
+
             return chaps;
         }
 
         public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            // find all pages in a chapter
-            var pages = await retry.DoAsync(() =>
-            {
-                return DownloadAndParsePages(chapter, cancellationToken);
-            }, TimeSpan.FromSeconds(3));
+            progress.Report(0);
+            driver.Url = chapter.Url;
+            driver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "www.mangahere.cc", "/", null));
+            driver.Manage().Cookies.AddCookie(new Cookie("isAdult", "1", "www.mangahere.cc", "/", null));
+            driver.Navigate().Refresh();
+            var img = driver.FindElementByXPath("//img[@class='reader-main-img']");
+            var imgList = new List<string>();
+            var src = img.GetAttribute("src");
+            imgList.Add(src);
 
-            // find all images in pages
-            int current = 0;
-            var images = new List<string>();
-            foreach (var page in pages)
+            var nextButton = driver.FindElementByXPath("//a[@data-page][text()='>']");
+            do
             {
-                string image = await retry.DoAsync(() =>
+                var currentDatapage = nextButton.GetAttribute("data-page");
+                nextButton.Click();
+                var src2 = img.GetAttribute("src");
+                imgList.Add(src2);
+
+                Wait.Until(d =>
                 {
-                    return DownloadAndParseImage(page, cancellationToken);
-                }, TimeSpan.FromSeconds(3));
-                images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
-            }
+                    try
+                    {
+                        var currentNext = driver.FindElementByXPath("//a[@data-page][text()='>']");
+                        if (currentNext.GetAttribute("data-page") != currentDatapage)
+                        {
+                            nextButton = currentNext;
+                            return true;
+                        }
+                        return false;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        nextButton = null;
+                        return true;
+                    }
+                });
 
-            return images;
+            }
+            while (nextButton != null && nextButton.Displayed);
+            progress.Report(100);
+            return await Task.FromResult(imgList);
         }
 
         private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)

@@ -38,7 +38,6 @@ namespace MangaRipper.Core.Interfaces
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                GetAllCloudFlareCookies(response);
                 var filename = filenameDetector.GetFilename(url, response.Content.Headers);
                 var fileNameWithPath = Path.Combine(folder, filename);
                 using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
@@ -54,7 +53,6 @@ namespace MangaRipper.Core.Interfaces
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                GetAllCloudFlareCookies(response);
                 return await response.Content.ReadAsStringAsync();
             }
         }
@@ -62,12 +60,8 @@ namespace MangaRipper.Core.Interfaces
         private HttpClient CreateRequest()
         {
             var cookieContainer = new CookieContainer();
-            // Set CloudFlare cookies if we have one
-            if (CacheProvider.Instance.CacheExists("__cfduid") && CacheProvider.Instance.CacheExists("cf_clearance"))
-            {
-                cookieContainer.Add(CacheProvider.Instance.GetCacheValue("__cfduid"));
-                cookieContainer.Add(CacheProvider.Instance.GetCacheValue("cf_clearance"));
-            }
+
+            cookieContainer.Add(new Cookie("isAdult", "1", "/", "www.mangahere.cc"));
 
             var firstHandle = new HttpClientHandler
             {
@@ -80,34 +74,6 @@ namespace MangaRipper.Core.Interfaces
             var cloudFlareHandler = new ClearanceHandler(firstHandle);
             var request = new HttpClient(cloudFlareHandler);
             return request;
-        }
-
-        /// <summary>
-        /// Get cookies which allow us to pass the CloudFlare calculation on next request
-        /// </summary>
-        /// <param name="response">Take the domain and cookies from it</param>
-        private void GetAllCloudFlareCookies(HttpResponseMessage response)
-        {
-            List<string> cookies = response.Headers
-                .Where(pair => pair.Key == "Set-Cookie")
-                .SelectMany(pair => pair.Value)
-                .ToList();
-
-            foreach (var cookie in cookies)
-            {
-                if (cookie.Contains("__cfduid") || cookie.Contains("cf_clearance"))
-                {
-                    var splitNum = cookie.IndexOf('=');
-                    var key = cookie.Substring(0, splitNum);
-                    var domain = response.RequestMessage.RequestUri;
-                    var value = new Cookie(key, cookie.Substring(splitNum + 1))
-                    {
-                        Domain = domain.Host
-                    };
-
-                    CacheProvider.Instance.SetCacheValue(key, value);
-                }
-            }
         }
     }
 }
