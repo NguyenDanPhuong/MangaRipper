@@ -24,6 +24,8 @@ namespace MangaRipper
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static Container container;
         static ChromeDriver driver;
+        static Timer splashTimer;
+        static SplashScreen splash;
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -36,13 +38,27 @@ namespace MangaRipper
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            Bootstrap();
+            splashTimer = new Timer();
+            splashTimer.Interval = 500;
+            splashTimer.Tick += SplashTimer_Tick;
+            splashTimer.Start();
+            splash = new SplashScreen();
+            splash.ShowDialog();
             Application.Run(container.GetInstance<FormMain>());
 
             driver.Close();
             driver.Quit();
             Logger.Info("< Main()");
+        }
+
+        private static void SplashTimer_Tick(object sender, EventArgs e)
+        {
+            if(driver == null && splash.Visible)
+            {
+                splashTimer.Stop();
+                Bootstrap();
+                splash.Close();
+            }
         }
 
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
