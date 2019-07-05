@@ -59,7 +59,6 @@
             this.btnRemoveBookmark = new System.Windows.Forms.Button();
             this.FormToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxForPrefix = new System.Windows.Forms.CheckBox();
-            this.cbUseSeriesFolder = new System.Windows.Forms.CheckBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cbSaveFolder = new System.Windows.Forms.CheckBox();
@@ -76,7 +75,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbDestination = new System.Windows.Forms.Label();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
-            this.cbFileCounter = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
@@ -404,17 +402,6 @@
             this.checkBoxForPrefix.UseVisualStyleBackColor = true;
             this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.checkBoxForPrefix_CheckedChanged);
             // 
-            // cbUseSeriesFolder
-            // 
-            this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbUseSeriesFolder.AutoSize = true;
-            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
-            this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
-            this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
-            this.cbUseSeriesFolder.TabIndex = 29;
-            this.cbUseSeriesFolder.Text = "Save in Series Folder";
-            this.cbUseSeriesFolder.UseVisualStyleBackColor = true;
-            // 
             // txtMessage
             // 
             this.txtMessage.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -455,7 +442,7 @@
             this.cbSaveCbz.AutoSize = true;
             this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
             this.cbSaveCbz.Name = "cbSaveCbz";
-            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
+            this.cbSaveCbz.Size = new System.Drawing.Size(45, 17);
             this.cbSaveCbz.TabIndex = 28;
             this.cbSaveCbz.Text = "CBZ";
             this.cbSaveCbz.UseVisualStyleBackColor = true;
@@ -464,7 +451,6 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.checkBoxForPrefix);
-            this.groupBox2.Controls.Add(this.cbUseSeriesFolder);
             this.groupBox2.Location = new System.Drawing.Point(179, 358);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(258, 41);
@@ -565,23 +551,11 @@
             this.txtSaveTo.TabIndex = 35;
             this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaveTo_KeyPress);
             // 
-            // cbFileCounter
-            // 
-            this.cbFileCounter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbFileCounter.AutoSize = true;
-            this.cbFileCounter.Location = new System.Drawing.Point(443, 375);
-            this.cbFileCounter.Name = "cbFileCounter";
-            this.cbFileCounter.Size = new System.Drawing.Size(87, 17);
-            this.cbFileCounter.TabIndex = 36;
-            this.cbFileCounter.Text = "File counter";
-            this.cbFileCounter.UseVisualStyleBackColor = true;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 610);
-            this.Controls.Add(this.cbFileCounter);
             this.Controls.Add(this.lbDestination);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -668,12 +642,10 @@
         private System.Windows.Forms.ToolStripMenuItem bugReportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label lbDestination;
-        private System.Windows.Forms.CheckBox cbUseSeriesFolder;
         private System.Windows.Forms.CheckBox cbSaveCbz;
         private System.Windows.Forms.CheckBox cbSaveFolder;
         private System.Windows.Forms.TextBox txtSaveTo;
         private System.Windows.Forms.ToolStripMenuItem contributorsToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.CheckBox cbFileCounter;
     }
 }

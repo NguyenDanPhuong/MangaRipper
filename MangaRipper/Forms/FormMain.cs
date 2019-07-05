@@ -26,14 +26,12 @@ namespace MangaRipper.Forms
         private MainViewPresenter Presenter;
         private IEnumerable<IMangaService> MangaServices;
         private WorkerController worker;
-        private readonly IRenamer renamer;
 
-        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc, IRenamer renamer)
+        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
         {
             InitializeComponent();
             MangaServices = mangaServices;
             worker = wc;
-            this.renamer = renamer;
             Presenter = new MainViewPresenter(this, wc);
         }
 
@@ -82,24 +80,13 @@ namespace MangaRipper.Forms
             {
                 var savePath = GetSavePath(item);
                 var task = new DownloadChapterTask(item, savePath, formats);
-                if (cbFileCounter.Checked)
-                {
-                    task.Renamer = renamer;
-                }
                 _downloadQueue.Add(task);
             }
         }
 
         private string GetSavePath(Chapter chapter)
         {
-            if (cbUseSeriesFolder.Checked)
-            {
-                return Path.Combine(txtSaveTo.Text, chapter.Manga.RemoveFileNameInvalidChar(), chapter.DisplayName.RemoveFileNameInvalidChar());
-            }
-            else
-            {
-                return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
-            }
+            return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
         }
 
         private void btnAddAll_Click(object sender, EventArgs e)
@@ -118,10 +105,6 @@ namespace MangaRipper.Forms
             {
                 var savePath = GetSavePath(chapter);
                 var task = new DownloadChapterTask(chapter, savePath, formats);
-                if (cbFileCounter.Checked)
-                {
-                    task.Renamer = renamer;
-                }
                 _downloadQueue.Add(task);
             }
         }
@@ -248,7 +231,6 @@ namespace MangaRipper.Forms
             txtSaveTo.Text = state.SaveTo;
             cbTitleUrl.Text = state.Url;
             cbSaveCbz.Checked = state.CbzChecked;
-            checkBoxForPrefix.Checked = state.PrefixChecked;
 
             dgvQueueChapter.AutoGenerateColumns = false;
             dgvChapter.AutoGenerateColumns = false;
@@ -321,7 +303,6 @@ namespace MangaRipper.Forms
             appConfig.Url = cbTitleUrl.Text;
             appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
-            appConfig.PrefixChecked = checkBoxForPrefix.Checked;
             _appConf.SaveCommonSettings(appConfig);
             _appConf.SaveDownloadChapterTasks(_downloadQueue);
         }

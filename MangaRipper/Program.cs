@@ -38,8 +38,10 @@ namespace MangaRipper
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            splashTimer = new Timer();
-            splashTimer.Interval = 500;
+            splashTimer = new Timer
+            {
+                Interval = 500
+            };
             splashTimer.Tick += SplashTimer_Tick;
             splashTimer.Start();
             splash = new SplashScreen();
@@ -96,7 +98,6 @@ namespace MangaRipper
 
 
             container.Register<IFileManipulation, FileManiuplation>();
-            container.Register<IRenamer, RenameByCounter>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()

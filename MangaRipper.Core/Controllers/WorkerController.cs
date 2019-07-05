@@ -120,11 +120,6 @@ namespace MangaRipper.Core.Controllers
 
             await DownloadImages(images, tempFolder, progress);
 
-            if (task.Renamer != null)
-            {
-                task.Renamer.Run(tempFolder);
-            }
-
             foreach (var format in task.Formats)
             {
                 var factory = outputFactory.CreateOutput(format);
