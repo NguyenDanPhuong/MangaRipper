@@ -61,7 +61,6 @@ namespace MangaRipper.Core.Controllers
                 {
                     cancelSource = new CancellationTokenSource();
                     await semaphore.WaitAsync();
-                    task.IsBusy = true;
                     await DownloadChapter(task, progress);
                 }
                 catch (Exception ex)
@@ -71,7 +70,6 @@ namespace MangaRipper.Core.Controllers
                 }
                 finally
                 {
-                    task.IsBusy = false;
                     semaphore.Release();
                 }
             });

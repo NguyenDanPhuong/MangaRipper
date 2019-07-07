@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using MangaRipper.Core.Models;
+using MangaRipper.Models;
 using Newtonsoft.Json;
 using NLog;
 
@@ -48,7 +49,7 @@ namespace MangaRipper.Helpers
             SaveObject(commonSettings, CommonSettingsFile);
         }
 
-        public void SaveDownloadChapterTasks(BindingList<DownloadChapterTask> tasks)
+        public void SaveDownloadChapterTasks(BindingList<DownloadRow> tasks)
         {
             foreach (var task in tasks)
             {
@@ -57,9 +58,9 @@ namespace MangaRipper.Helpers
             SaveObject(tasks, DownloadChapterTasksFile);
         }
 
-        public BindingList<DownloadChapterTask> LoadDownloadChapterTasks()
+        public BindingList<DownloadRow> LoadDownloadChapterTasks()
         {
-            return LoadObject<BindingList<DownloadChapterTask>>(DownloadChapterTasksFile);
+            return LoadObject<BindingList<DownloadRow>>(DownloadChapterTasksFile);
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace MangaRipper.Forms
     public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private BindingList<DownloadChapterTask> _downloadQueue;
+        private BindingList<DownloadRow> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
@@ -69,10 +69,16 @@ namespace MangaRipper.Forms
             }
             var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as ChapterRow).ToList();
             items.Reverse();
-            foreach (var item in items.Where(i => _downloadQueue.All(r => r.Url != i.Url)))
+            foreach (var chapter in items.Where(i => _downloadQueue.All(r => r.Url != i.Url)))
             {
-                var savePath = GetSavePath(item);
-                var task = new DownloadChapterTask(item.Name, item.Url, savePath, formats);
+                var savePath = GetSavePath(chapter);
+                var task = new DownloadRow
+                {
+                    Name = chapter.Name,
+                    Url = chapter.Url,
+                    SaveToFolder = savePath,
+                    Formats = formats
+                };
                 _downloadQueue.Add(task);
             }
         }
@@ -96,7 +102,13 @@ namespace MangaRipper.Forms
             foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Url != item.Url)))
             {
                 var savePath = GetSavePath(chapter);
-                var task = new DownloadChapterTask(chapter.Name, chapter.Url, savePath, formats);
+                var task = new DownloadRow
+                {
+                    Name = chapter.Name,
+                    Url = chapter.Url,
+                    SaveToFolder = savePath,
+                    Formats = formats
+                };
                 _downloadQueue.Add(task);
             }
         }
@@ -105,7 +117,7 @@ namespace MangaRipper.Forms
         {
             foreach (DataGridViewRow item in dgvQueueChapter.SelectedRows)
             {
-                var chapter = (DownloadChapterTask)item.DataBoundItem;
+                var chapter = (DownloadRow)item.DataBoundItem;
 
                 if (chapter.IsBusy == false)
                     _downloadQueue.Remove(chapter);
@@ -149,7 +161,10 @@ namespace MangaRipper.Forms
             {
                 var chapter = _downloadQueue.First();
 
-                await worker.RunDownloadTaskAsync(chapter, new Progress<int>(c =>
+                var task = new DownloadChapterTask(chapter.Name, chapter.Url, chapter.SaveToFolder, chapter.Formats);
+
+                chapter.IsBusy = true;
+                await worker.RunDownloadTaskAsync(task, new Progress<int>(c =>
                 {
                     foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         if (chapter == item.DataBoundItem)
@@ -158,7 +173,7 @@ namespace MangaRipper.Forms
                             dgvQueueChapter.Refresh();
                         }
                 }));
-
+                chapter.IsBusy = false;
                 _downloadQueue.Remove(chapter);
             }
         }
