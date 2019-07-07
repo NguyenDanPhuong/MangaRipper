@@ -115,14 +115,10 @@
     <Compile Include="Outputers\IOutputer.cs" />
     <Compile Include="Outputers\IOutputFactory.cs" />
     <Compile Include="Outputers\OutputFactory.cs" />
-    <Compile Include="Renaming\FileManiuplation.cs" />
-    <Compile Include="Renaming\IFileManipulation.cs" />
     <Compile Include="Services\HtmlAtilityPackAdapter.cs" />
     <Compile Include="Interfaces\IRetry.cs" />
     <Compile Include="Models\Chapter.cs" />
-    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
-    <Compile Include="Models\IConfiguration.cs" />
     <Compile Include="Providers\ServiceManager.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\Retry.cs" />

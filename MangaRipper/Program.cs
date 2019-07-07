@@ -11,7 +11,6 @@ using MangaRipper.Core.Models;
 using MangaRipper.Core;
 using MangaRipper.Infrastructure;
 using MangaRipper.Core.Outputers;
-using MangaRipper.Core.Renaming;
 using MangaRipper.Core.FilenameDetectors;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
@@ -87,7 +86,6 @@ namespace MangaRipper
             container.Register<IOutputFactory, OutputFactory>();
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
-            container.Register<IConfiguration>(() => new Configuration(configPath));
             container.Register<IDownloader, Downloader>();
             container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
             container.Register<IRetry, Retry>();
@@ -96,7 +94,6 @@ namespace MangaRipper
             container.Register<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>();
 
 
-            container.Register<IFileManipulation, FileManiuplation>();
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()

@@ -27,9 +27,9 @@ namespace MangaRipper.Test.Plugins
             source = new CancellationTokenSource();
 
             var options = new ChromeOptions();
-            //options.AddArgument("--window-size=1920,1080");
-            //options.AddArgument("--start-maximized");
-            //options.AddArgument("--headless");
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--headless");
             ChromeDriver = new ChromeDriver(options);
             Wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(10));
 
