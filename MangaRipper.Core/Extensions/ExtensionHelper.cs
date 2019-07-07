@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace MangaRipper.Core.Extensions
+﻿namespace MangaRipper.Core.Extensions
 {
     public static class ExtensionHelper
     {

@@ -4,8 +4,7 @@
     {
         public string Manga { get; set; }
         public string Name { get; set; }
-        public int Prefix { get; set; }
-        public string DisplayName => Prefix > 0 ? $"[{Prefix:000}] {Name}" : Name;
+
         public string Url { get; set; }
         public Chapter(string name, string url)
         {

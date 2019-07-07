@@ -1,9 +1,6 @@
 ﻿using CloudFlareUtilities;
 using MangaRipper.Core.FilenameDetectors;
-using MangaRipper.Core.Providers;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;

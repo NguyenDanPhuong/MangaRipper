@@ -41,11 +41,11 @@ namespace MangaRipper.Plugin.MangaStream
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
+            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             var pages = selector.SelectMany(input, "//div[contains(@class,'btn-reader-page')]/ul/li/a")
                 .Select(n => n.Attributes["href"])
                 .Select(p => $"https://readms.net{p}");

@@ -13,7 +13,7 @@ using NLog;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Extensions;
-using MangaRipper.Core.Renaming;
+using MangaRipper.Models;
 
 namespace MangaRipper.Forms
 {
@@ -48,18 +48,12 @@ namespace MangaRipper.Forms
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
             btnGetChapter.Enabled = true;
-            dgvChapter.DataSource = chapters.ToList();
+            dgvChapter.DataSource = chapters.Select(c => new ChapterRow(c)).ToList();
             PrefixLogic();
         }
 
         private async void BtnGetChapter_ClickAsync(object sender, EventArgs e)
         {
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                MessageBox.Show("An Internet connection has not been detected.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.Error("Aborting chapter retrieval, no Internet connection.");
-                return;
-            }
             btnGetChapter.Enabled = false;
             var titleUrl = cbTitleUrl.Text;
             await Presenter.OnFindChapters(titleUrl);
@@ -73,18 +67,17 @@ namespace MangaRipper.Forms
                 MessageBox.Show("Please select at least one output format (Folder, Cbz...)");
                 return;
             }
-            var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as Chapter).ToList();
-            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
+            var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as ChapterRow).ToList();
             items.Reverse();
-            foreach (var item in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+            foreach (var item in items.Where(i => _downloadQueue.All(r => r.Url != i.Url)))
             {
                 var savePath = GetSavePath(item);
-                var task = new DownloadChapterTask(item, savePath, formats);
+                var task = new DownloadChapterTask(item.Name, item.Url, savePath, formats);
                 _downloadQueue.Add(task);
             }
         }
 
-        private string GetSavePath(Chapter chapter)
+        private string GetSavePath(ChapterRow chapter)
         {
             return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
         }
@@ -98,13 +91,12 @@ namespace MangaRipper.Forms
                 return;
             }
 
-            var items = (from DataGridViewRow row in dgvChapter.Rows select (Chapter)row.DataBoundItem).ToList();
-            items = ApplicationConfiguration.DeepClone<IEnumerable<Chapter>>(items).ToList();
+            var items = (from DataGridViewRow row in dgvChapter.Rows select (ChapterRow)row.DataBoundItem).ToList();
             items.Reverse();
-            foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Chapter.Url != item.Url)))
+            foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Url != item.Url)))
             {
                 var savePath = GetSavePath(chapter);
-                var task = new DownloadChapterTask(chapter, savePath, formats);
+                var task = new DownloadChapterTask(chapter.Name, chapter.Url, savePath, formats);
                 _downloadQueue.Add(task);
             }
         }
@@ -364,7 +356,7 @@ namespace MangaRipper.Forms
 
         private void PrefixLogic()
         {
-            var chapters = (from DataGridViewRow row in dgvChapter.Rows select row.DataBoundItem as Chapter).ToList();
+            var chapters = (from DataGridViewRow row in dgvChapter.Rows select row.DataBoundItem as ChapterRow).ToList();
             chapters.Reverse();
             chapters.ForEach(r => r.Prefix = checkBoxForPrefix.Checked ? chapters.IndexOf(r) + 1 : 0);
             chapters.Reverse();

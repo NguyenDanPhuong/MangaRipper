@@ -51,9 +51,9 @@ namespace MangaRipper.Plugin.NHentai
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            var pages = (await FindPagesInChapter(chapter.Url, cancellationToken));
+            var pages = (await FindPagesInChapter(chapterUrl, cancellationToken));
 
             // find all images in pages
             int current = 0;

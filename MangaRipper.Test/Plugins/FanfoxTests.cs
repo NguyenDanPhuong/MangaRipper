@@ -1,18 +1,13 @@
 ﻿using MangaRipper.Core;
 using MangaRipper.Core.FilenameDetectors;
 using MangaRipper.Core.Interfaces;
-using MangaRipper.Core.Models;
 using MangaRipper.Plugin.MangaFox;
 using Moq;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MangaRipper.Test.Plugins
@@ -61,7 +56,7 @@ namespace MangaRipper.Test.Plugins
             Assert.True(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
             Assert.Equal("Tian Jiang Xian Shu Nan", chapter.Manga);
-            Assert.Equal("Ch.001", chapter.DisplayName);
+            Assert.Equal("Ch.001", chapter.Name);
             Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
         }
 
@@ -69,11 +64,7 @@ namespace MangaRipper.Test.Plugins
         [Fact]
         public async void FindImages()
         {
-            var chapter = new Chapter("Ch.001", "https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html")
-            {
-                Manga = "Tian Jiang Xian Shu Nan"
-            };
-            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
+            var images = await service.FindImages("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", new Progress<int>(), source.Token);
             Assert.Equal(15, images.Count());
             Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
             Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);

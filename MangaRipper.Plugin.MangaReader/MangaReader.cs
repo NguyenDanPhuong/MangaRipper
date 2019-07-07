@@ -44,17 +44,17 @@ namespace MangaRipper.Plugin.MangaReader
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
+            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             var pages = selector.SelectMany(input, "//select[@id='pageMenu']/option")
                 .Select(n => n.Attributes["value"]);
 
             // transform pages link
             pages = pages.Select(p =>
             {
-                var value = new Uri(new Uri(chapter.Url), p).AbsoluteUri;
+                var value = new Uri(new Uri(chapterUrl), p).AbsoluteUri;
                 return value;
             }).ToList();
 

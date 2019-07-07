@@ -111,11 +111,5 @@ namespace MangaRipper.Helpers
 
             return result == null ? Activator.CreateInstance<T>() : result;
         }
-
-        public static T DeepClone<T>(T chapters)
-        {
-            var json = JsonConvert.SerializeObject(chapters);
-            return JsonConvert.DeserializeObject<T>(json);
-        }
     }
 }

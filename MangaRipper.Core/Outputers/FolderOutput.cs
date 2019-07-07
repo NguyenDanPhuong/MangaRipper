@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core.Extensions;
-using System.IO;
+﻿using System.IO;
 
 namespace MangaRipper.Core.Outputers
 {

@@ -49,11 +49,11 @@ namespace MangaRipper.Plugin.ReadOPM
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
+            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
             var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
                 .Select(n => n.Attributes["src"])
                 .Where(src =>

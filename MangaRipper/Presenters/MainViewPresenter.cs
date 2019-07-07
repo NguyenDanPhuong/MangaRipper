@@ -22,12 +22,12 @@ namespace MangaRipper.Presenters
             worker = wc;
         }
 
-        public async Task OnFindChapters(string obj)
+        public async Task OnFindChapters(string mangaUrl)
         {
             try
             {
                 var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
-                var chapters = await worker.FindChapterListAsync(obj, progressInt);
+                var chapters = await worker.FindChapterListAsync(mangaUrl, progressInt);
                 View.SetChapters(chapters);
             }
             catch (OperationCanceledException ex)

@@ -1,19 +1,13 @@
 ﻿using MangaRipper.Core;
 using MangaRipper.Core.FilenameDetectors;
 using MangaRipper.Core.Interfaces;
-using MangaRipper.Core.Models;
-using MangaRipper.Plugin.MangaFox;
 using MangaRipper.Plugin.MangaHere;
 using Moq;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MangaRipper.Test.Plugins
@@ -59,7 +53,7 @@ namespace MangaRipper.Test.Plugins
             Assert.Equal(66, chapters.Count());
             var chapter = chapters.Last();
             Assert.Equal("Deathtopia", chapter.Manga);
-            Assert.Equal("Ch.001 - Those People", chapter.DisplayName);
+            Assert.Equal("Ch.001 - Those People", chapter.Name);
             Assert.Equal("https://www.mangahere.cc/manga/deathtopia/c001/1.html", chapter.Url);
         }
 
@@ -67,11 +61,7 @@ namespace MangaRipper.Test.Plugins
         [Fact]
         public async void FindImages()
         {
-            var chapter = new Chapter("Ch.001 - Those People", "https://www.mangahere.cc/manga/deathtopia/c001/1.html")
-            {
-                Manga = "Deathtopia"
-            };
-            var images = await service.FindImages(chapter, new Progress<int>(), source.Token);
+            var images = await service.FindImages("https://www.mangahere.cc/manga/deathtopia/c001/1.html", new Progress<int>(), source.Token);
             Assert.Equal(59, images.Count());
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);

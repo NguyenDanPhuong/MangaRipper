@@ -14,7 +14,6 @@ using MangaRipper.Core.Outputers;
 using MangaRipper.Core.Renaming;
 using MangaRipper.Core.FilenameDetectors;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace MangaRipper

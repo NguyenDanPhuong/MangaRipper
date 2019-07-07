@@ -134,6 +134,7 @@
     <Compile Include="Helpers\CommonSettings.cs" />
     <Compile Include="Helpers\UpdateNotification.cs" />
     <Compile Include="Infrastructure\NLogLogger.cs" />
+    <Compile Include="Models\ChapterRow.cs" />
     <Compile Include="Presenters\IMainView.cs" />
     <Compile Include="Presenters\MainViewPresenter.cs" />
     <Compile Include="Program.cs" />

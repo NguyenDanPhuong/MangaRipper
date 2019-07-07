@@ -62,10 +62,10 @@ namespace MangaRipper.Plugin.MangaHere
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            driver.Url = chapter.Url;
+            driver.Url = chapterUrl;
             driver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "www.mangahere.cc", "/", null));
             driver.Manage().Cookies.AddCookie(new Cookie("isAdult", "1", "www.mangahere.cc", "/", null));
             driver.Navigate().Refresh();

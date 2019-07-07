@@ -85,10 +85,10 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            webDriver.Url = chapter.Url;
+            webDriver.Url = chapterUrl;
             var img = webDriver.FindElementByXPath("//img[@class='reader-main-img']");
             var imgList = new List<string>();
             var src = img.GetAttribute("src");

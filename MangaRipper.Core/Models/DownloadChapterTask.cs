@@ -1,5 +1,4 @@
-﻿using MangaRipper.Core.Renaming;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace MangaRipper.Core.Models
@@ -10,8 +9,6 @@ namespace MangaRipper.Core.Models
     /// </summary>
     public class DownloadChapterTask
     {
-        public string Name => Chapter.DisplayName;
-        public string Url => Chapter.Url;
         public string PropFormats
         {
             get
@@ -21,16 +18,18 @@ namespace MangaRipper.Core.Models
             }
         }
 
-        public Chapter Chapter { get; private set; }
+        public string Name { get; }
+        public string Url { get; }
         public string SaveToFolder { get; private set; }
         public IEnumerable<OutputFormat> Formats { get; private set; }
         public bool IsBusy { get; set; }
         public int Percent { get; set; }
 
 
-        public DownloadChapterTask(Chapter chapter, string saveToFolder, IEnumerable<OutputFormat> formats)
+        public DownloadChapterTask(string chapterName, string chapterUrl, string saveToFolder, IEnumerable<OutputFormat> formats)
         {
-            Chapter = chapter;
+            Name = chapterName;
+            Url = chapterUrl;
             SaveToFolder = saveToFolder;
             Formats = formats;
         }
