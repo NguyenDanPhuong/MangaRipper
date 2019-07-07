@@ -85,7 +85,9 @@
   <ItemGroup>
     <Compile Include="Plugins\MangaHereTests.cs" />
     <Compile Include="Plugins\FanfoxTests.cs" />
-    <Compile Include="Plugin.cs" />
+    <Compile Include="Plugins\NHentaiTests.cs" />
+    <Compile Include="Plugins\MangaStreamTests.cs" />
+    <Compile Include="Plugins\MangaReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FilenameDetectorTest.cs" />
     <Compile Include="WinForm.cs" />
