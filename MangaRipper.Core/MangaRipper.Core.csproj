@@ -109,6 +109,7 @@
     <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IXPathSelector.cs" />
+    <Compile Include="Models\DownloadTaskResult.cs" />
     <Compile Include="Outputers\CbzOutput.cs" />
     <Compile Include="Outputers\FolderOutput.cs" />
     <Compile Include="Outputers\IOutputer.cs" />

@@ -159,22 +159,25 @@ namespace MangaRipper.Forms
         {
             while (_downloadQueue.Count > 0)
             {
-                var chapter = _downloadQueue.First();
+                var firstItem = _downloadQueue.First();
 
-                var task = new DownloadChapterTask(chapter.Name, chapter.Url, chapter.SaveToFolder, chapter.Formats);
+                var task = new DownloadChapterTask(firstItem.Name, firstItem.Url, firstItem.SaveToFolder, firstItem.Formats);
 
-                chapter.IsBusy = true;
-                await worker.RunDownloadTaskAsync(task, new Progress<int>(c =>
+                firstItem.IsBusy = true;
+                var taskResult = await worker.RunDownloadTaskAsync(task, new Progress<int>(c =>
                 {
                     foreach (DataGridViewRow item in dgvQueueChapter.Rows)
-                        if (chapter == item.DataBoundItem)
+                        if (firstItem == item.DataBoundItem)
                         {
-                            chapter.Percent = c;
+                            firstItem.Percent = c;
                             dgvQueueChapter.Refresh();
                         }
                 }));
-                chapter.IsBusy = false;
-                _downloadQueue.Remove(chapter);
+                if (!taskResult.Error)
+                {
+                    firstItem.IsBusy = false;
+                    _downloadQueue.Remove(firstItem);
+                }
             }
         }
 

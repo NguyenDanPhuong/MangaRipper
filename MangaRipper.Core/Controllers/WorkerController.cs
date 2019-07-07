@@ -52,11 +52,12 @@ namespace MangaRipper.Core.Controllers
         /// <param name="task">Contain chapter and save to path</param>
         /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task RunDownloadTaskAsync(DownloadChapterTask task, IProgress<int> progress)
+        public async Task<DownloadTaskResult> RunDownloadTaskAsync(DownloadChapterTask task, IProgress<int> progress)
         {
             logger.Info($"> DownloadChapter: {task.Url} To: {task.SaveToFolder}");
-            await Task.Run(async () =>
+            return await Task.Run(async () =>
             {
+                var taskResult = new DownloadTaskResult();
                 try
                 {
                     cancelSource = new CancellationTokenSource();
@@ -66,12 +67,14 @@ namespace MangaRipper.Core.Controllers
                 catch (Exception ex)
                 {
                     logger.Error(ex, $"Failed to download chapter: {task.Url}");
-                    throw;
+                    taskResult.Error = true;
+                    taskResult.Exception = ex;
                 }
                 finally
                 {
                     semaphore.Release();
                 }
+                return taskResult;
             });
         }
 
