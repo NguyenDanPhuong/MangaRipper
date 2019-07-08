@@ -16,23 +16,17 @@ namespace MangaRipper.Core
             {
                 Attributes.Add(item.Name, item.Value);
             }
-            InnerHtml = node.InnerHtml;
+            InnerText = node.InnerText;
         }
 
         public Dictionary<string, string> Attributes { get; set; }
-        public string InnerHtml { get; set; }
+        public string InnerText { get; set; }
     }
     public class HtmlAtilityPackAdapter : IXPathSelector
     {
-        private HtmlDocument source;
-
-        public HtmlAtilityPackAdapter()
-        {
-            source = new HtmlDocument();
-        }
-
         public IEnumerable<MyHtmlNode> SelectMany(string html, string xpath)
         {
+            var source = new HtmlDocument();
             source.LoadHtml(html);
             return source.DocumentNode
                 .SelectNodes(xpath)
@@ -48,6 +42,7 @@ namespace MangaRipper.Core
 
         public MyHtmlNode Select(string html, string xpath)
         {
+            var source = new HtmlDocument();
             source.LoadHtml(html);
             var node = source.DocumentNode.SelectSingleNode(xpath);
             if(node == null)

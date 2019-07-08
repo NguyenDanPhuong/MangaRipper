@@ -35,12 +35,12 @@ namespace MangaRipper.Plugin.ReadOPM
                 .Select(n =>
                 {
                     string url = n.Attributes["href"];
-                    return new Chapter(null, url) { Manga = "One Punch Man" };
+                    return new Chapter(null, url);
                 }).ToList();
 
             var chap_numbers = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a/span[contains(@class, 'chapter__no')]")
-                .Select(n => n.InnerHtml)
+                .Select(n => n.InnerText)
                 .ToList();
 
             chaps.ForEach(c => c.Name = "One Punch Man " + chap_numbers[chaps.IndexOf(c)]);

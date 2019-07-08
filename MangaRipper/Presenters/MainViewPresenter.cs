@@ -14,9 +14,9 @@ namespace MangaRipper.Presenters
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IMainView View { get; set; }
 
-        private WorkerController worker;
+        private IWorkerController worker;
 
-        public MainViewPresenter(IMainView view, WorkerController wc)
+        public MainViewPresenter(IMainView view, IWorkerController wc)
         {
             View = view;
             worker = wc;

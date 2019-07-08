@@ -34,8 +34,7 @@ namespace MangaRipper.Test.Plugins
             var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
             Assert.True(chapters.Any(), "Cannot find chapters.");
             var chapter = chapters.Last();
-            Assert.Equal("Dragon Ball Super", chapter.Manga);
-            Assert.Equal("001 - The God of Destruction's Prophetic Dream", chapter.Name);
+            Assert.Equal("Dragon Ball Super 001 - The God of Destruction's Prophetic Dream", chapter.Name);
             Assert.Equal("https://readms.net/r/dragon_ball_super/001/2831/1", chapter.Url);
            
         }

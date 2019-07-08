@@ -37,6 +37,12 @@ namespace MangaRipper.Core.Interfaces
             {
                 var filename = filenameDetector.GetFilename(url, response.Content.Headers);
                 var fileNameWithPath = Path.Combine(folder, filename);
+
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+
                 using (var streamReader = new FileStream(fileNameWithPath, FileMode.Create, FileAccess.Write))
                 {
                     await response.Content.CopyToAsync(streamReader);

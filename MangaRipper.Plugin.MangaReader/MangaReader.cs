@@ -28,14 +28,14 @@ namespace MangaRipper.Plugin.MangaReader
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//h2[@class='aname']").InnerHtml;
+            var title = selector.Select(input, "//h2[@class='aname']").InnerText;
             var chaps = selector
                 .SelectMany(input, "//table[@id='listing']//a")
                 .Select(n =>
                 {
                     string url = n.Attributes["href"];
                     var resultUrl = new Uri(new Uri(manga), url).AbsoluteUri;
-                    return new Chapter(n.InnerHtml, resultUrl) { Manga = title };
+                    return new Chapter(n.InnerText, resultUrl);
                 });
             // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();

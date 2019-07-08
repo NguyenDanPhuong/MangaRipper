@@ -14,10 +14,10 @@ namespace MangaRipper.Core.Controllers
     /// <summary>
     /// Worker support download manga chapters on back ground thread.
     /// </summary>
-    public class WorkerController
+    public class WorkerController : IWorkerController
     {
 
-        private ServiceManager ServiceManager { get; }
+        private IServiceManager ServiceManager { get; }
 
         CancellationTokenSource cancelSource;
         readonly SemaphoreSlim semaphore;
@@ -27,7 +27,7 @@ namespace MangaRipper.Core.Controllers
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController(ServiceManager sm, ILogger logger, IOutputFactory outputFactory, IDownloader downloader)
+        public WorkerController(IServiceManager sm, ILogger logger, IOutputFactory outputFactory, IDownloader downloader)
         {
             this.logger = logger;
             logger.Info("> Worker()");
@@ -116,7 +116,6 @@ namespace MangaRipper.Core.Controllers
             }), cancelSource.Token);
 
             var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(tempFolder);
 
             await DownloadImages(images, tempFolder, progress);
 

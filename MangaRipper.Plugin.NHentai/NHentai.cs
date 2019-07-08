@@ -97,30 +97,30 @@ namespace MangaRipper.Plugin.NHentai
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
 
             // In case if you open the chapter itself
-            var title = selector.Select(input, "//div[@id='content']//h1").InnerHtml;
+            var title = selector.Select(input, "//div[@id='content']//h1").InnerText;
 
             // If you open the page with number of chapters (artist/character/Group/Tags)
             if (title.Contains("<span"))
             {
                 // Title consist of three parts. e.g. [Character] [nobuna oda] [(6)]
                 // Take the first two
-                var titleType = selector.Select(input, "//div[@id='content']//h1//span").InnerHtml;
-                var titleName = selector.Select(input, "//div[@id='content']//h1//span[2]").InnerHtml;
+                var titleType = selector.Select(input, "//div[@id='content']//h1//span").InnerText;
+                var titleName = selector.Select(input, "//div[@id='content']//h1//span[2]").InnerText;
                 title = titleType + " - " + titleName;
 
                 var chaps = selector.SelectMany(input, "//div[contains(@class, 'container')]//a")
                         .Select(n =>
                         {
-                            string name = NameResolver(n.InnerHtml);
+                            string name = NameResolver(n.InnerText);
                             string url = SiteUrl + n.Attributes["href"];
-                            return new Chapter(name, url) { Manga = title };
+                            return new Chapter(name, url);
                         });
 
                 return chaps;
             }
 
             // We have only one chapter
-            var chap = new Chapter(title, manga) { Manga = title };
+            var chap = new Chapter(title, manga);
 
             return new List<Chapter>() { chap };
         }
@@ -134,7 +134,7 @@ namespace MangaRipper.Plugin.NHentai
         private string NameResolver(string text)
         {
             var htmlAdapter = new HtmlAtilityPackAdapter();
-            return htmlAdapter.Select(text, "//div[contains(@class, 'caption')]").InnerHtml;
+            return htmlAdapter.Select(text, "//div[contains(@class, 'caption')]").InnerText;
         }
 
         #endregion

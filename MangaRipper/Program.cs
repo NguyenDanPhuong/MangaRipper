@@ -14,6 +14,8 @@ using MangaRipper.Core.Outputers;
 using MangaRipper.Core.FilenameDetectors;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
+using MangaRipper.Core.Providers;
+using MangaRipper.Core.Controllers;
 
 namespace MangaRipper
 {
@@ -83,6 +85,8 @@ namespace MangaRipper
 
             container.Register<RemoteWebDriver>(() => driver);
 
+            container.Register<IWorkerController, WorkerController>();
+            container.Register<IServiceManager, ServiceManager>();
             container.Register<IOutputFactory, OutputFactory>();
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");

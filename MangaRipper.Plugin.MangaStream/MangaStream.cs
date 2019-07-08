@@ -29,13 +29,13 @@ namespace MangaRipper.Plugin.MangaStream
             progress.Report(0);
             // find all chapters in a manga
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//h1").InnerHtml;
+            var title = selector.Select(input, "//h1").InnerText;
             var chaps = selector
                 .SelectMany(input, "//td/a")
                 .Select(n =>
                 {
                     string url = $"https://readms.net{n.Attributes["href"]}";
-                    return new Chapter(n.InnerHtml, url) { Manga = title };
+                    return new Chapter($"{title} {n.InnerText}", url);
                 });
             progress.Report(100);
             return chaps;

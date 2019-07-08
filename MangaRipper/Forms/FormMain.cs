@@ -25,9 +25,9 @@ namespace MangaRipper.Forms
 
         private MainViewPresenter Presenter;
         private IEnumerable<IMangaService> MangaServices;
-        private WorkerController worker;
+        private IWorkerController worker;
 
-        public FormMain(IEnumerable<IMangaService> mangaServices, WorkerController wc)
+        public FormMain(IEnumerable<IMangaService> mangaServices, IWorkerController wc)
         {
             InitializeComponent();
             MangaServices = mangaServices;
@@ -74,7 +74,7 @@ namespace MangaRipper.Forms
                 var savePath = GetSavePath(chapter);
                 var task = new DownloadRow
                 {
-                    Name = chapter.Name,
+                    Name = chapter.DisplayName,
                     Url = chapter.Url,
                     SaveToFolder = savePath,
                     Formats = formats
@@ -104,7 +104,7 @@ namespace MangaRipper.Forms
                 var savePath = GetSavePath(chapter);
                 var task = new DownloadRow
                 {
-                    Name = chapter.Name,
+                    Name = chapter.DisplayName,
                     Url = chapter.Url,
                     SaveToFolder = savePath,
                     Formats = formats

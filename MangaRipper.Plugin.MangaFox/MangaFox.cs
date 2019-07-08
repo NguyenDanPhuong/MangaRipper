@@ -50,15 +50,12 @@ namespace MangaRipper.Plugin.MangaFox
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
 
-            // find all chapters in a manga
             IEnumerable<Chapter> chaps = await retry.DoAsync(() =>
             {
                 return DownloadAndParseChapters(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
             progress.Report(100);
 
-            // Insert missing URI schemes in each chapter's URI.
-            // Provisional solution, the current implementation may not be the best way to go about it.
             chaps = chaps.Select(chap =>
             {
                 chap.Url = $"https://fanfox.net{chap.Url}";
@@ -71,14 +68,14 @@ namespace MangaRipper.Plugin.MangaFox
         private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
         {
             string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerHtml;
+            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
             var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
-            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerHtml).ToList();
+            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
 
             var chaps = new List<Chapter>();
             for (int i = 0; i < hrefs.Count(); i++)
             {
-                var chap = new Chapter(texts[i], hrefs[i]) { Manga = title };
+                var chap = new Chapter($"{title} {texts[i]}", hrefs[i]);
                 chaps.Add(chap);
             }
 

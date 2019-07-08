@@ -104,6 +104,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\IWorkerController.cs" />
     <Compile Include="CustomException\MangaRipperException.cs" />
     <Compile Include="FilenameDetectors\IFilenameDetector.cs" />
     <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Outputers\IOutputer.cs" />
     <Compile Include="Outputers\IOutputFactory.cs" />
     <Compile Include="Outputers\OutputFactory.cs" />
+    <Compile Include="Providers\IServiceManager.cs" />
     <Compile Include="Services\HtmlAtilityPackAdapter.cs" />
     <Compile Include="Interfaces\IRetry.cs" />
     <Compile Include="Models\Chapter.cs" />

@@ -36,7 +36,6 @@ namespace MangaRipper.Test.Plugins
             Assert.True(chapters.Any(), "Cannot find chapters.");
             // Well, it's one chapter per url
             var chapter = chapters.Last();
-            Assert.Equal("[Korotsuke] Koopa Hime | Bowsette (New Super Mario Bros. U Deluxe) [English] {darknight}", chapter.Manga);
             Assert.Equal("[Korotsuke] Koopa Hime | Bowsette (New Super Mario Bros. U Deluxe) [English] {darknight}", chapter.Name);
             Assert.Equal("https://nhentai.net/g/247893/", chapter.Url);
         }

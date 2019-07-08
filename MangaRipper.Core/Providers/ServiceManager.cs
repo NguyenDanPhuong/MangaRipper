@@ -7,7 +7,7 @@ namespace MangaRipper.Core.Providers
 {
     /// <summary>
     /// </summary>
-    public class ServiceManager
+    public class ServiceManager : IServiceManager
     {
         IEnumerable<IMangaService> _services;
         private readonly ILogger logger;

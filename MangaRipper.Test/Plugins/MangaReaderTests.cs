@@ -36,7 +36,6 @@ namespace MangaRipper.Test.Plugins
             Assert.True(chapters.Any(), "Cannot find chapters.");
             // Test chapters are in correct order.
             var chapter = chapters.Last();
-            Assert.Equal("Naruto", chapter.Manga);
             Assert.Equal("Naruto 1", chapter.Name);
             Assert.Equal("https://www.mangareader.net/naruto/1", chapter.Url);
             // Test there're no duplicated chapters.
