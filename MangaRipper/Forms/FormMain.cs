@@ -10,10 +10,10 @@ using MangaRipper.Core.Models;
 using MangaRipper.Helpers;
 using MangaRipper.Presenters;
 using NLog;
-using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Extensions;
 using MangaRipper.Models;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Forms
 {
@@ -24,10 +24,10 @@ namespace MangaRipper.Forms
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
-        private IEnumerable<IMangaService> MangaServices;
+        private IEnumerable<IMangaPlugin> MangaServices;
         private IWorkerController worker;
 
-        public FormMain(IEnumerable<IMangaService> mangaServices, IWorkerController wc)
+        public FormMain(IEnumerable<IMangaPlugin> mangaServices, IWorkerController wc)
         {
             InitializeComponent();
             MangaServices = mangaServices;

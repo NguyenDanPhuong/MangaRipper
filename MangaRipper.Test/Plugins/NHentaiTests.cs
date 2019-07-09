@@ -5,9 +5,9 @@ using System.Linq;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Plugin.NHentai;
 using Moq;
-using MangaRipper.Core;
 using MangaRipper.Core.FilenameDetectors;
 using Xunit;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Test.Plugins
 {
@@ -15,15 +15,15 @@ namespace MangaRipper.Test.Plugins
     {
         CancellationTokenSource source;
         readonly ILogger logger;
-        Downloader downloader;
+        HttpDownloader downloader;
         private readonly NHentai service;
 
         public NHentaiTests()
         {
             source = new CancellationTokenSource();
             logger = new Mock<ILogger>().Object;
-            downloader = new Downloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new NHentai(logger, downloader, new HtmlAtilityPackAdapter(), new Retry());
+            downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
+            service = new NHentai(logger, downloader, new XpathSelector(), new Retry());
         }
 
 

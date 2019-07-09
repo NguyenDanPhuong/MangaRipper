@@ -1,6 +1,6 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Plugin.NHentai
 {
-    public class NHentai : IMangaService
+    public class NHentai : IMangaPlugin
     {
         private readonly ILogger Logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
         private readonly string SiteUrl = "https://nhentai.net";
 
-        public NHentai(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry)
+        public NHentai(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry)
         {
             Logger = myLogger;
             this.downloader = downloader;
@@ -133,7 +133,7 @@ namespace MangaRipper.Plugin.NHentai
         /// <returns></returns>
         private string NameResolver(string text)
         {
-            var htmlAdapter = new HtmlAtilityPackAdapter();
+            var htmlAdapter = new XpathSelector();
             return htmlAdapter.Select(text, "//div[contains(@class, 'caption')]").InnerText;
         }
 

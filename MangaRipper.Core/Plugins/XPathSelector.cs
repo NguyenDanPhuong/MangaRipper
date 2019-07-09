@@ -1,28 +1,12 @@
 ﻿using HtmlAgilityPack;
 using MangaRipper.Core.CustomException;
-using MangaRipper.Core.Interfaces;
-using System;
+using MangaRipper.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Plugins
 {
-    public class MyHtmlNode
-    {
-        internal MyHtmlNode(HtmlNode node)
-        {
-            Attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var item in node.Attributes)
-            {
-                Attributes.Add(item.Name, item.Value);
-            }
-            InnerText = node.InnerText;
-        }
-
-        public Dictionary<string, string> Attributes { get; set; }
-        public string InnerText { get; set; }
-    }
-    public class HtmlAtilityPackAdapter : IXPathSelector
+    public class XpathSelector : IXPathSelector
     {
         public IEnumerable<MyHtmlNode> SelectMany(string html, string xpath)
         {

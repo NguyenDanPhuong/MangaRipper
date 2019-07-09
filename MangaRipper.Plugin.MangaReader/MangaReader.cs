@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace MangaRipper.Plugin.MangaReader
     /// <summary>
     /// Support find chapters and images from MangaReader
     /// </summary>
-    public class MangaReader : IMangaService
+    public class MangaReader : IMangaPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public MangaReader(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
+        public MangaReader(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;

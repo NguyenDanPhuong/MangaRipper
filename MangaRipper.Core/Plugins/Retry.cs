@@ -1,9 +1,8 @@
-﻿using MangaRipper.Core.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core
+namespace MangaRipper.Core.Plugins
 {
     public class Retry : IRetry
     {

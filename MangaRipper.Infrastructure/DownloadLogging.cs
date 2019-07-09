@@ -1,15 +1,16 @@
 ﻿using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Plugins;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaRipper.Infrastructure
 {
-    public class DownloadLogging : IDownloader
+    public class DownloadLogging : IHttpDownloader
     {
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly ILogger logger;
 
-        public DownloadLogging(IDownloader downloader, ILogger logger)
+        public DownloadLogging(IHttpDownloader downloader, ILogger logger)
         {
             this.downloader = downloader;
             this.logger = logger;

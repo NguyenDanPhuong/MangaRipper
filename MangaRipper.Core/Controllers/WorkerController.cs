@@ -1,5 +1,4 @@
 ﻿using MangaRipper.Core.Models;
-using MangaRipper.Core.Providers;
 using MangaRipper.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Outputers;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Core.Controllers
 {
@@ -17,17 +17,17 @@ namespace MangaRipper.Core.Controllers
     public class WorkerController : IWorkerController
     {
 
-        private IServiceManager ServiceManager { get; }
+        private IPluginManager ServiceManager { get; }
 
         CancellationTokenSource cancelSource;
         readonly SemaphoreSlim semaphore;
         private readonly ILogger logger;
         private readonly IOutputFactory outputFactory;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
 
         private enum ImageExtensions { Jpeg, Jpg, Png, Gif };
 
-        public WorkerController(IServiceManager sm, ILogger logger, IOutputFactory outputFactory, IDownloader downloader)
+        public WorkerController(IPluginManager sm, ILogger logger, IOutputFactory outputFactory, IHttpDownloader downloader)
         {
             this.logger = logger;
             logger.Info("> Worker()");

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MangaRipper.Core.Models;
+using System.Collections.Generic;
 
-namespace MangaRipper.Core.Interfaces
+namespace MangaRipper.Core.Plugins
 {
     public interface IXPathSelector
     {

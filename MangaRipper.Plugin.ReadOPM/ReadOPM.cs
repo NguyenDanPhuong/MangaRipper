@@ -6,19 +6,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Plugin.ReadOPM
 {
     /// <summary>
     /// Support find chapters, images from readopm
     /// </summary>
-    public class ReadOPM : IMangaService
+    public class ReadOPM : IMangaPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public ReadOPM(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
+        public ReadOPM(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;

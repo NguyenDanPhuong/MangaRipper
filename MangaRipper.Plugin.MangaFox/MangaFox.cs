@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -14,17 +15,17 @@ namespace MangaRipper.Plugin.MangaFox
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    public class MangaFox : IMangaService
+    public class MangaFox : IMangaPlugin
     {
         private readonly ILogger Logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
         private readonly RemoteWebDriver webDriver;
 
         public WebDriverWait Wait { get; }
 
-        public MangaFox(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver webDriver)
+        public MangaFox(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver webDriver)
         {
             Logger = myLogger;
             this.downloader = downloader;

@@ -1,6 +1,6 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.FilenameDetectors;
+﻿using MangaRipper.Core.FilenameDetectors;
 using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Plugins;
 using MangaRipper.Plugin.MangaReader;
 using Moq;
 using System;
@@ -15,15 +15,15 @@ namespace MangaRipper.Test.Plugins
     {
         CancellationTokenSource source;
         readonly ILogger logger;
-        Downloader downloader;
+        IHttpDownloader downloader;
         private readonly MangaReader service;
 
         public MangaReaderTests()
         {
             source = new CancellationTokenSource();
             logger = new Mock<ILogger>().Object;
-            downloader = new Downloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaReader(logger, downloader, new HtmlAtilityPackAdapter());
+            downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
+            service = new MangaReader(logger, downloader, new XpathSelector());
         }
 
         [Fact]

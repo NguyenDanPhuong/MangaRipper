@@ -1,6 +1,6 @@
-﻿using MangaRipper.Core;
-using MangaRipper.Core.FilenameDetectors;
+﻿using MangaRipper.Core.FilenameDetectors;
 using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Plugins;
 using MangaRipper.Plugin.MangaFox;
 using Moq;
 using OpenQA.Selenium.Chrome;
@@ -21,7 +21,7 @@ namespace MangaRipper.Test.Plugins
         readonly ChromeDriver ChromeDriver;
         private readonly WebDriverWait Wait;
         readonly Mock<ILogger> logger = new Mock<ILogger>();
-        readonly IDownloader downloader;
+        readonly IHttpDownloader downloader;
         readonly MangaFox service;
         private readonly CancellationTokenSource source;
 
@@ -37,8 +37,8 @@ namespace MangaRipper.Test.Plugins
             Wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(10));
 
 
-            downloader = new Downloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaFox(logger.Object, downloader, new HtmlAtilityPackAdapter(), new Retry(), ChromeDriver);
+            downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
+            service = new MangaFox(logger.Object, downloader, new XpathSelector(), new Retry(), ChromeDriver);
         }
 
         public void Dispose()

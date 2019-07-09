@@ -1,5 +1,6 @@
 ﻿using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -15,16 +16,16 @@ namespace MangaRipper.Plugin.MangaHere
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    public class MangaHere : IMangaService
+    public class MangaHere : IMangaPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
         private readonly RemoteWebDriver driver;
         private WebDriverWait Wait;
 
-        public MangaHere(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver driver)
+        public MangaHere(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver driver)
         {
             logger = myLogger;
             this.downloader = downloader;

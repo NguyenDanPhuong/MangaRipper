@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using MangaRipper.Core.Models;
 using MangaRipper.Models;
 using Newtonsoft.Json;
 using NLog;

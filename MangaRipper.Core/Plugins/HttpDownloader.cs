@@ -6,16 +6,16 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRipper.Core.Interfaces
+namespace MangaRipper.Core.Plugins
 {
     /// <summary>
     /// Support download web page to string and image file to folder.
     /// </summary>
-    public class Downloader : IDownloader
+    public class HttpDownloader : IHttpDownloader
     {
         private readonly IFilenameDetector filenameDetector;
 
-        public Downloader(IFilenameDetector filenameDetector)
+        public HttpDownloader(IFilenameDetector filenameDetector)
         {
             this.filenameDetector = filenameDetector;
         }

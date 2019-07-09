@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using MangaRipper.Core.CustomException;
 
-namespace MangaRipper.Core.Providers
+namespace MangaRipper.Core.Plugins
 {
     /// <summary>
     /// </summary>
-    public class ServiceManager : IServiceManager
+    public class PluginManager : IPluginManager
     {
-        IEnumerable<IMangaService> _services;
+        IEnumerable<IMangaPlugin> _services;
         private readonly ILogger logger;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public ServiceManager(IEnumerable<IMangaService> mangaServices, ILogger logger)
+        public PluginManager(IEnumerable<IMangaPlugin> mangaServices, ILogger logger)
         {
             this.logger = logger;
             this.logger.Info("> ServiceManager.Init()");
@@ -27,9 +27,9 @@ namespace MangaRipper.Core.Providers
         /// </summary>
         /// <param name="link"></param>
         /// <returns></returns>
-        public IMangaService GetService(string link)
+        public IMangaPlugin GetService(string link)
         {
-            IMangaService service = _services.FirstOrDefault(s => s.Of(link));
+            IMangaPlugin service = _services.FirstOrDefault(s => s.Of(link));
             if (service == null)
             {
                 logger.Error($"Cannot find service for link: {link}");

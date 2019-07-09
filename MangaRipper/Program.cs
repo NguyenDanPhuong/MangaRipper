@@ -4,18 +4,15 @@ using System.Windows.Forms;
 using MangaRipper.Forms;
 using NLog;
 using SimpleInjector;
-using MangaRipper.Core.Interfaces;
 using System.Linq;
 using System.Reflection;
-using MangaRipper.Core.Models;
-using MangaRipper.Core;
 using MangaRipper.Infrastructure;
 using MangaRipper.Core.Outputers;
 using MangaRipper.Core.FilenameDetectors;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
-using MangaRipper.Core.Providers;
 using MangaRipper.Core.Controllers;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper
 {
@@ -86,12 +83,12 @@ namespace MangaRipper
             container.Register<RemoteWebDriver>(() => driver);
 
             container.Register<IWorkerController, WorkerController>();
-            container.Register<IServiceManager, ServiceManager>();
+            container.Register<IPluginManager, PluginManager>();
             container.Register<IOutputFactory, OutputFactory>();
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
-            container.Register<IDownloader, Downloader>();
-            container.Register<IXPathSelector, HtmlAtilityPackAdapter>();
+            container.Register<IHttpDownloader, HttpDownloader>();
+            container.Register<IXPathSelector, XpathSelector>();
             container.Register<IRetry, Retry>();
 
             container.Register<IFilenameDetector, FilenameDetector>();
@@ -104,10 +101,10 @@ namespace MangaRipper
                 .Where(file => file.Extension.ToLower() == ".dll" && file.Name.StartsWith("MangaRipper.Plugin."))
                 .Select(file => Assembly.Load(AssemblyName.GetAssemblyName(file.FullName)));
 
-            container.Collection.Register<IMangaService>(pluginAssemblies);
+            container.Collection.Register<IMangaPlugin>(pluginAssemblies);
 
             container.RegisterDecorator<IXPathSelector, XPathSelectorLogging>();
-            container.RegisterDecorator<IDownloader, DownloadLogging>();
+            container.RegisterDecorator<IHttpDownloader, DownloadLogging>();
             container.Register<FormMain>();
             //container.Verify();
         }
