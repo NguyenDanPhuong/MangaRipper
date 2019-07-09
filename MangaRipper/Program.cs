@@ -13,6 +13,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Core;
+using MangaRipper.Tools.ChromeDriver;
 
 namespace MangaRipper
 {
@@ -39,7 +40,7 @@ namespace MangaRipper
             {
                 Interval = 500
             };
-            splashTimer.Tick += SplashTimer_Tick;
+            splashTimer.Tick += SplashTimer_TickAsync;
             splashTimer.Start();
             splash = new SplashScreen();
             splash.ShowDialog();
@@ -50,11 +51,13 @@ namespace MangaRipper
             Logger.Info("< Main()");
         }
 
-        private static void SplashTimer_Tick(object sender, EventArgs e)
+        private static async void SplashTimer_TickAsync(object sender, EventArgs e)
         {
             if(driver == null && splash.Visible)
             {
                 splashTimer.Stop();
+                var update = new ChromeDriverUpdater(".\\");
+                await update.ExecuteAsync();
                 Bootstrap();
                 splash.Close();
             }

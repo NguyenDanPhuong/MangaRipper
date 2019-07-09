@@ -162,9 +162,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="chromedriver.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -220,6 +217,10 @@
     <ProjectReference Include="..\MangaRipper.Infrastructure\MangaRipper.Infrastructure.csproj">
       <Project>{cde86313-3367-4107-8254-4f3420238177}</Project>
       <Name>MangaRipper.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Tools.ChromeDriver\MangaRipper.Tools.ChromeDriver.csproj">
+      <Project>{b04c284a-5b79-48a7-a34f-6f2406181272}</Project>
+      <Name>MangaRipper.Tools.ChromeDriver</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

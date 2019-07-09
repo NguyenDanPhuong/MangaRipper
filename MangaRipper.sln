@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.ReadOPM"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.NHentai", "MangaRipper.Plugin.NHentai\MangaRipper.Plugin.NHentai.csproj", "{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Tools.ChromeDriver", "MangaRipper.Tools.ChromeDriver\MangaRipper.Tools.ChromeDriver.csproj", "{B04C284A-5B79-48A7-A34F-6F2406181272}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,18 @@ Global
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|x86.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|x86.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|x86.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

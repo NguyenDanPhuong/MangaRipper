@@ -91,6 +91,7 @@
     <Compile Include="Plugins\MangaReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FilenameDetectorTest.cs" />
+    <Compile Include="ChromeDriverUpdateTest.cs" />
     <Compile Include="WinForm.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +119,10 @@
       <Project>{9f550135-8265-469c-b5b5-bccea4d5bc3b}</Project>
       <Name>MangaRipper.Plugin.NHentai</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangaRipper.Tools.ChromeDriver\MangaRipper.Tools.ChromeDriver.csproj">
+      <Project>{b04c284a-5b79-48a7-a34f-6f2406181272}</Project>
+      <Name>MangaRipper.Tools.ChromeDriver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MangaRipper\MangaRipper.csproj">
       <Project>{e4c5d602-ed1e-4c04-b845-74ec5a58530d}</Project>
       <Name>MangaRipper</Name>
@@ -131,11 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="chromedriver.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

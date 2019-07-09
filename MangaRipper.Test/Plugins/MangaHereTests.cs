@@ -2,6 +2,7 @@
 using MangaRipper.Core.Logging;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Plugin.MangaHere;
+using MangaRipper.Tools.ChromeDriver;
 using Moq;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -24,6 +25,8 @@ namespace MangaRipper.Test.Plugins
 
         public MangaHereTests()
         {
+            var updater = new ChromeDriverUpdater(".\\");
+            var result = updater.ExecuteAsync().Result;
             source = new CancellationTokenSource();
 
             var options = new ChromeOptions();
