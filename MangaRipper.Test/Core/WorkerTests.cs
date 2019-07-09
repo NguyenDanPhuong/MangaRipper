@@ -52,7 +52,7 @@ namespace MangaRipper.Test.Core
 
         }
         [Fact]
-        public async void FindChapterListAsync()
+        public async void GetChapterListAsync()
         {
             var mangaUrl = "MANGA1";
 
@@ -97,7 +97,7 @@ namespace MangaRipper.Test.Core
 
             for (int i = 0; i < 5; i++)
             {
-                httpDownloader.Verify(hd => hd.DownloadToFolder("IMG" + (i + 1), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+                httpDownloader.Verify(hd => hd.DownloadFileAsync("IMG" + (i + 1), It.IsAny<string>(), It.IsAny<CancellationToken>()));
             }
 
             outputFactory.Verify(of => of.Create(OutputFormat.Folder), Times.Once);

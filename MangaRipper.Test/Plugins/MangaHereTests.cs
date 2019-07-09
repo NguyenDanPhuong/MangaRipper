@@ -35,7 +35,7 @@ namespace MangaRipper.Test.Plugins
 
 
             downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaHere(logger.Object, downloader, new XpathSelector(), new Retry(), ChromeDriver);
+            service = new MangaHere(logger.Object, downloader, new XPathSelector(), new Retry(), ChromeDriver);
         }
 
         public void Dispose()

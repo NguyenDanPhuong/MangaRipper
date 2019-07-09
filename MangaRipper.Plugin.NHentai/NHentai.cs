@@ -133,7 +133,7 @@ namespace MangaRipper.Plugin.NHentai
         /// <returns></returns>
         private string NameResolver(string text)
         {
-            var htmlAdapter = new XpathSelector();
+            var htmlAdapter = new XPathSelector();
             return htmlAdapter.Select(text, "//div[contains(@class, 'caption')]").InnerText;
         }
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace MangaRipper.Core.Plugins
 {
-    public class XpathSelector : IXPathSelector
+    public class XPathSelector : IXPathSelector
     {
         public IEnumerable<MyHtmlNode> SelectMany(string html, string xpath)
         {

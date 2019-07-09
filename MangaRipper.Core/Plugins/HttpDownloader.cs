@@ -30,7 +30,7 @@ namespace MangaRipper.Core.Plugins
             return await DownloadStringAsyncInternal(url, token);
         }
 
-        public async Task<string> DownloadToFolder(string url, string folder, CancellationToken cancellationToken)
+        public async Task<string> DownloadFileAsync(string url, string folder, CancellationToken cancellationToken)
         {
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))

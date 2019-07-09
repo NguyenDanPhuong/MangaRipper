@@ -88,7 +88,7 @@ namespace MangaRipper
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
             container.Register<IHttpDownloader, HttpDownloader>();
-            container.Register<IXPathSelector, XpathSelector>();
+            container.Register<IXPathSelector, XPathSelector>();
             container.Register<IRetry, Retry>();
 
             container.Register<IFilenameDetector, FilenameDetector>();

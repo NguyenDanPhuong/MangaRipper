@@ -23,7 +23,7 @@ namespace MangaRipper.Test.Plugins
             source = new CancellationTokenSource();
             logger = new Mock<ILogger>().Object;
             downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new NHentai(logger, downloader, new XpathSelector(), new Retry());
+            service = new NHentai(logger, downloader, new XPathSelector(), new Retry());
         }
 
 

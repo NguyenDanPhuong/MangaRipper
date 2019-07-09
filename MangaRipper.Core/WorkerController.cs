@@ -93,7 +93,7 @@ namespace MangaRipper.Core
 
             foreach (var image in images)
             {
-                await downloader.DownloadToFolder(image, tempFolder, cancellationToken);
+                await downloader.DownloadFileAsync(image, tempFolder, cancellationToken);
             }
 
             foreach (var format in task.Formats)
