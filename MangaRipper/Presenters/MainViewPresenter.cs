@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MangaRipper.Core;
 using NLog;
-using MangaRipper.Core.Controllers;
 
 namespace MangaRipper.Presenters
 {
@@ -27,7 +27,8 @@ namespace MangaRipper.Presenters
             try
             {
                 var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
-                var chapters = await worker.FindChapterListAsync(mangaUrl, progressInt);
+                // TODO Keep Token
+                var chapters = await worker.GetChapterListAsync(mangaUrl, progressInt, new System.Threading.CancellationTokenSource().Token);
                 View.SetChapters(chapters);
             }
             catch (OperationCanceledException ex)

@@ -46,7 +46,7 @@ namespace MangaRipper.Plugin.MangaFox
             return uri.Host.Equals("fanfox.net");
         }
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
@@ -83,7 +83,7 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
             webDriver.Url = chapterUrl;

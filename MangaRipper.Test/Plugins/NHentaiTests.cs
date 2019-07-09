@@ -32,7 +32,7 @@ namespace MangaRipper.Test.Plugins
         {
             string url = "https://nhentai.net/g/247893/";
             Assert.True(service.Of(url));
-            var chapters = await service.FindChapters(url, new Progress<int>(), source.Token);
+            var chapters = await service.GetChapters(url, new Progress<int>(), source.Token);
             Assert.True(chapters.Any(), "Cannot find chapters.");
             // Well, it's one chapter per url
             var chapter = chapters.Last();
@@ -43,7 +43,7 @@ namespace MangaRipper.Test.Plugins
         [Fact]
         public async Task FindImages()
         {
-            var images = await service.FindImages("https://nhentai.net/g/247893/", new Progress<int>(), source.Token);
+            var images = await service.GetImages("https://nhentai.net/g/247893/", new Progress<int>(), source.Token);
             Assert.Equal(5, images.Count());
             Assert.StartsWith("https://i.nhentai.net/galleries/1291586/1.jpg", images.ToArray()[0]);
             Assert.StartsWith("https://i.nhentai.net/galleries/1291586/2.jpg", images.ToArray()[1]);

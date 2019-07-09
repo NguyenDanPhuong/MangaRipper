@@ -36,7 +36,7 @@ namespace MangaRipper.Plugin.NHentai
             return uri.Host.Equals("nhentai.net");
         }
 
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
             progress.Report(0);
@@ -51,7 +51,7 @@ namespace MangaRipper.Plugin.NHentai
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var pages = (await FindPagesInChapter(chapterUrl, cancellationToken));
 

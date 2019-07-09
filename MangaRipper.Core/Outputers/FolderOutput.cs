@@ -4,7 +4,7 @@ namespace MangaRipper.Core.Outputers
 {
     class FolderOutput : IOutputer
     {
-        public void CreateOutput(string sourceFolder, string destinationFolder)
+        public void Save(string sourceFolder, string destinationFolder)
         {
             if (!Directory.Exists(destinationFolder))
             {

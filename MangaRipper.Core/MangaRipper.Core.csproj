@@ -104,7 +104,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\IWorkerController.cs" />
+    <Compile Include="IWorkerController.cs" />
     <Compile Include="CustomException\MangaRipperException.cs" />
     <Compile Include="FilenameDetectors\IFilenameDetector.cs" />
     <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
@@ -130,7 +130,7 @@
     <Compile Include="Models\OutputFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SiteInformation.cs" />
-    <Compile Include="Controllers\WorkerController.cs" />
+    <Compile Include="WorkerController.cs" />
     <Compile Include="Plugins\IHttpDownloader.cs" />
     <Compile Include="FilenameDetectors\GoogleProxyFilenameDetector.cs" />
     <Compile Include="FilenameDetectors\FilenameDetector.cs" />

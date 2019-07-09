@@ -11,8 +11,8 @@ using MangaRipper.Core.Outputers;
 using MangaRipper.Core.FilenameDetectors;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
-using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Plugins;
+using MangaRipper.Core;
 
 namespace MangaRipper
 {

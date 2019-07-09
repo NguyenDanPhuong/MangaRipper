@@ -83,6 +83,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Core\WorkerTests.cs" />
     <Compile Include="Plugins\MangaHereTests.cs" />
     <Compile Include="Plugins\FanfoxTests.cs" />
     <Compile Include="Plugins\NHentaiTests.cs" />

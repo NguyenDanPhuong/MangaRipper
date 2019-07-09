@@ -10,10 +10,10 @@ using MangaRipper.Core.Models;
 using MangaRipper.Helpers;
 using MangaRipper.Presenters;
 using NLog;
-using MangaRipper.Core.Controllers;
 using MangaRipper.Core.Extensions;
 using MangaRipper.Models;
 using MangaRipper.Core.Plugins;
+using MangaRipper.Core;
 
 namespace MangaRipper.Forms
 {
@@ -174,7 +174,8 @@ namespace MangaRipper.Forms
                 });
 
                 firstItem.IsBusy = true;
-                var taskResult = await worker.RunDownloadTaskAsync(task, updateProgress);
+                // TODO Keep token source
+                var taskResult = await worker.DownloadChapterAsync(task, updateProgress, new System.Threading.CancellationTokenSource().Token);
                 if (!taskResult.Error)
                 {
                     firstItem.IsBusy = false;
@@ -198,7 +199,7 @@ namespace MangaRipper.Forms
 
         private void BtnStop_Click(object sender, EventArgs e)
         {
-            worker.Cancel();
+            // TODO CANCEL
         }
 
         private void BtnChangeSaveTo_Click(object sender, EventArgs e)

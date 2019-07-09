@@ -25,7 +25,7 @@ namespace MangaRipper.Plugin.ReadOPM
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             progress.Report(0);
@@ -50,7 +50,7 @@ namespace MangaRipper.Plugin.ReadOPM
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(string chapterUrl, IProgress<int> progress,
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress,
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter

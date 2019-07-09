@@ -5,7 +5,7 @@ namespace MangaRipper.Core.Outputers
 {
     public class OutputFactory : IOutputFactory
     {
-        public IOutputer CreateOutput(OutputFormat format)
+        public IOutputer Create(OutputFormat format)
         {
             switch (format)
             {
