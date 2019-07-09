@@ -14,6 +14,7 @@ using MangaRipper.Core.Extensions;
 using MangaRipper.Models;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Core;
+using System.Threading;
 
 namespace MangaRipper.Forms
 {
@@ -26,6 +27,8 @@ namespace MangaRipper.Forms
         private MainViewPresenter Presenter;
         private IEnumerable<IMangaPlugin> MangaServices;
         private IWorkerController worker;
+
+        private CancellationTokenSource cancellationTokenSource;
 
         public FormMain(IEnumerable<IMangaPlugin> mangaServices, IWorkerController wc)
         {
@@ -174,8 +177,8 @@ namespace MangaRipper.Forms
                 });
 
                 firstItem.IsBusy = true;
-                // TODO Keep token source
-                var taskResult = await worker.DownloadChapterAsync(task, updateProgress, new System.Threading.CancellationTokenSource().Token);
+                cancellationTokenSource = new CancellationTokenSource();
+                var taskResult = await worker.DownloadChapterAsync(task, updateProgress, cancellationTokenSource.Token);
                 if (!taskResult.Error)
                 {
                     firstItem.IsBusy = false;
@@ -199,7 +202,7 @@ namespace MangaRipper.Forms
 
         private void BtnStop_Click(object sender, EventArgs e)
         {
-            // TODO CANCEL
+            cancellationTokenSource?.Cancel();
         }
 
         private void BtnChangeSaveTo_Click(object sender, EventArgs e)
