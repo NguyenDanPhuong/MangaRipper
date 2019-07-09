@@ -1,5 +1,5 @@
 ﻿using MangaRipper.Core.FilenameDetectors;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Plugin.MangaStream;
 using Moq;

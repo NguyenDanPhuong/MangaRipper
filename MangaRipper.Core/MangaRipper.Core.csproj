@@ -108,7 +108,7 @@
     <Compile Include="CustomException\MangaRipperException.cs" />
     <Compile Include="FilenameDetectors\IFilenameDetector.cs" />
     <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
-    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Plugins\IXPathSelector.cs" />
     <Compile Include="Models\DownloadTaskResult.cs" />
     <Compile Include="Outputers\CbzOutput.cs" />

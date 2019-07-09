@@ -1,7 +1,7 @@
-﻿using MangaRipper.Core.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MangaRipper.Core.CustomException;
+using MangaRipper.Core.Logging;
 
 namespace MangaRipper.Core.Plugins
 {

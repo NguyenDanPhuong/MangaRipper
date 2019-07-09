@@ -3,7 +3,7 @@ using System;
 
 namespace MangaRipper.Infrastructure
 {
-    public class NLogLogger<T> : Core.Interfaces.ILogger
+    public class NLogLogger<T> : Core.Logging.ILogger
     {
         private static Logger Logger { get; set; }
 

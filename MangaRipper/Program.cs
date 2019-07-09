@@ -74,7 +74,7 @@ namespace MangaRipper
 
             container = new Container();
 
-            container.RegisterConditional(typeof(Core.Interfaces.ILogger),
+            container.RegisterConditional(typeof(Core.Logging.ILogger),
                c => typeof(NLogLogger<>).MakeGenericType(c.Consumer.ImplementationType),
                Lifestyle.Transient,
                c => true

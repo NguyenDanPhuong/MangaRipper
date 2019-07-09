@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Plugins;
 

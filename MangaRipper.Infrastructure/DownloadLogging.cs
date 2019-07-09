@@ -1,4 +1,4 @@
-﻿using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Logging;
 using MangaRipper.Core.Plugins;
 using System.Threading;
 using System.Threading.Tasks;

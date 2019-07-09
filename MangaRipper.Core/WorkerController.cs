@@ -1,13 +1,12 @@
 ﻿using MangaRipper.Core.Models;
-using MangaRipper.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MangaRipper.Core.Outputers;
 using MangaRipper.Core.Plugins;
+using MangaRipper.Core.Logging;
 
 namespace MangaRipper.Core
 {
@@ -17,7 +16,7 @@ namespace MangaRipper.Core
     public class WorkerController : IWorkerController
     {
 
-        private IPluginManager pluginManager { get; }
+        private readonly IPluginManager pluginManager;
 
         private readonly ILogger logger;
         private readonly IOutputFactory outputFactory;

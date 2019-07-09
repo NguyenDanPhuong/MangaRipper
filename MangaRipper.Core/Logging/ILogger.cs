@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MangaRipper.Core.Interfaces
+namespace MangaRipper.Core.Logging
 {
     public interface ILogger
     {

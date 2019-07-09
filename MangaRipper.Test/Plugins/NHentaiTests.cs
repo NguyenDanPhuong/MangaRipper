@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
-using MangaRipper.Core.Interfaces;
 using MangaRipper.Plugin.NHentai;
 using Moq;
 using MangaRipper.Core.FilenameDetectors;
 using Xunit;
 using MangaRipper.Core.Plugins;
+using MangaRipper.Core.Logging;
 
 namespace MangaRipper.Test.Plugins
 {
