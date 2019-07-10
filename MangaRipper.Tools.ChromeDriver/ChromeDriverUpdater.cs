@@ -19,24 +19,15 @@ namespace MangaRipper.Tools.ChromeDriver
             this.driverFolder = driverFolder;
         }
 
-        public async Task<string> ExecuteAsync()
+        public async Task ExecuteAsync()
         {
             string chromeVersion = GetChromeVersion();
-            if (string.IsNullOrEmpty(chromeVersion))
-            {
-                return "You have to install Chrome browser";
-            }
-
             var requiredDriverVersion = await GetCompatibleDriverVersionAsync(chromeVersion);
-
             var currentDriverVersion = GetCurrentDriverVersion();
-
             if (requiredDriverVersion != currentDriverVersion)
             {
                 await UpdateDriverAsync(requiredDriverVersion);
             }
-
-            return "";
         }
 
         private async Task UpdateDriverAsync(string requiredDriverVersion)
@@ -96,12 +87,6 @@ namespace MangaRipper.Tools.ChromeDriver
         private string GetChromeVersion()
         {
             var chromeLocation = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
-            var chromeExeExist = File.Exists(chromeLocation);
-            if (!chromeExeExist)
-            {
-                return "";
-            }
-
             return FileVersionInfo.GetVersionInfo(chromeLocation).FileVersion;
         }
     }

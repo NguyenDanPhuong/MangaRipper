@@ -29,7 +29,7 @@ namespace MangaRipper.Test.Plugins
         public FanfoxTests()
         {
             var updater = new ChromeDriverUpdater(".\\");
-            var result = updater.ExecuteAsync().Result;
+            updater.ExecuteAsync().Wait();
 
             source = new CancellationTokenSource();
 
@@ -73,7 +73,7 @@ namespace MangaRipper.Test.Plugins
             Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
             Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
 
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
     }

@@ -123,7 +123,7 @@
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
-    <Compile Include="Plugins\IMangaPlugin.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\Retry.cs" />
     <Compile Include="Plugins\HttpDownloader.cs" />
     <Compile Include="Extensions\ExtensionHelper.cs" />

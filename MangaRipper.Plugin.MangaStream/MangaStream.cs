@@ -12,7 +12,7 @@ namespace MangaRipper.Plugin.MangaStream
     /// <summary>
     /// Support find chapters, images from MangaStream
     /// </summary>
-    public class MangaStream : IMangaPlugin
+    public class MangaStream : IPlugin
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
@@ -29,7 +29,7 @@ namespace MangaRipper.Plugin.MangaStream
         {
             progress.Report(0);
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//h1").InnerText;
             var chaps = selector
                 .SelectMany(input, "//td/a")
@@ -46,7 +46,7 @@ namespace MangaRipper.Plugin.MangaStream
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
+            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var pages = selector.SelectMany(input, "//div[contains(@class,'btn-reader-page')]/ul/li/a")
                 .Select(n => n.Attributes["href"])
                 .Select(p => $"https://readms.net{p}");
@@ -56,7 +56,7 @@ namespace MangaRipper.Plugin.MangaStream
             var images = new List<string>();
             foreach (var page in pages)
             {
-                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var pageHtml = await downloader.GetStringAsync(page, cancellationToken);
                 var image = selector
                 .Select(pageHtml, "//img[@id='manga-page']")
                 .Attributes["src"];

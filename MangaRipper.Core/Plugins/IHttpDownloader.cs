@@ -5,7 +5,7 @@ namespace MangaRipper.Core.Plugins
 {
     public interface IHttpDownloader
     {
-        Task<string> DownloadStringAsync(string url, CancellationToken token);
-        Task<string> DownloadFileAsync(string url, string folder, CancellationToken cancellationToken);
+        Task<string> GetStringAsync(string url, CancellationToken token);
+        Task<string> GetFileAsync(string url, string folder, CancellationToken cancellationToken);
     }
 }

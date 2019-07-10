@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MangaRipper.Plugin.NHentai
 {
-    public class NHentai : IMangaPlugin
+    public class NHentai : IPlugin
     {
         private readonly ILogger Logger;
         private readonly IHttpDownloader downloader;
@@ -72,7 +72,7 @@ namespace MangaRipper.Plugin.NHentai
 
         private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
         {
-            var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
+            var input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
 
             // <div...id="thumbnail-container"><div class="thumb-container"><a...href="/g/93922/1/">
             var links = selector.SelectMany(input, "//div[@id='thumbnail-container']//div[contains(@class, 'thumb-container')]//a")
@@ -83,7 +83,7 @@ namespace MangaRipper.Plugin.NHentai
 
         private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)
         {
-            var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+            var pageHtml = await downloader.GetStringAsync(page, cancellationToken);
             // <div id="content"><div...id="page-container"><section id="image-container"...><img>
             var image = selector
             .Select(pageHtml, "//div[@id='content']//div[@id='page-container']//section[@id='image-container']//img").Attributes["src"];
@@ -94,7 +94,7 @@ namespace MangaRipper.Plugin.NHentai
 
         private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
         {
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
 
             // In case if you open the chapter itself
             var title = selector.Select(input, "//div[@id='content']//h1").InnerText;

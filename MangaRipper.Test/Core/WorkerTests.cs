@@ -18,7 +18,7 @@ namespace MangaRipper.Test.Core
         private readonly Mock<IOutputFactory> outputFactory;
         private readonly Mock<IHttpDownloader> httpDownloader;
         private readonly Mock<ILogger> logger;
-        private readonly Mock<IMangaPlugin> plugin;
+        private readonly Mock<IPlugin> plugin;
         private readonly Mock<IOutputer> outputFolder;
         private readonly Mock<IOutputer> outputCbz;
         private WorkerController worker;
@@ -30,8 +30,8 @@ namespace MangaRipper.Test.Core
             httpDownloader = new Mock<IHttpDownloader>();
             logger = new Mock<ILogger>();
 
-            plugin = new Mock<IMangaPlugin>();
-            pluginManager.Setup(pm => pm.GetService(It.IsAny<string>())).Returns(plugin.Object);
+            plugin = new Mock<IPlugin>();
+            pluginManager.Setup(pm => pm.GetPlugin(It.IsAny<string>())).Returns(plugin.Object);
 
             plugin.Setup(p => p.GetChapters(It.IsAny<string>(), It.IsAny<IProgress<int>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new Chapter[]
@@ -58,7 +58,7 @@ namespace MangaRipper.Test.Core
 
             var cs = await worker.GetChapterListAsync(mangaUrl, new Progress<int>(), new CancellationTokenSource().Token);
             var chapters = cs.ToList();
-            pluginManager.Verify(pm => pm.GetService(mangaUrl));
+            pluginManager.Verify(pm => pm.GetPlugin(mangaUrl));
 
             plugin.Verify(p => p.GetChapters(mangaUrl, It.IsAny<IProgress<int>>(), It.IsAny<CancellationToken>()));
 
@@ -87,17 +87,17 @@ namespace MangaRipper.Test.Core
                 }.AsEnumerable()));
 
             var task = new DownloadChapterTask("CHAP1", "URL1", "C:\\TEST", new OutputFormat[] { OutputFormat.Folder, OutputFormat.CBZ });
-            var result = await worker.DownloadChapterAsync(task, new Progress<int>(), new CancellationToken());
+            var result = await worker.GetChapterAsync(task, new Progress<int>(), new CancellationToken());
 
             Assert.False(result.Error);
 
-            pluginManager.Verify(pm => pm.GetService("URL1"));
+            pluginManager.Verify(pm => pm.GetPlugin("URL1"));
 
             plugin.Verify(p => p.GetImages("URL1", It.IsAny<Progress<int>>(), It.IsAny<CancellationToken>()));
 
             for (int i = 0; i < 5; i++)
             {
-                httpDownloader.Verify(hd => hd.DownloadFileAsync("IMG" + (i + 1), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+                httpDownloader.Verify(hd => hd.GetFileAsync("IMG" + (i + 1), It.IsAny<string>(), It.IsAny<CancellationToken>()));
             }
 
             outputFactory.Verify(of => of.Create(OutputFormat.Folder), Times.Once);

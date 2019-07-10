@@ -25,12 +25,12 @@ namespace MangaRipper.Forms
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
-        private IEnumerable<IMangaPlugin> MangaServices;
+        private IEnumerable<IPlugin> MangaServices;
         private IWorkerController worker;
 
         private CancellationTokenSource cancellationTokenSource;
 
-        public FormMain(IEnumerable<IMangaPlugin> mangaServices, IWorkerController wc)
+        public FormMain(IEnumerable<IPlugin> mangaServices, IWorkerController wc)
         {
             InitializeComponent();
             MangaServices = mangaServices;
@@ -140,6 +140,7 @@ namespace MangaRipper.Forms
             try
             {
                 btnDownload.Enabled = false;
+                cancellationTokenSource = new CancellationTokenSource();
                 await StartDownload();
             }
             catch (OperationCanceledException ex)
@@ -160,7 +161,7 @@ namespace MangaRipper.Forms
 
         private async Task StartDownload()
         {
-            while (_downloadQueue.Count > 0)
+            while (_downloadQueue.Count > 0 && cancellationTokenSource.IsCancellationRequested == false)
             {
                 var firstItem = _downloadQueue.First();
 
@@ -177,11 +178,10 @@ namespace MangaRipper.Forms
                 });
 
                 firstItem.IsBusy = true;
-                cancellationTokenSource = new CancellationTokenSource();
-                var taskResult = await worker.DownloadChapterAsync(task, updateProgress, cancellationTokenSource.Token);
+                var taskResult = await worker.GetChapterAsync(task, updateProgress, cancellationTokenSource.Token);
+                firstItem.IsBusy = false;
                 if (!taskResult.Error)
                 {
-                    firstItem.IsBusy = false;
                     _downloadQueue.Remove(firstItem);
                 }
             }

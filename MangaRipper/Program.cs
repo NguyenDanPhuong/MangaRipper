@@ -46,8 +46,8 @@ namespace MangaRipper
             splash.ShowDialog();
             Application.Run(container.GetInstance<FormMain>());
 
-            driver.Close();
-            driver.Quit();
+            driver?.Close();
+            driver?.Quit();
             Logger.Info("< Main()");
         }
 
@@ -67,8 +67,8 @@ namespace MangaRipper
         {
             var ex = (Exception)e.ExceptionObject;
             Logger.Fatal(ex, "Unhandled Exception");
-            driver.Close();
-            driver.Quit();
+            driver?.Close();
+            driver?.Quit();
         }
 
         private static void Bootstrap()
@@ -104,7 +104,7 @@ namespace MangaRipper
                 .Where(file => file.Extension.ToLower() == ".dll" && file.Name.StartsWith("MangaRipper.Plugin."))
                 .Select(file => Assembly.Load(AssemblyName.GetAssemblyName(file.FullName)));
 
-            container.Collection.Register<IMangaPlugin>(pluginAssemblies);
+            container.Collection.Register<IPlugin>(pluginAssemblies);
 
             container.RegisterDecorator<IXPathSelector, XPathSelectorLogging>();
             container.RegisterDecorator<IHttpDownloader, DownloadLogging>();

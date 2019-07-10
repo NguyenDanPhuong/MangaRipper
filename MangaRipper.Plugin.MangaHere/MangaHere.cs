@@ -16,7 +16,7 @@ namespace MangaRipper.Plugin.MangaHere
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    public class MangaHere : IMangaPlugin
+    public class MangaHere : IPlugin
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
@@ -37,18 +37,17 @@ namespace MangaRipper.Plugin.MangaHere
         public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            // find all chapters in a manga
             var chapters = await retry.DoAsync(() =>
             {
-                return DownloadAndParseChapters(manga, cancellationToken);
+                return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
             progress.Report(100);
             return chapters;
         }
 
-        private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
+        private async Task<IEnumerable<Chapter>> GetChaptersImpl(string mangaUrl, CancellationToken cancellationToken)
         {
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(mangaUrl, cancellationToken);
             var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
             var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
             var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
@@ -78,6 +77,7 @@ namespace MangaRipper.Plugin.MangaHere
             var nextButton = driver.FindElementByXPath("//a[@data-page][text()='>']");
             do
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var currentDatapage = nextButton.GetAttribute("data-page");
                 nextButton.Click();
                 var src2 = img.GetAttribute("src");
@@ -106,26 +106,6 @@ namespace MangaRipper.Plugin.MangaHere
             while (nextButton != null && nextButton.Displayed);
             progress.Report(100);
             return await Task.FromResult(imgList);
-        }
-
-        private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)
-        {
-            var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
-            var image = selector
-            .Select(pageHtml, "//section[contains(@class,'read_img')]/a/img[@id='image']").Attributes["src"];
-            return image;
-        }
-
-        private async Task<IEnumerable<string>> DownloadAndParsePages(Chapter chapter, CancellationToken cancellationToken)
-        {
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var pages = selector
-                .SelectMany(input, "//section[contains(@class,'readpage_top')]//select[contains(@class,'wid60')]/option[not(text()='Featured')]")
-                .Select(n =>
-                {
-                    return new Uri(new Uri(chapter.Url), n.Attributes["value"]).AbsoluteUri;
-                });
-            return pages;
         }
 
         public SiteInformation GetInformation()

@@ -2,6 +2,6 @@
 {
     public interface IPluginManager
     {
-        IMangaPlugin GetService(string link);
+        IPlugin GetPlugin(string url);
     }
 }

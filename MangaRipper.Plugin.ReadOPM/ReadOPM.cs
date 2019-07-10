@@ -13,7 +13,7 @@ namespace MangaRipper.Plugin.ReadOPM
     /// <summary>
     /// Support find chapters, images from readopm
     /// </summary>
-    public class ReadOPM : IMangaPlugin
+    public class ReadOPM : IPlugin
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
@@ -30,7 +30,7 @@ namespace MangaRipper.Plugin.ReadOPM
         {
             progress.Report(0);
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
             var chaps = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a")
                 .Select(n =>
@@ -54,7 +54,7 @@ namespace MangaRipper.Plugin.ReadOPM
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
+            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
                 .Select(n => n.Attributes["src"])
                 .Where(src =>

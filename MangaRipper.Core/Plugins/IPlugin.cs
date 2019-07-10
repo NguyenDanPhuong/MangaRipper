@@ -9,7 +9,7 @@ namespace MangaRipper.Core.Plugins
     /// <summary>
     /// We have many manga services (web site), each service support finding chapters URL and images URL.
     /// </summary>
-    public interface IMangaPlugin
+    public interface IPlugin
     {
         /// <summary>
         /// The information of service

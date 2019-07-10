@@ -16,16 +16,16 @@ namespace MangaRipper.Infrastructure
             this.logger = logger;
         }
 
-        public Task<string> DownloadStringAsync(string url, CancellationToken token)
+        public Task<string> GetStringAsync(string url, CancellationToken token)
         {
             logger.Info($"> DownloadStringAsync: {url}");
-            return downloader.DownloadStringAsync(url, token);
+            return downloader.GetStringAsync(url, token);
         }
 
-        public Task<string> DownloadFileAsync(string url, string folder, CancellationToken cancellationToken)
+        public Task<string> GetFileAsync(string url, string folder, CancellationToken cancellationToken)
         {
             logger.Info($"> DownloadToFolder: {url}. Folder: {folder}");
-            return downloader.DownloadFileAsync(url, folder, cancellationToken);
+            return downloader.GetFileAsync(url, folder, cancellationToken);
         }
     }
 }

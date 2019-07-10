@@ -26,7 +26,7 @@ namespace MangaRipper.Test.Plugins
         public MangaHereTests()
         {
             var updater = new ChromeDriverUpdater(".\\");
-            var result = updater.ExecuteAsync().Result;
+            updater.ExecuteAsync().Wait();
             source = new CancellationTokenSource();
 
             var options = new ChromeOptions();
@@ -68,7 +68,7 @@ namespace MangaRipper.Test.Plugins
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg059.jpg", images.ToArray()[58]);
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
     }

@@ -15,7 +15,7 @@ namespace MangaRipper.Plugin.MangaFox
     /// <summary>
     /// Support find chapters, images from MangaFox
     /// </summary>
-    public class MangaFox : IMangaPlugin
+    public class MangaFox : IPlugin
     {
         private readonly ILogger Logger;
         private readonly IHttpDownloader downloader;
@@ -53,7 +53,7 @@ namespace MangaRipper.Plugin.MangaFox
 
             IEnumerable<Chapter> chaps = await retry.DoAsync(() =>
             {
-                return DownloadAndParseChapters(manga, cancellationToken);
+                return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
             progress.Report(100);
 
@@ -66,9 +66,9 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
 
-        private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
+        private async Task<IEnumerable<Chapter>> GetChaptersImpl(string manga, CancellationToken cancellationToken)
         {
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
             var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
             var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
@@ -95,6 +95,7 @@ namespace MangaRipper.Plugin.MangaFox
             var nextButton = webDriver.FindElementByXPath("//a[@data-page][text()='>']");
             do
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var currentDatapage = nextButton.GetAttribute("data-page");
                 nextButton.Click();
                 var src2 = img.GetAttribute("src");
@@ -123,31 +124,6 @@ namespace MangaRipper.Plugin.MangaFox
             while (nextButton != null && nextButton.Displayed);
             progress.Report(100);
             return await Task.FromResult(imgList);
-        }
-
-        private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)
-        {
-            var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
-            var image = selector
-            .Select(pageHtml, "//img[@id='image']").Attributes["src"];
-            return image;
-        }
-
-        private async Task<IEnumerable<string>> FindPagesInChapter(string chapterUrl, CancellationToken cancellationToken)
-        {
-            var input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
-            return selector.SelectMany(input, "//form[@id='top_bar']//select[contains(@class,'m')]/option[@value != '0']")
-                .Select(n => n.Attributes["value"]);
-        }
-
-        private IEnumerable<string> TransformPagesUrl(string chapterUrl, IEnumerable<string> pages)
-        {
-            return pages.Select(p =>
-            {
-                var value = new Uri(new Uri(chapterUrl), (p + ".html")).AbsoluteUri;
-
-                return value;
-            });
         }
     }
 }

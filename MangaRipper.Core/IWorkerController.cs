@@ -9,6 +9,6 @@ namespace MangaRipper.Core
     public interface IWorkerController
     {
         Task<IEnumerable<Chapter>> GetChapterListAsync(string mangaPath, IProgress<int> progress, CancellationToken cancellationToken);
-        Task<DownloadTaskResult> DownloadChapterAsync(DownloadChapterTask task, IProgress<int> progress, CancellationToken cancellationToken);
+        Task<DownloadTaskResult> GetChapterAsync(DownloadChapterTask task, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

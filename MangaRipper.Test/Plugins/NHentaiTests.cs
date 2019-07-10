@@ -49,7 +49,7 @@ namespace MangaRipper.Test.Plugins
             Assert.StartsWith("https://i.nhentai.net/galleries/1291586/2.jpg", images.ToArray()[1]);
             Assert.StartsWith("https://i.nhentai.net/galleries/1291586/3.jpg", images.ToArray()[2]);
 
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
     }

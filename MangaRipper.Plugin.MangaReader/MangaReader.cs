@@ -12,7 +12,7 @@ namespace MangaRipper.Plugin.MangaReader
     /// <summary>
     /// Support find chapters and images from MangaReader
     /// </summary>
-    public class MangaReader : IMangaPlugin
+    public class MangaReader : IPlugin
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
@@ -28,7 +28,7 @@ namespace MangaRipper.Plugin.MangaReader
         {
             progress.Report(0);
             // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//h2[@class='aname']").InnerText;
             var chaps = selector
                 .SelectMany(input, "//table[@id='listing']//a")
@@ -48,7 +48,7 @@ namespace MangaRipper.Plugin.MangaReader
         public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapterUrl, cancellationToken);
+            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var pages = selector.SelectMany(input, "//select[@id='pageMenu']/option")
                 .Select(n => n.Attributes["value"]);
 
@@ -64,7 +64,7 @@ namespace MangaRipper.Plugin.MangaReader
             var images = new List<string>();
             foreach (var page in pages)
             {
-                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var pageHtml = await downloader.GetStringAsync(page, cancellationToken);
                 var image = selector
                 .Select(pageHtml, "//img[@id='img']").Attributes["src"];
                 images.Add(image);

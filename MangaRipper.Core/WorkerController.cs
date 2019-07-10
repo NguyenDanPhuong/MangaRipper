@@ -37,7 +37,7 @@ namespace MangaRipper.Core
         /// <param name="task">Contain chapter and save to path</param>
         /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task<DownloadTaskResult> DownloadChapterAsync(DownloadChapterTask task, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<DownloadTaskResult> GetChapterAsync(DownloadChapterTask task, IProgress<int> progress, CancellationToken cancellationToken)
         {
             logger.Info($"> DownloadChapter: {task.Url} To: {task.SaveToFolder}");
             return await Task.Run(async () =>
@@ -83,7 +83,7 @@ namespace MangaRipper.Core
         private async Task DownloadChapterImpl(DownloadChapterTask task, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var plugin = pluginManager.GetService(task.Url);
+            var plugin = pluginManager.GetPlugin(task.Url);
             var images = await plugin.GetImages(task.Url, new Progress<int>(count =>
             {
                 progress.Report(count / 2);
@@ -93,7 +93,7 @@ namespace MangaRipper.Core
 
             foreach (var image in images)
             {
-                await downloader.DownloadFileAsync(image, tempFolder, cancellationToken);
+                await downloader.GetFileAsync(image, tempFolder, cancellationToken);
             }
 
             foreach (var format in task.Formats)
@@ -108,7 +108,7 @@ namespace MangaRipper.Core
         private async Task<IEnumerable<Chapter>> GetChapterListImpl(string mangaPath, IProgress<int> progress, CancellationToken cancellationToken)
         {
             progress.Report(0);
-            var service = pluginManager.GetService(mangaPath);
+            var service = pluginManager.GetPlugin(mangaPath);
             var chapters = await service.GetChapters(mangaPath, progress, cancellationToken);
             progress.Report(100);
             return chapters;

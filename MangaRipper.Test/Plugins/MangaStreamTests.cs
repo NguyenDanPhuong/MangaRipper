@@ -48,7 +48,7 @@ namespace MangaRipper.Test.Plugins
             Assert.StartsWith("https://img.mangastream.com/cdn/manga/107/2831/001a.jpg", images.ToArray()[1]);
             Assert.StartsWith("https://img.mangastream.com/cdn/manga/107/2831/002.png", images.ToArray()[2]);
 
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
     }

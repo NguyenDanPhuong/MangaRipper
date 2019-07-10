@@ -52,7 +52,7 @@ namespace MangaRipper.Test.Plugins
             Assert.Equal("https://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
             Assert.Equal("https://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
 
-            string imageString = await downloader.DownloadStringAsync(images.ToArray()[0], source.Token);
+            string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
         }
     }

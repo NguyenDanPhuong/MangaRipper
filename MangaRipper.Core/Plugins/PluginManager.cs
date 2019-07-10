@@ -9,13 +9,13 @@ namespace MangaRipper.Core.Plugins
     /// </summary>
     public class PluginManager : IPluginManager
     {
-        IEnumerable<IMangaPlugin> _services;
+        IEnumerable<IPlugin> _services;
         private readonly ILogger logger;
 
         /// <summary>
         /// Initialization services.
         /// </summary>
-        public PluginManager(IEnumerable<IMangaPlugin> mangaServices, ILogger logger)
+        public PluginManager(IEnumerable<IPlugin> mangaServices, ILogger logger)
         {
             this.logger = logger;
             this.logger.Info("> ServiceManager.Init()");
@@ -27,9 +27,9 @@ namespace MangaRipper.Core.Plugins
         /// </summary>
         /// <param name="link"></param>
         /// <returns></returns>
-        public IMangaPlugin GetService(string link)
+        public IPlugin GetPlugin(string link)
         {
-            IMangaPlugin service = _services.FirstOrDefault(s => s.Of(link));
+            IPlugin service = _services.FirstOrDefault(s => s.Of(link));
             if (service == null)
             {
                 logger.Error($"Cannot find service for link: {link}");
