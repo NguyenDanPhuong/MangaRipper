@@ -181,6 +181,7 @@ namespace MangaRipper.Forms
                 var taskResult = await worker.GetChapterAsync(task, updateProgress, cancellationTokenSource.Token);
                 firstItem.IsBusy = false;
                 firstItem.Progress = "";
+                dgvQueueChapter.Refresh();
                 if (!taskResult.Error)
                 {
                     _downloadQueue.Remove(firstItem);
