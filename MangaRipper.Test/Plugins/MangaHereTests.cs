@@ -47,7 +47,9 @@ namespace MangaRipper.Test.Plugins
             ChromeDriver.Dispose();
         }
 
+#if DEBUG
         [Fact]
+#endif
         public async void FindChapters()
         {
             string url = "https://www.mangahere.cc/manga/deathtopia/";
@@ -60,7 +62,9 @@ namespace MangaRipper.Test.Plugins
         }
 
 
+#if DEBUG
         [Fact]
+#endif
         public async void FindImages()
         {
             var images = await service.GetImages("https://www.mangahere.cc/manga/deathtopia/c001/1.html", new Progress<string>(), source.Token);

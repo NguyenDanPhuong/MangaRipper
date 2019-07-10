@@ -51,7 +51,9 @@ namespace MangaRipper.Test.Plugins
             ChromeDriver.Dispose();
         }
 
+#if DEBUG
         [Fact]
+#endif
         public async void FindChapters()
         {
             string url = "https://fanfox.net/manga/tian_jiang_xian_shu_nan/";
@@ -63,8 +65,9 @@ namespace MangaRipper.Test.Plugins
             Assert.Equal("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", chapter.Url);
         }
 
-
+#if DEBUG
         [Fact]
+#endif
         public async void FindImages()
         {
             var images = await service.GetImages("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", new Progress<string>(), source.Token);
