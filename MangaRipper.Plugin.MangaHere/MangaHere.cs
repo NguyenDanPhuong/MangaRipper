@@ -34,14 +34,12 @@ namespace MangaRipper.Plugin.MangaHere
             this.driver = driver;
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
             var chapters = await retry.DoAsync(() =>
             {
                 return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
-            progress.Report(100);
             return chapters;
         }
 
@@ -62,9 +60,8 @@ namespace MangaRipper.Plugin.MangaHere
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
             driver.Url = chapterUrl;
             driver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "www.mangahere.cc", "/", null));
             driver.Manage().Cookies.AddCookie(new Cookie("isAdult", "1", "www.mangahere.cc", "/", null));
@@ -82,7 +79,7 @@ namespace MangaRipper.Plugin.MangaHere
                 nextButton.Click();
                 var src2 = img.GetAttribute("src");
                 imgList.Add(src2);
-
+                progress.Report("Detecting: " + imgList.Count);
                 Wait.Until(d =>
                 {
                     try
@@ -104,7 +101,6 @@ namespace MangaRipper.Plugin.MangaHere
 
             }
             while (nextButton != null && nextButton.Displayed);
-            progress.Report(100);
             return await Task.FromResult(imgList);
         }
 

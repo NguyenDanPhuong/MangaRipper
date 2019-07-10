@@ -32,7 +32,7 @@ namespace MangaRipper.Test.Plugins
             string url = "https://www.mangareader.net/naruto";
             Assert.True(service.Of(url));
             // Test service can find chapters
-            var chapters = await service.GetChapters(url, new Progress<int>(), source.Token);
+            var chapters = await service.GetChapters(url, new Progress<string>(), source.Token);
             Assert.True(chapters.Any(), "Cannot find chapters.");
             // Test chapters are in correct order.
             var chapter = chapters.Last();
@@ -46,7 +46,7 @@ namespace MangaRipper.Test.Plugins
         [Fact]
         public async Task FindImages()
         {
-            var images = await service.GetImages("https://www.mangareader.net/naruto/1", new Progress<int>(), source.Token);
+            var images = await service.GetImages("https://www.mangareader.net/naruto/1", new Progress<string>(), source.Token);
             Assert.Equal(53, images.Count());
             Assert.Equal("https://i10.mangareader.net/naruto/1/naruto-1564773.jpg", images.ToArray()[0]);
             Assert.Equal("https://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);

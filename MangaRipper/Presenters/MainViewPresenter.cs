@@ -26,7 +26,7 @@ namespace MangaRipper.Presenters
         {
             try
             {
-                var progressInt = new Progress<int>(progress => View.SetChaptersProgress(progress + @"%"));
+                var progressInt = new Progress<string>(progress => View.SetChaptersProgress(progress));
                 // TODO Keep Token
                 var chapters = await worker.GetChapterListAsync(mangaUrl, progressInt, new System.Threading.CancellationTokenSource().Token);
                 View.SetChapters(chapters);

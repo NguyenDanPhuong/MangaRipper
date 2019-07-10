@@ -167,12 +167,12 @@ namespace MangaRipper.Forms
 
                 var task = new DownloadChapterTask(firstItem.Name, firstItem.Url, firstItem.SaveToFolder, firstItem.Formats);
 
-                var updateProgress = new Progress<int>(c =>
+                var updateProgress = new Progress<string>(c =>
                 {
                     foreach (DataGridViewRow item in dgvQueueChapter.Rows)
                         if (firstItem == item.DataBoundItem)
                         {
-                            firstItem.Percent = c;
+                            firstItem.Progress = c;
                             dgvQueueChapter.Refresh();
                         }
                 });
@@ -180,6 +180,7 @@ namespace MangaRipper.Forms
                 firstItem.IsBusy = true;
                 var taskResult = await worker.GetChapterAsync(task, updateProgress, cancellationTokenSource.Token);
                 firstItem.IsBusy = false;
+                firstItem.Progress = "";
                 if (!taskResult.Error)
                 {
                     _downloadQueue.Remove(firstItem);

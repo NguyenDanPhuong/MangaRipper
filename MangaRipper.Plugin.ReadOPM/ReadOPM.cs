@@ -25,11 +25,9 @@ namespace MangaRipper.Plugin.ReadOPM
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var chaps = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a")
@@ -45,15 +43,13 @@ namespace MangaRipper.Plugin.ReadOPM
                 .ToList();
 
             chaps.ForEach(c => c.Name = "One Punch Man " + chap_numbers[chaps.IndexOf(c)]);
-
-            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress,
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            // find all pages in a chapter
+            progress.Report("Detecting...");
             string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
                 .Select(n => n.Attributes["src"])

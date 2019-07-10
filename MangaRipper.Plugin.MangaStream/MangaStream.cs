@@ -24,11 +24,9 @@ namespace MangaRipper.Plugin.MangaStream
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//h1").InnerText;
             var chaps = selector
@@ -38,11 +36,10 @@ namespace MangaRipper.Plugin.MangaStream
                     string url = $"https://readms.net{n.Attributes["href"]}";
                     return new Chapter($"{title} {n.InnerText}", url);
                 });
-            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress,
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
@@ -52,7 +49,6 @@ namespace MangaRipper.Plugin.MangaStream
                 .Select(p => $"https://readms.net{p}");
 
             // find all images in pages
-            int current = 0;
             var images = new List<string>();
             foreach (var page in pages)
             {
@@ -62,9 +58,7 @@ namespace MangaRipper.Plugin.MangaStream
                 .Attributes["src"];
 
                 images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
+                progress.Report("Detecting: " + images.Count);
             }
             return images.Select(i => $"https:{i}");
         }

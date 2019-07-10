@@ -52,7 +52,7 @@ namespace MangaRipper.Test.Plugins
         {
             string url = "https://www.mangahere.cc/manga/deathtopia/";
             Assert.True(service.Of(url));
-            var chapters = await service.GetChapters(url, new Progress<int>(), source.Token);
+            var chapters = await service.GetChapters(url, new Progress<string>(), source.Token);
             Assert.Equal(66, chapters.Count());
             var chapter = chapters.Last();
             Assert.Equal("Deathtopia Ch.001 - Those People", chapter.Name);
@@ -63,7 +63,7 @@ namespace MangaRipper.Test.Plugins
         [Fact]
         public async void FindImages()
         {
-            var images = await service.GetImages("https://www.mangahere.cc/manga/deathtopia/c001/1.html", new Progress<int>(), source.Token);
+            var images = await service.GetImages("https://www.mangahere.cc/manga/deathtopia/c001/1.html", new Progress<string>(), source.Token);
             Assert.Equal(60, images.Count());
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg001.jpg", images.ToArray()[0]);
             Assert.StartsWith("https://l.mangatown.com/store/manga/14771/001.0/compressed/uimg002.jpg", images.ToArray()[1]);

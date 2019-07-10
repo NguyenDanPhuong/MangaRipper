@@ -46,16 +46,14 @@ namespace MangaRipper.Plugin.MangaFox
             return uri.Host.Equals("fanfox.net");
         }
 
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
-            progress.Report(0);
 
             IEnumerable<Chapter> chaps = await retry.DoAsync(() =>
             {
                 return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
-            progress.Report(100);
 
             chaps = chaps.Select(chap =>
             {
@@ -83,9 +81,8 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
             webDriver.Url = chapterUrl;
             var img = webDriver.FindElementByXPath("//img[@class='reader-main-img']");
             var imgList = new List<string>();
@@ -100,7 +97,7 @@ namespace MangaRipper.Plugin.MangaFox
                 nextButton.Click();
                 var src2 = img.GetAttribute("src");
                 imgList.Add(src2);
-
+                progress.Report("Detecting: " + imgList.Count);
                 Wait.Until(driver =>
                 {
                     try
@@ -122,7 +119,6 @@ namespace MangaRipper.Plugin.MangaFox
 
             }
             while (nextButton != null && nextButton.Displayed);
-            progress.Report(100);
             return await Task.FromResult(imgList);
         }
     }

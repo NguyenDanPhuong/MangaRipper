@@ -33,7 +33,7 @@ namespace MangaRipper.Test.Core
             plugin = new Mock<IPlugin>();
             pluginManager.Setup(pm => pm.GetPlugin(It.IsAny<string>())).Returns(plugin.Object);
 
-            plugin.Setup(p => p.GetChapters(It.IsAny<string>(), It.IsAny<IProgress<int>>(), It.IsAny<CancellationToken>()))
+            plugin.Setup(p => p.GetChapters(It.IsAny<string>(), It.IsAny<IProgress<string>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new Chapter[]
                 {
                     new Chapter("NAME1", "URL1"),
@@ -56,11 +56,11 @@ namespace MangaRipper.Test.Core
         {
             var mangaUrl = "MANGA1";
 
-            var cs = await worker.GetChapterListAsync(mangaUrl, new Progress<int>(), new CancellationTokenSource().Token);
+            var cs = await worker.GetChapterListAsync(mangaUrl, new Progress<string>(), new CancellationTokenSource().Token);
             var chapters = cs.ToList();
             pluginManager.Verify(pm => pm.GetPlugin(mangaUrl));
 
-            plugin.Verify(p => p.GetChapters(mangaUrl, It.IsAny<IProgress<int>>(), It.IsAny<CancellationToken>()));
+            plugin.Verify(p => p.GetChapters(mangaUrl, It.IsAny<IProgress<string>>(), It.IsAny<CancellationToken>()));
 
             Assert.Equal(5, chapters.Count());
 
@@ -76,7 +76,7 @@ namespace MangaRipper.Test.Core
         [Fact]
         public async void DownloadChapterAsync()
         {
-            plugin.Setup(p => p.GetImages("URL1", It.IsAny<Progress<int>>(), It.IsAny<CancellationToken>()))
+            plugin.Setup(p => p.GetImages("URL1", It.IsAny<Progress<string>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new string[] 
                 {
                     "IMG1",
@@ -87,13 +87,13 @@ namespace MangaRipper.Test.Core
                 }.AsEnumerable()));
 
             var task = new DownloadChapterTask("CHAP1", "URL1", "C:\\TEST", new OutputFormat[] { OutputFormat.Folder, OutputFormat.CBZ });
-            var result = await worker.GetChapterAsync(task, new Progress<int>(), new CancellationToken());
+            var result = await worker.GetChapterAsync(task, new Progress<string>(), new CancellationToken());
 
             Assert.False(result.Error);
 
             pluginManager.Verify(pm => pm.GetPlugin("URL1"));
 
-            plugin.Verify(p => p.GetImages("URL1", It.IsAny<Progress<int>>(), It.IsAny<CancellationToken>()));
+            plugin.Verify(p => p.GetImages("URL1", It.IsAny<Progress<string>>(), It.IsAny<CancellationToken>()));
 
             for (int i = 0; i < 5; i++)
             {

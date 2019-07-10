@@ -11,7 +11,7 @@ namespace MangaRipper.Models
         public string SaveToFolder { get; set; }
         public IEnumerable<OutputFormat> Formats { get; set; }
         public bool IsBusy { get; set; }
-        public int Percent { get; internal set; }
+        public string Progress { get; internal set; }
 
         public string PropFormats
         {

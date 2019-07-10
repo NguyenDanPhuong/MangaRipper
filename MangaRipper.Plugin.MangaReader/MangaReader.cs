@@ -24,10 +24,8 @@ namespace MangaRipper.Plugin.MangaReader
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var title = selector.Select(input, "//h2[@class='aname']").InnerText;
             var chaps = selector
@@ -38,14 +36,11 @@ namespace MangaRipper.Plugin.MangaReader
                     var resultUrl = new Uri(new Uri(manga), url).AbsoluteUri;
                     return new Chapter(n.InnerText, resultUrl);
                 });
-            // reverse chapters order and remove duplicated chapters in latest section
             chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
-            // transform pages link
-            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
             string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
@@ -60,7 +55,6 @@ namespace MangaRipper.Plugin.MangaReader
             }).ToList();
 
             // find all images in pages
-            int current = 0;
             var images = new List<string>();
             foreach (var page in pages)
             {
@@ -68,9 +62,8 @@ namespace MangaRipper.Plugin.MangaReader
                 var image = selector
                 .Select(pageHtml, "//img[@id='img']").Attributes["src"];
                 images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
+                
+                progress.Report("Detecting: " + images.Count);
             }
 
             return images;

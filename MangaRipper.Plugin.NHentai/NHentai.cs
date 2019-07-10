@@ -36,37 +36,26 @@ namespace MangaRipper.Plugin.NHentai
             return uri.Host.Equals("nhentai.net");
         }
 
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
-            progress.Report(0);
-
-            // find all chapters in a manga
             IEnumerable<Chapter> chaps = await retry.DoAsync(() =>
             {
                 return DownloadAndParseChapters(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
-            progress.Report(100);
-
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             var pages = (await FindPagesInChapter(chapterUrl, cancellationToken));
-
-            // find all images in pages
-            int current = 0;
             var images = new List<string>();
             foreach (var page in pages)
             {
                 string image = await retry.DoAsync(() => DownloadAndParseImage(page, cancellationToken), TimeSpan.FromSeconds(3));
                 images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
+                progress.Report("Detecting: " + images.Count);
             }
-            progress.Report(100);
             return images;
         }
 
