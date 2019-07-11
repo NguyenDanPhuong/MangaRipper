@@ -1,5 +1,9 @@
-﻿using MangaRipper.Core.Interfaces;
+﻿using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,93 +16,97 @@ namespace MangaRipper.Plugin.MangaHere
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
-    public class MangaHere : IMangaService
+    public class MangaHere : IPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
         private readonly IRetry retry;
+        private readonly RemoteWebDriver driver;
+        private WebDriverWait Wait;
 
-        public MangaHere(ILogger myLogger, IDownloader downloader, IXPathSelector selector, IRetry retry)
+        public MangaHere(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver driver)
         {
             logger = myLogger;
             this.downloader = downloader;
             this.selector = selector;
             this.retry = retry;
+            this.driver = driver;
+            Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
             var chapters = await retry.DoAsync(() =>
             {
-                return DownloadAndParseChapters(manga, cancellationToken);
+                return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
-            progress.Report(100);
             return chapters;
         }
 
-        private async Task<IEnumerable<Chapter>> DownloadAndParseChapters(string manga, CancellationToken cancellationToken)
+        private async Task<IEnumerable<Chapter>> GetChaptersImpl(string mangaUrl, CancellationToken cancellationToken)
         {
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//meta[@property='og:title']").Attributes["content"];
-            var chaps = selector.SelectMany(input, "//div[contains(@class,'detail_list')]/ul//a")
-                .Select(n =>
-                {
-                    return new Chapter(n.InnerHtml.Trim(), $"http:{n.Attributes["href"]}") { Manga = title };
-                });
+            string input = await downloader.GetStringAsync(mangaUrl, cancellationToken);
+            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
+            var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
+            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
+
+            var chaps = new List<Chapter>();
+            for (int i = 0; i < hrefs.Count(); i++)
+            {
+                var chap = new Chapter($"{title} {texts[i]}", $"https://www.mangahere.cc{hrefs[i]}");
+                chaps.Add(chap);
+            }
+
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
-            // find all pages in a chapter
-            var pages = await retry.DoAsync(() =>
+            driver.Url = chapterUrl;
+            driver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "www.mangahere.cc", "/", null));
+            driver.Manage().Cookies.AddCookie(new Cookie("isAdult", "1", "www.mangahere.cc", "/", null));
+            driver.Navigate().Refresh();
+            var img = driver.FindElementByXPath("//img[@class='reader-main-img']");
+            var imgList = new List<string>();
+            var src = img.GetAttribute("src");
+            imgList.Add(src);
+
+            var nextButton = driver.FindElementByXPath("//a[@data-page][text()='>']");
+            do
             {
-                return DownloadAndParsePages(chapter, cancellationToken);
-            }, TimeSpan.FromSeconds(3));
-
-            // find all images in pages
-            int current = 0;
-            var images = new List<string>();
-            foreach (var page in pages)
-            {
-                string image = await retry.DoAsync(() =>
+                cancellationToken.ThrowIfCancellationRequested();
+                var currentDatapage = nextButton.GetAttribute("data-page");
+                nextButton.Click();
+                var src2 = img.GetAttribute("src");
+                imgList.Add(src2);
+                progress.Report("Detecting: " + imgList.Count);
+                Wait.Until(d =>
                 {
-                    return DownloadAndParseImage(page, cancellationToken);
-                }, TimeSpan.FromSeconds(3));
-                images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
-            }
-
-            return images;
-        }
-
-        private async Task<string> DownloadAndParseImage(string page, CancellationToken cancellationToken)
-        {
-            var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
-            var image = selector
-            .Select(pageHtml, "//section[contains(@class,'read_img')]/a/img[@id='image']").Attributes["src"];
-            return image;
-        }
-
-        private async Task<IEnumerable<string>> DownloadAndParsePages(Chapter chapter, CancellationToken cancellationToken)
-        {
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
-            var pages = selector
-                .SelectMany(input, "//section[contains(@class,'readpage_top')]//select[contains(@class,'wid60')]/option[not(text()='Featured')]")
-                .Select(n =>
-                {
-                    return new Uri(new Uri(chapter.Url), n.Attributes["value"]).AbsoluteUri;
+                    try
+                    {
+                        var currentNext = driver.FindElementByXPath("//a[@data-page][text()='>']");
+                        if (currentNext.GetAttribute("data-page") != currentDatapage)
+                        {
+                            nextButton = currentNext;
+                            return true;
+                        }
+                        return false;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        nextButton = null;
+                        return true;
+                    }
                 });
-            return pages;
+
+            }
+            while (nextButton != null && nextButton.Displayed);
+            return await Task.FromResult(imgList);
         }
 
         public SiteInformation GetInformation()
         {
-            return new SiteInformation(nameof(MangaHere), "http://www.mangahere.cc", "English");
+            return new SiteInformation(nameof(MangaHere), "https://www.mangahere.cc", "English");
         }
 
         public bool Of(string link)

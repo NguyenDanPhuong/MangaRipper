@@ -2,6 +2,6 @@
 {
     public interface IOutputer
     {
-        void CreateOutput(string sourceFolder, string destinationFolder);
+        void Save(string sourceFolder, string destinationFolder);
     }
 }

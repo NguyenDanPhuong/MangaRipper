@@ -11,11 +11,5 @@ namespace MangaRipper.Helpers
         public Point Location { get; set; }
         public FormWindowState WindowState { get; set; }
         public bool CbzChecked { get; set; }
-        public bool PrefixChecked { get; set; }
-
-        /// <summary>
-        /// Gets or sets the base portion of the series-specific directory.
-        /// </summary>
-        public string BaseSeriesDestination { get; set; }
     }
 }

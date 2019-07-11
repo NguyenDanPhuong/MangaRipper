@@ -4,11 +4,11 @@ using System.Net.Http.Headers;
 
 namespace MangaRipper.Core.FilenameDetectors
 {
-    public class FilenameDetector
+    public class FilenameDetector : IFilenameDetector
     {
-        private readonly GoogleProxyFilenameDetector googleProxyFilenameParser;
+        private readonly IGoogleProxyFilenameDetector googleProxyFilenameParser;
 
-        public FilenameDetector(GoogleProxyFilenameDetector googleProxyFilenameParser)
+        public FilenameDetector(IGoogleProxyFilenameDetector googleProxyFilenameParser)
         {
             this.googleProxyFilenameParser = googleProxyFilenameParser;
         }
