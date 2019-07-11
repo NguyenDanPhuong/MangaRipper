@@ -21,13 +21,10 @@ namespace MangaRipper.Forms
     public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        public BindingList<DownloadRow> _downloadQueue;
         private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
 
         private MainViewPresenter Presenter;
         private IEnumerable<IPlugin> MangaServices;
-
-        private CancellationTokenSource cancellationTokenSource;
 
         public FormMain(IEnumerable<IPlugin> mangaServices, IWorkerController wc)
         {
@@ -41,10 +38,15 @@ namespace MangaRipper.Forms
             txtPercent.Text = progress;
         }
 
-        public void SetChapters(IEnumerable<ChapterRow> chapters)
+        public void SetChapterRows(IEnumerable<ChapterRow> chapters)
         {
             btnGetChapter.Enabled = true;
             dgvChapter.DataSource = chapters.ToList();
+        }
+
+        public void SetDownloadRows(IEnumerable<DownloadRow> chapters)
+        {
+            dgvQueueChapter.DataSource = chapters.ToList();
         }
 
         private async void BtnGetChapter_ClickAsync(object sender, EventArgs e)
@@ -57,12 +59,12 @@ namespace MangaRipper.Forms
             }
             catch (OperationCanceledException ex)
             {
-                txtMessage.Text =  @"Download cancelled! Reason: " + ex.Message;
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                txtMessage.Text =  @"Download cancelled! Reason: " + ex.Message;
+                txtMessage.Text = @"Download cancelled! Reason: " + ex.Message;
                 MessageBox.Show(ex.Message, ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnGetChapter.Enabled = true;
                 btnDownload.Enabled = true;
@@ -79,21 +81,10 @@ namespace MangaRipper.Forms
             }
             var items = (from DataGridViewRow row in dgvChapter.Rows where row.Selected select row.DataBoundItem as ChapterRow).ToList();
             items.Reverse();
-            foreach (var chapter in items.Where(i => _downloadQueue.All(r => r.Url != i.Url)))
-            {
-                var savePath = GetSavePath(chapter);
-                var task = new DownloadRow
-                {
-                    Name = chapter.DisplayName,
-                    Url = chapter.Url,
-                    SaveToFolder = savePath,
-                    Formats = formats
-                };
-                _downloadQueue.Add(task);
-            }
+            Presenter.CreateDownloadRows(items, formats);
         }
 
-        private string GetSavePath(ChapterRow chapter)
+        public string GetSavePath(ChapterRow chapter)
         {
             return Path.Combine(txtSaveTo.Text, chapter.DisplayName.RemoveFileNameInvalidChar());
         }
@@ -107,20 +98,10 @@ namespace MangaRipper.Forms
                 return;
             }
 
+
             var items = (from DataGridViewRow row in dgvChapter.Rows select (ChapterRow)row.DataBoundItem).ToList();
             items.Reverse();
-            foreach (var chapter in items.Where(item => _downloadQueue.All(r => r.Url != item.Url)))
-            {
-                var savePath = GetSavePath(chapter);
-                var task = new DownloadRow
-                {
-                    Name = chapter.DisplayName,
-                    Url = chapter.Url,
-                    SaveToFolder = savePath,
-                    Formats = formats
-                };
-                _downloadQueue.Add(task);
-            }
+            Presenter.CreateDownloadRows(items, formats);
         }
 
         private void BtnRemove_Click(object sender, EventArgs e)
@@ -130,16 +111,13 @@ namespace MangaRipper.Forms
                 var chapter = (DownloadRow)item.DataBoundItem;
 
                 if (chapter.IsBusy == false)
-                    _downloadQueue.Remove(chapter);
+                    Presenter.Remove(chapter);
             }
         }
 
         private void BtnRemoveAll_Click(object sender, EventArgs e)
         {
-            var removeItems = _downloadQueue.Where(r => r.IsBusy == false).ToList();
-
-            foreach (var item in removeItems)
-                _downloadQueue.Remove(item);
+            Presenter.RemoveAllChapterRows();
         }
 
         private async void BtnDownload_Click(object sender, EventArgs e)
@@ -147,8 +125,7 @@ namespace MangaRipper.Forms
             try
             {
                 btnDownload.Enabled = false;
-                cancellationTokenSource = new CancellationTokenSource();
-                await StartDownload();
+                await Presenter.StartDownloadChaptersAsync();
             }
             catch (OperationCanceledException ex)
             {
@@ -163,36 +140,6 @@ namespace MangaRipper.Forms
             finally
             {
                 btnDownload.Enabled = true;
-            }
-        }
-
-        private async Task StartDownload()
-        {
-            while (_downloadQueue.Count > 0 && cancellationTokenSource.IsCancellationRequested == false)
-            {
-                var firstItem = _downloadQueue.First();
-
-                var request = new DownloadChapterRequest(firstItem.Name, firstItem.Url, firstItem.SaveToFolder, firstItem.Formats);
-
-                var updateProgress = new Progress<string>(c =>
-                {
-                    foreach (DataGridViewRow item in dgvQueueChapter.Rows)
-                        if (firstItem == item.DataBoundItem)
-                        {
-                            firstItem.Progress = c;
-                            dgvQueueChapter.Refresh();
-                        }
-                });
-
-                firstItem.IsBusy = true;
-                var taskResult = await Presenter.GetChapterAsync(request, updateProgress, cancellationTokenSource.Token);
-                firstItem.IsBusy = false;
-                firstItem.Progress = "";
-                dgvQueueChapter.Refresh();
-                if (!taskResult.Error)
-                {
-                    _downloadQueue.Remove(firstItem);
-                }
             }
         }
 
@@ -211,7 +158,7 @@ namespace MangaRipper.Forms
 
         private void BtnStop_Click(object sender, EventArgs e)
         {
-            cancellationTokenSource?.Cancel();
+            Presenter.StopDownload();
         }
 
         private void BtnChangeSaveTo_Click(object sender, EventArgs e)
@@ -278,8 +225,9 @@ namespace MangaRipper.Forms
             if (string.IsNullOrWhiteSpace(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            _downloadQueue = _appConf.LoadDownloadChapterTasks();
-            dgvQueueChapter.DataSource = _downloadQueue;
+            // TODO Move APpconfig
+            //_downloadQueue = _appConf.LoadDownloadChapterTasks();
+            //dgvQueueChapter.DataSource = _downloadQueue;
             LoadBookmark();
             CheckForUpdate();
         }
@@ -299,7 +247,7 @@ namespace MangaRipper.Forms
                     $"There's a new version: ({latestVersion}) - Click OK to open download page.",
                     Application.ProductName,
                     MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                    MessageBoxIcon.Information) == DialogResult.OK)
                 {
                     Process.Start("https://github.com/NguyenDanPhuong/MangaRipper/releases");
                 }
@@ -329,7 +277,8 @@ namespace MangaRipper.Forms
             appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
             _appConf.SaveCommonSettings(appConfig);
-            _appConf.SaveDownloadChapterTasks(_downloadQueue);
+            // TODO Move AppConfig to presenter
+            //_appConf.SaveDownloadChapterTasks(_downloadQueue);
         }
 
         private void FormMain_Paint(object sender, PaintEventArgs e)

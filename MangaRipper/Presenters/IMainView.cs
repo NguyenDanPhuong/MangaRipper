@@ -5,7 +5,9 @@ namespace MangaRipper.Presenters
 {
     public interface IMainView
     {
-        void SetChapters(IEnumerable<ChapterRow> chapters);
+        void SetChapterRows(IEnumerable<ChapterRow> chapters);
+        void SetDownloadRows(IEnumerable<DownloadRow> chapters);
         void SetChaptersProgress(string progress);
+        string GetSavePath(ChapterRow chapter);
     }
 }

@@ -23,6 +23,8 @@ namespace MangaRipper.Presenters
         private IList<ChapterRow> chapterRows = new List<ChapterRow>();
         private IList<DownloadRow> downloadRows = new List<DownloadRow>();
 
+        private CancellationTokenSource cancellationTokenSource;
+
         public MainViewPresenter(IMainView view, IWorkerController wc)
         {
             View = view;
@@ -36,13 +38,13 @@ namespace MangaRipper.Presenters
                 .Select(c => new ChapterRow(c))
                 .ToList();
             GeneratePrefix(hasPrefix);
-            View.SetChapters(chapterRows);
+            View.SetChapterRows(chapterRows);
         }
 
         public void ChangePrefix(bool hasPrefix)
         {
             GeneratePrefix(hasPrefix);
-            View.SetChapters(chapterRows);
+            View.SetChapterRows(chapterRows);
         }
 
         private void GeneratePrefix(bool hasPrefix)
@@ -54,9 +56,67 @@ namespace MangaRipper.Presenters
             }
         }
 
-        public async Task<DownloadChapterResponse> GetChapterAsync(DownloadChapterRequest task, IProgress<string> progress, CancellationToken cancellationToken)
+        internal void RemoveAllChapterRows()
         {
-            return await worker.GetChapterAsync(task, progress, cancellationToken);
+            downloadRows.Clear();
+            View.SetDownloadRows(downloadRows);
+        }
+
+        internal void Remove(DownloadRow chapter)
+        {
+            downloadRows.Remove(chapter);
+            View.SetDownloadRows(downloadRows);
+        }
+
+        internal void CreateDownloadRows(List<ChapterRow> items, OutputFormat[] formats)
+        {
+            foreach (var chapter in items.Where(item => downloadRows.All(r => r.Url != item.Url)))
+            {
+                var savePath = View.GetSavePath(chapter);
+                var task = new DownloadRow
+                {
+                    Name = chapter.DisplayName,
+                    Url = chapter.Url,
+                    SaveToFolder = savePath,
+                    Formats = formats
+                };
+                downloadRows.Add(task);
+            }
+
+            View.SetDownloadRows(downloadRows);
+        }
+
+        internal async Task StartDownloadChaptersAsync()
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+            while (downloadRows.Count > 0 && cancellationToken.IsCancellationRequested == false)
+            {
+                var downloading = downloadRows.First();
+
+                var request = new DownloadChapterRequest(downloading.Name, downloading.Url, downloading.SaveToFolder, downloading.Formats);
+
+                var updateProgress = new Progress<string>(c =>
+                {
+                    downloading.Progress = c;
+                    View.SetDownloadRows(downloadRows);
+                });
+
+                downloading.IsBusy = true;
+                var taskResult = await worker.GetChapterAsync(request, updateProgress, cancellationToken);  
+                downloading.IsBusy = false;
+                downloading.Progress = "";
+                if (!taskResult.Error)
+                {
+                    downloadRows.Remove(downloading);
+                }
+                View.SetDownloadRows(downloadRows);
+            }
+        }
+
+        internal void StopDownload()
+        {
+            cancellationTokenSource?.Cancel();
         }
     }
 }
