@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaHer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaReader", "MangaRipper.Plugin.MangaReader\MangaRipper.Plugin.MangaReader.csproj", "{FE632CBC-EBBB-4509-B760-8CA031F87160}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.KissManga", "MangaRipper.Plugin.KissManga\MangaRipper.Plugin.KissManga.csproj", "{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA38E249-11BB-4145-A06C-F51D281497F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.MangaStream", "MangaRipper.Plugin.MangaStream\MangaRipper.Plugin.MangaStream.csproj", "{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}"
@@ -26,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.ReadOPM", "MangaRipper.Plugin.ReadOPM\MangaRipper.Plugin.ReadOPM.csproj", "{93642668-6A9E-41C5-AFC7-09401A42EBA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Plugin.NHentai", "MangaRipper.Plugin.NHentai\MangaRipper.Plugin.NHentai.csproj", "{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRipper.Tools.ChromeDriver", "MangaRipper.Tools.ChromeDriver\MangaRipper.Tools.ChromeDriver.csproj", "{B04C284A-5B79-48A7-A34F-6F2406181272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,18 +105,6 @@ Global
 		{FE632CBC-EBBB-4509-B760-8CA031F87160}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FE632CBC-EBBB-4509-B760-8CA031F87160}.Release|x86.ActiveCfg = Release|Any CPU
 		{FE632CBC-EBBB-4509-B760-8CA031F87160}.Release|x86.Build.0 = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Debug|x86.Build.0 = Debug|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|x86.ActiveCfg = Release|Any CPU
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01}.Release|x86.Build.0 = Release|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -165,6 +153,18 @@ Global
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B}.Release|x86.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Debug|x86.Build.0 = Debug|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|x86.ActiveCfg = Release|Any CPU
+		{B04C284A-5B79-48A7-A34F-6F2406181272}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -173,7 +173,6 @@ Global
 		{F5D529B4-CBB6-46E2-9D32-25CEF8365318} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{B7F65DA6-A435-46F8-8867-778A48FAB8CF} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{FE632CBC-EBBB-4509-B760-8CA031F87160} = {AA38E249-11BB-4145-A06C-F51D281497F5}
-		{CE21343F-3C7F-4161-94A5-3A7CCDD9CF01} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{746524A7-E0EE-4240-A9A2-DD7BCCBCCF5B} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{93642668-6A9E-41C5-AFC7-09401A42EBA8} = {AA38E249-11BB-4145-A06C-F51D281497F5}
 		{9F550135-8265-469C-B5B5-BCCEA4D5BC3B} = {AA38E249-11BB-4145-A06C-F51D281497F5}

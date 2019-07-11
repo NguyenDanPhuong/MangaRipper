@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using MangaRipper.Core;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Logging;
+using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Infrastructure
 {

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace MangaRipper.Core.FilenameDetectors
 {
-    public class GoogleProxyFilenameDetector
+    public class GoogleProxyFilenameDetector : IGoogleProxyFilenameDetector
     {
         public string ParseFilename(string url)
         {

@@ -38,10 +38,6 @@
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnRemoveAll = new System.Windows.Forms.Button();
             this.dgvQueueChapter = new System.Windows.Forms.DataGridView();
-            this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Formats = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnChangeSaveTo = new System.Windows.Forms.Button();
             this.btnOpenFolder = new System.Windows.Forms.Button();
@@ -59,12 +55,10 @@
             this.btnRemoveBookmark = new System.Windows.Forms.Button();
             this.FormToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxForPrefix = new System.Windows.Forms.CheckBox();
-            this.cbUseSeriesFolder = new System.Windows.Forms.CheckBox();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cbSaveFolder = new System.Windows.Forms.CheckBox();
             this.cbSaveCbz = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.locationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,12 +70,14 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbDestination = new System.Windows.Forms.Label();
             this.txtSaveTo = new System.Windows.Forms.TextBox();
-            this.cbFileCounter = new System.Windows.Forms.CheckBox();
+            this.ColChapterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColChapterStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColChapterUrl = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Formats = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueueChapter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupportedSites)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,7 +91,7 @@
             this.btnGetChapter.Text = "Get Chapters";
             this.FormToolTip.SetToolTip(this.btnGetChapter, "Get Chapters from Inputed Url");
             this.btnGetChapter.UseVisualStyleBackColor = true;
-            this.btnGetChapter.Click += new System.EventHandler(this.btnGetChapter_ClickAsync);
+            this.btnGetChapter.Click += new System.EventHandler(this.BtnGetChapter_ClickAsync);
             // 
             // btnDownload
             // 
@@ -107,7 +103,7 @@
             this.btnDownload.TabIndex = 18;
             this.btnDownload.Text = "Start Download";
             this.btnDownload.UseVisualStyleBackColor = true;
-            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
+            this.btnDownload.Click += new System.EventHandler(this.BtnDownload_Click);
             // 
             // btnAdd
             // 
@@ -119,7 +115,7 @@
             this.btnAdd.Text = "4";
             this.FormToolTip.SetToolTip(this.btnAdd, "Add selected chapters");
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
             // 
             // btnAddAll
             // 
@@ -131,7 +127,7 @@
             this.btnAddAll.Text = "8";
             this.FormToolTip.SetToolTip(this.btnAddAll, "Add all chapters");
             this.btnAddAll.UseVisualStyleBackColor = true;
-            this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
+            this.btnAddAll.Click += new System.EventHandler(this.BtnAddAll_Click);
             // 
             // btnRemove
             // 
@@ -142,7 +138,7 @@
             this.btnRemove.TabIndex = 16;
             this.btnRemove.Text = "Remove Selected";
             this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
             // btnRemoveAll
             // 
@@ -153,7 +149,7 @@
             this.btnRemoveAll.TabIndex = 17;
             this.btnRemoveAll.Text = "Remove All";
             this.btnRemoveAll.UseVisualStyleBackColor = true;
-            this.btnRemoveAll.Click += new System.EventHandler(this.btnRemoveAll_Click);
+            this.btnRemoveAll.Click += new System.EventHandler(this.BtnRemoveAll_Click);
             // 
             // dgvQueueChapter
             // 
@@ -179,42 +175,6 @@
             this.dgvQueueChapter.Size = new System.Drawing.Size(481, 490);
             this.dgvQueueChapter.TabIndex = 10;
             // 
-            // ColChapterName
-            // 
-            this.ColChapterName.DataPropertyName = "Name";
-            this.ColChapterName.HeaderText = "Chapter Name";
-            this.ColChapterName.Name = "ColChapterName";
-            this.ColChapterName.ReadOnly = true;
-            this.ColChapterName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ColChapterName.Width = 200;
-            // 
-            // ColChapterStatus
-            // 
-            this.ColChapterStatus.DataPropertyName = "Percent";
-            this.ColChapterStatus.HeaderText = "%";
-            this.ColChapterStatus.Name = "ColChapterStatus";
-            this.ColChapterStatus.ReadOnly = true;
-            this.ColChapterStatus.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColChapterStatus.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ColChapterStatus.Width = 35;
-            // 
-            // ColChapterUrl
-            // 
-            this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColChapterUrl.DataPropertyName = "SaveToFolder";
-            this.ColChapterUrl.HeaderText = "Save To";
-            this.ColChapterUrl.Name = "ColChapterUrl";
-            this.ColChapterUrl.ReadOnly = true;
-            this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Formats
-            // 
-            this.Formats.DataPropertyName = "PropFormats";
-            this.Formats.HeaderText = "Formats";
-            this.Formats.Name = "Formats";
-            this.Formats.ReadOnly = true;
-            // 
             // btnStop
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -224,7 +184,7 @@
             this.btnStop.TabIndex = 19;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnStop.Click += new System.EventHandler(this.BtnStop_Click);
             // 
             // btnChangeSaveTo
             // 
@@ -236,7 +196,7 @@
             this.btnChangeSaveTo.Text = "...";
             this.FormToolTip.SetToolTip(this.btnChangeSaveTo, "Change Folder");
             this.btnChangeSaveTo.UseVisualStyleBackColor = true;
-            this.btnChangeSaveTo.Click += new System.EventHandler(this.btnChangeSaveTo_Click);
+            this.btnChangeSaveTo.Click += new System.EventHandler(this.BtnChangeSaveTo_Click);
             // 
             // btnOpenFolder
             // 
@@ -247,7 +207,7 @@
             this.btnOpenFolder.TabIndex = 14;
             this.btnOpenFolder.Text = "Open Folder";
             this.btnOpenFolder.UseVisualStyleBackColor = true;
-            this.btnOpenFolder.Click += new System.EventHandler(this.btnOpenFolder_Click);
+            this.btnOpenFolder.Click += new System.EventHandler(this.BtnOpenFolder_Click);
             // 
             // lblUrl
             // 
@@ -297,7 +257,7 @@
             this.dgvSupportedSites.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvSupportedSites.Size = new System.Drawing.Size(425, 169);
             this.dgvSupportedSites.TabIndex = 15;
-            this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSupportedSites_CellContentClick);
+            this.dgvSupportedSites.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSupportedSites_CellContentClick);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -365,55 +325,46 @@
             this.cbTitleUrl.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbTitleUrl.Location = new System.Drawing.Point(40, 28);
             this.cbTitleUrl.Name = "cbTitleUrl";
-            this.cbTitleUrl.Size = new System.Drawing.Size(729, 21);
+            this.cbTitleUrl.Size = new System.Drawing.Size(570, 21);
             this.cbTitleUrl.TabIndex = 1;
             // 
             // btnAddBookmark
             // 
             this.btnAddBookmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddBookmark.Location = new System.Drawing.Point(775, 27);
+            this.btnAddBookmark.Location = new System.Drawing.Point(616, 27);
             this.btnAddBookmark.Name = "btnAddBookmark";
-            this.btnAddBookmark.Size = new System.Drawing.Size(24, 23);
+            this.btnAddBookmark.Size = new System.Drawing.Size(95, 23);
             this.btnAddBookmark.TabIndex = 2;
-            this.btnAddBookmark.Text = "B";
+            this.btnAddBookmark.Text = "Add Bookmark";
             this.FormToolTip.SetToolTip(this.btnAddBookmark, "Bookmark This Url");
             this.btnAddBookmark.UseVisualStyleBackColor = true;
-            this.btnAddBookmark.Click += new System.EventHandler(this.btnAddBookmark_Click);
+            this.btnAddBookmark.Click += new System.EventHandler(this.BtnAddBookmark_Click);
             // 
             // btnRemoveBookmark
             // 
             this.btnRemoveBookmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRemoveBookmark.Location = new System.Drawing.Point(805, 27);
+            this.btnRemoveBookmark.Location = new System.Drawing.Point(717, 27);
             this.btnRemoveBookmark.Name = "btnRemoveBookmark";
-            this.btnRemoveBookmark.Size = new System.Drawing.Size(24, 23);
+            this.btnRemoveBookmark.Size = new System.Drawing.Size(112, 23);
             this.btnRemoveBookmark.TabIndex = 3;
-            this.btnRemoveBookmark.Text = "R";
+            this.btnRemoveBookmark.Text = "Remove Bookmark";
             this.FormToolTip.SetToolTip(this.btnRemoveBookmark, "Remove This Url From Bookmark");
             this.btnRemoveBookmark.UseVisualStyleBackColor = true;
-            this.btnRemoveBookmark.Click += new System.EventHandler(this.btnRemoveBookmark_Click);
+            this.btnRemoveBookmark.Click += new System.EventHandler(this.BtnRemoveBookmark_Click);
             // 
             // checkBoxForPrefix
             // 
+            this.checkBoxForPrefix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxForPrefix.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBoxForPrefix.AutoSize = true;
-            this.checkBoxForPrefix.Location = new System.Drawing.Point(11, 17);
+            this.checkBoxForPrefix.Location = new System.Drawing.Point(220, 371);
             this.checkBoxForPrefix.Name = "checkBoxForPrefix";
-            this.checkBoxForPrefix.Size = new System.Drawing.Size(99, 17);
+            this.checkBoxForPrefix.Size = new System.Drawing.Size(217, 23);
             this.checkBoxForPrefix.TabIndex = 0;
-            this.checkBoxForPrefix.Text = "Prefix Counter";
+            this.checkBoxForPrefix.Text = "Add/Remove Prefix Counter To Chapter";
             this.FormToolTip.SetToolTip(this.checkBoxForPrefix, "Add prefix to chapters");
             this.checkBoxForPrefix.UseVisualStyleBackColor = true;
-            this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.checkBoxForPrefix_CheckedChanged);
-            // 
-            // cbUseSeriesFolder
-            // 
-            this.cbUseSeriesFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbUseSeriesFolder.AutoSize = true;
-            this.cbUseSeriesFolder.Location = new System.Drawing.Point(116, 17);
-            this.cbUseSeriesFolder.Name = "cbUseSeriesFolder";
-            this.cbUseSeriesFolder.Size = new System.Drawing.Size(131, 17);
-            this.cbUseSeriesFolder.TabIndex = 29;
-            this.cbUseSeriesFolder.Text = "Save in Series Folder";
-            this.cbUseSeriesFolder.UseVisualStyleBackColor = true;
+            this.checkBoxForPrefix.CheckedChanged += new System.EventHandler(this.CheckBoxForPrefix_CheckedChanged);
             // 
             // txtMessage
             // 
@@ -431,7 +382,7 @@
             this.groupBox1.Controls.Add(this.cbSaveCbz);
             this.groupBox1.Location = new System.Drawing.Point(12, 358);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(161, 41);
+            this.groupBox1.Size = new System.Drawing.Size(202, 41);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Save As";
@@ -455,22 +406,10 @@
             this.cbSaveCbz.AutoSize = true;
             this.cbSaveCbz.Location = new System.Drawing.Point(90, 17);
             this.cbSaveCbz.Name = "cbSaveCbz";
-            this.cbSaveCbz.Size = new System.Drawing.Size(46, 17);
+            this.cbSaveCbz.Size = new System.Drawing.Size(45, 17);
             this.cbSaveCbz.TabIndex = 28;
             this.cbSaveCbz.Text = "CBZ";
             this.cbSaveCbz.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.checkBoxForPrefix);
-            this.groupBox2.Controls.Add(this.cbUseSeriesFolder);
-            this.groupBox2.Location = new System.Drawing.Point(179, 358);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(258, 41);
-            this.groupBox2.TabIndex = 30;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "File manipulation";
             // 
             // menuStrip1
             // 
@@ -499,14 +438,14 @@
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
             this.dataToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.dataToolStripMenuItem.Text = "Data";
-            this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
+            this.dataToolStripMenuItem.Click += new System.EventHandler(this.DataToolStripMenuItem_Click);
             // 
             // logsToolStripMenuItem
             // 
             this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
             this.logsToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.logsToolStripMenuItem.Text = "Logs";
-            this.logsToolStripMenuItem.Click += new System.EventHandler(this.logsToolStripMenuItem_Click);
+            this.logsToolStripMenuItem.Click += new System.EventHandler(this.LogsToolStripMenuItem_Click);
             // 
             // documentsToolStripMenuItem
             // 
@@ -523,28 +462,28 @@
             this.wikiToolStripMenuItem.Name = "wikiToolStripMenuItem";
             this.wikiToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.wikiToolStripMenuItem.Text = "Wiki";
-            this.wikiToolStripMenuItem.Click += new System.EventHandler(this.wikiToolStripMenuItem_Click);
+            this.wikiToolStripMenuItem.Click += new System.EventHandler(this.WikiToolStripMenuItem_Click);
             // 
             // bugReportToolStripMenuItem
             // 
             this.bugReportToolStripMenuItem.Name = "bugReportToolStripMenuItem";
             this.bugReportToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.bugReportToolStripMenuItem.Text = "Bug Report";
-            this.bugReportToolStripMenuItem.Click += new System.EventHandler(this.bugReportToolStripMenuItem_Click);
+            this.bugReportToolStripMenuItem.Click += new System.EventHandler(this.BugReportToolStripMenuItem_Click);
             // 
             // contributorsToolStripMenuItem
             // 
             this.contributorsToolStripMenuItem.Name = "contributorsToolStripMenuItem";
             this.contributorsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.contributorsToolStripMenuItem.Text = "Contributors";
-            this.contributorsToolStripMenuItem.Click += new System.EventHandler(this.contributorsToolStripMenuItem_Click);
+            this.contributorsToolStripMenuItem.Click += new System.EventHandler(this.ContributorsToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // lbDestination
             // 
@@ -563,27 +502,50 @@
             this.txtSaveTo.Name = "txtSaveTo";
             this.txtSaveTo.Size = new System.Drawing.Size(422, 22);
             this.txtSaveTo.TabIndex = 35;
-            this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaveTo_KeyPress);
+            this.txtSaveTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtSaveTo_KeyPress);
             // 
-            // cbFileCounter
+            // ColChapterName
             // 
-            this.cbFileCounter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbFileCounter.AutoSize = true;
-            this.cbFileCounter.Location = new System.Drawing.Point(443, 375);
-            this.cbFileCounter.Name = "cbFileCounter";
-            this.cbFileCounter.Size = new System.Drawing.Size(87, 17);
-            this.cbFileCounter.TabIndex = 36;
-            this.cbFileCounter.Text = "File counter";
-            this.cbFileCounter.UseVisualStyleBackColor = true;
+            this.ColChapterName.DataPropertyName = "Name";
+            this.ColChapterName.HeaderText = "Chapter Name";
+            this.ColChapterName.Name = "ColChapterName";
+            this.ColChapterName.ReadOnly = true;
+            this.ColChapterName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ColChapterName.Width = 200;
+            // 
+            // ColChapterStatus
+            // 
+            this.ColChapterStatus.DataPropertyName = "Progress";
+            this.ColChapterStatus.HeaderText = "Progress";
+            this.ColChapterStatus.Name = "ColChapterStatus";
+            this.ColChapterStatus.ReadOnly = true;
+            this.ColChapterStatus.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColChapterStatus.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // ColChapterUrl
+            // 
+            this.ColChapterUrl.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColChapterUrl.DataPropertyName = "SaveToFolder";
+            this.ColChapterUrl.HeaderText = "Save To";
+            this.ColChapterUrl.Name = "ColChapterUrl";
+            this.ColChapterUrl.ReadOnly = true;
+            this.ColChapterUrl.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColChapterUrl.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // Formats
+            // 
+            this.Formats.DataPropertyName = "PropFormats";
+            this.Formats.HeaderText = "Formats";
+            this.Formats.Name = "Formats";
+            this.Formats.ReadOnly = true;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 610);
-            this.Controls.Add(this.cbFileCounter);
+            this.Controls.Add(this.checkBoxForPrefix);
             this.Controls.Add(this.lbDestination);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.btnRemoveBookmark);
@@ -618,8 +580,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvChapter)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -652,12 +612,7 @@
         private System.Windows.Forms.Button btnRemoveBookmark;
         private System.Windows.Forms.ToolTip FormToolTip;
         private System.Windows.Forms.TextBox txtMessage;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Formats;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkBoxForPrefix;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem locationToolStripMenuItem;
@@ -668,12 +623,14 @@
         private System.Windows.Forms.ToolStripMenuItem bugReportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label lbDestination;
-        private System.Windows.Forms.CheckBox cbUseSeriesFolder;
         private System.Windows.Forms.CheckBox cbSaveCbz;
         private System.Windows.Forms.CheckBox cbSaveFolder;
         private System.Windows.Forms.TextBox txtSaveTo;
         private System.Windows.Forms.ToolStripMenuItem contributorsToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.CheckBox cbFileCounter;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterStatus;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColChapterUrl;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Formats;
     }
 }

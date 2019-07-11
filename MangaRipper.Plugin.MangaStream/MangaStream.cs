@@ -3,67 +3,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Plugin.MangaStream
 {
     /// <summary>
     /// Support find chapters, images from MangaStream
     /// </summary>
-    public class MangaStream : IMangaService
+    public class MangaStream : IPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public MangaStream(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
+        public MangaStream(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//h1").InnerHtml;
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
+            var title = selector.Select(input, "//h1").InnerText;
             var chaps = selector
                 .SelectMany(input, "//td/a")
                 .Select(n =>
                 {
                     string url = $"https://readms.net{n.Attributes["href"]}";
-                    return new Chapter(n.InnerHtml, url) { Manga = title };
+                    return new Chapter($"{title} {n.InnerText}", url);
                 });
-            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
+            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var pages = selector.SelectMany(input, "//div[contains(@class,'btn-reader-page')]/ul/li/a")
                 .Select(n => n.Attributes["href"])
                 .Select(p => $"https://readms.net{p}");
 
             // find all images in pages
-            int current = 0;
             var images = new List<string>();
             foreach (var page in pages)
             {
-                var pageHtml = await downloader.DownloadStringAsync(page, cancellationToken);
+                var pageHtml = await downloader.GetStringAsync(page, cancellationToken);
                 var image = selector
                 .Select(pageHtml, "//img[@id='manga-page']")
                 .Attributes["src"];
 
                 images.Add(image);
-                var f = (float)++current / pages.Count();
-                int i = Convert.ToInt32(f * 100);
-                progress.Report(i);
+                progress.Report("Detecting: " + images.Count);
             }
             return images.Select(i => $"https:{i}");
         }

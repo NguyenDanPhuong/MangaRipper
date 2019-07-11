@@ -4,63 +4,59 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MangaRipper.Core.Interfaces;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
+using MangaRipper.Core.Plugins;
 
 namespace MangaRipper.Plugin.ReadOPM
 {
     /// <summary>
     /// Support find chapters, images from readopm
     /// </summary>
-    public class ReadOPM : IMangaService
+    public class ReadOPM : IPlugin
     {
         private static ILogger logger;
-        private readonly IDownloader downloader;
+        private readonly IHttpDownloader downloader;
         private readonly IXPathSelector selector;
 
-        public ReadOPM(ILogger myLogger, IDownloader downloader, IXPathSelector selector)
+        public ReadOPM(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
         {
             logger = myLogger;
             this.downloader = downloader;
             this.selector = selector;
         }
-        public async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
+        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            progress.Report(0);
-            // find all chapters in a manga
-            string input = await downloader.DownloadStringAsync(manga, cancellationToken);
+            string input = await downloader.GetStringAsync(manga, cancellationToken);
             var chaps = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a")
                 .Select(n =>
                 {
                     string url = n.Attributes["href"];
-                    return new Chapter(null, url) { Manga = "One Punch Man" };
+                    return new Chapter(null, url);
                 }).ToList();
 
             var chap_numbers = selector
                 .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a/span[contains(@class, 'chapter__no')]")
-                .Select(n => n.InnerHtml)
+                .Select(n => n.InnerText)
                 .ToList();
 
             chaps.ForEach(c => c.Name = "One Punch Man " + chap_numbers[chaps.IndexOf(c)]);
-
-            progress.Report(100);
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> FindImages(Chapter chapter, IProgress<int> progress,
+        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
-            // find all pages in a chapter
-            string input = await downloader.DownloadStringAsync(chapter.Url, cancellationToken);
+            progress.Report("Detecting...");
+            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
             var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
                 .Select(n => n.Attributes["src"])
                 .Where(src =>
                 {
-                    Uri validatedUri;
                     return !string.IsNullOrWhiteSpace(src)
-                    && Uri.TryCreate(src, UriKind.Absolute, out validatedUri)
+                    && Uri.TryCreate(src, UriKind.Absolute, out Uri validatedUri)
                     && !string.IsNullOrWhiteSpace(Path.GetFileName(validatedUri.LocalPath));
                 });
 
