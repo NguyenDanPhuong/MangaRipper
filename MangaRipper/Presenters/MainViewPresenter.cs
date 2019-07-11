@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MangaRipper.Core;
+using MangaRipper.Core.Models;
+using MangaRipper.Models;
 using NLog;
 
 namespace MangaRipper.Presenters
@@ -15,6 +20,8 @@ namespace MangaRipper.Presenters
         private IMainView View { get; set; }
 
         private IWorkerController worker;
+        private IList<ChapterRow> chapterRows = new List<ChapterRow>();
+        private IList<DownloadRow> downloadRows = new List<DownloadRow>();
 
         public MainViewPresenter(IMainView view, IWorkerController wc)
         {
@@ -22,26 +29,34 @@ namespace MangaRipper.Presenters
             worker = wc;
         }
 
-        public async Task OnFindChapters(string mangaUrl)
+        public async Task GetChapterListAsync(string mangaUrl, bool hasPrefix)
         {
-            try
+            var progress = new Progress<string>(p => View.SetChaptersProgress(p));
+            chapterRows = (await worker.GetChapterListAsync(mangaUrl, progress, new CancellationTokenSource().Token))
+                .Select(c => new ChapterRow(c))
+                .ToList();
+            GeneratePrefix(hasPrefix);
+            View.SetChapters(chapterRows);
+        }
+
+        public void ChangePrefix(bool hasPrefix)
+        {
+            GeneratePrefix(hasPrefix);
+            View.SetChapters(chapterRows);
+        }
+
+        private void GeneratePrefix(bool hasPrefix)
+        {
+            int count = 1;
+            for (int i = chapterRows.Count() - 1; i >= 0; i--)
             {
-                var progressInt = new Progress<string>(progress => View.SetChaptersProgress(progress));
-                // TODO Keep Token
-                var chapters = await worker.GetChapterListAsync(mangaUrl, progressInt, new System.Threading.CancellationTokenSource().Token);
-                View.SetChapters(chapters);
+                chapterRows[i].Prefix = hasPrefix ? count++ : 0;
             }
-            catch (OperationCanceledException ex)
-            {
-                View.SetStatusText(@"Download cancelled! Reason: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                View.SetStatusText(@"Download cancelled! Reason: " + ex.Message);
-                View.ShowMessageBox(ex.Source, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                View.EnableTheButtonsAfterError();
-            }
+        }
+
+        public async Task<DownloadChapterResponse> GetChapterAsync(DownloadChapterRequest task, IProgress<string> progress, CancellationToken cancellationToken)
+        {
+            return await worker.GetChapterAsync(task, progress, cancellationToken);
         }
     }
 }

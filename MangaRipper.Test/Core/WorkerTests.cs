@@ -86,7 +86,7 @@ namespace MangaRipper.Test.Core
                     "IMG5",
                 }.AsEnumerable()));
 
-            var task = new DownloadChapterTask("CHAP1", "URL1", "C:\\TEST", new OutputFormat[] { OutputFormat.Folder, OutputFormat.CBZ });
+            var task = new DownloadChapterRequest("CHAP1", "URL1", "C:\\TEST", new OutputFormat[] { OutputFormat.Folder, OutputFormat.CBZ });
             var result = await worker.GetChapterAsync(task, new Progress<string>(), new CancellationToken());
 
             Assert.False(result.Error);

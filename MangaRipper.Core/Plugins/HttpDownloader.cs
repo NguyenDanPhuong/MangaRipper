@@ -34,7 +34,7 @@ namespace MangaRipper.Core.Plugins
             var request = CreateRequest();
             using (var response = await request.GetAsync(url, cancellationToken))
             {
-                var filename = filenameDetector.GetFilename(url, response.Content.Headers);
+                var filename = filenameDetector.GetFilename(response);
                 var fileNameWithPath = Path.Combine(folder, filename);
 
                 if (!Directory.Exists(folder))
