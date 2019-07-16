@@ -110,7 +110,7 @@
     <Compile Include="FilenameDetectors\IGoogleProxyFilenameDetector.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Plugins\IXPathSelector.cs" />
-    <Compile Include="Models\DownloadTaskResult.cs" />
+    <Compile Include="Models\DownloadChapterResponse.cs" />
     <Compile Include="Outputers\CbzOutput.cs" />
     <Compile Include="Outputers\FolderOutput.cs" />
     <Compile Include="Outputers\IOutputer.cs" />
@@ -121,7 +121,7 @@
     <Compile Include="Plugins\XPathSelector.cs" />
     <Compile Include="Plugins\IRetry.cs" />
     <Compile Include="Models\Chapter.cs" />
-    <Compile Include="Models\DownloadChapterTask.cs" />
+    <Compile Include="Models\DownloadChapterRequest.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\Retry.cs" />

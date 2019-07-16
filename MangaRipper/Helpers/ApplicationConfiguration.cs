@@ -9,7 +9,7 @@ using NLog;
 
 namespace MangaRipper.Helpers
 {
-    internal class ApplicationConfiguration
+    public class ApplicationConfiguration
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -48,7 +48,7 @@ namespace MangaRipper.Helpers
             SaveObject(commonSettings, CommonSettingsFile);
         }
 
-        public void SaveDownloadChapterTasks(BindingList<DownloadRow> tasks)
+        public void SaveDownloadChapterTasks(IEnumerable<DownloadRow> tasks)
         {
             foreach (var task in tasks)
             {
@@ -57,9 +57,9 @@ namespace MangaRipper.Helpers
             SaveObject(tasks, DownloadChapterTasksFile);
         }
 
-        public BindingList<DownloadRow> LoadDownloadChapterTasks()
+        public IEnumerable<DownloadRow> LoadDownloadChapterTasks()
         {
-            return LoadObject<BindingList<DownloadRow>>(DownloadChapterTasksFile);
+            return LoadObject<List<DownloadRow>>(DownloadChapterTasksFile);
         }
 
         /// <summary>

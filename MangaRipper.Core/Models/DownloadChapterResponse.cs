@@ -2,7 +2,7 @@
 
 namespace MangaRipper.Core.Models
 {
-    public class DownloadTaskResult
+    public class DownloadChapterResponse
     {
         public bool Error { get; internal set; }
         public Exception Exception { get; internal set; }

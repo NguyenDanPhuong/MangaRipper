@@ -38,12 +38,12 @@ namespace MangaRipper.Core
         /// <param name="task">Contain chapter and save to path</param>
         /// <param name="progress">Callback to report progress</param>
         /// <returns></returns>
-        public async Task<DownloadTaskResult> GetChapterAsync(DownloadChapterTask task, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<DownloadChapterResponse> GetChapterAsync(DownloadChapterRequest task, IProgress<string> progress, CancellationToken cancellationToken)
         {
             logger.Info($"> DownloadChapter: {task.Url} To: {task.SaveToFolder}");
             return await Task.Run(async () =>
             {
-                var taskResult = new DownloadTaskResult();
+                var taskResult = new DownloadChapterResponse();
                 try
                 {
                     await DownloadChapterImpl(task, progress, cancellationToken);
@@ -81,7 +81,7 @@ namespace MangaRipper.Core
             });
         }
 
-        private async Task DownloadChapterImpl(DownloadChapterTask task, IProgress<string> progress, CancellationToken cancellationToken)
+        private async Task DownloadChapterImpl(DownloadChapterRequest task, IProgress<string> progress, CancellationToken cancellationToken)
         {
             progress.Report("Starting...");
             var plugin = pluginManager.GetPlugin(task.Url);

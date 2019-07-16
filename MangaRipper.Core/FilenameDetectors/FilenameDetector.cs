@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace MangaRipper.Core.FilenameDetectors
@@ -13,14 +14,16 @@ namespace MangaRipper.Core.FilenameDetectors
             this.googleProxyFilenameParser = googleProxyFilenameParser;
         }
 
-        public string GetFilename(string url, HttpContentHeaders headers)
+        public string GetFilename(HttpResponseMessage response)
         {
+            var url = response.RequestMessage.RequestUri.AbsoluteUri;
             var googleProxyName = googleProxyFilenameParser.ParseFilename(url);
             if (!string.IsNullOrEmpty(googleProxyName))
             {
                 return googleProxyName;
             }
 
+            var headers = response.Content.Headers;
             var fileNameFromServer = headers.ContentDisposition?.FileName?.Trim().Trim(new char[] { '"' });
             if (!string.IsNullOrEmpty(fileNameFromServer))
             {
