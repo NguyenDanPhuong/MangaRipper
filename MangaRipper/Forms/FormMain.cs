@@ -21,16 +21,14 @@ namespace MangaRipper.Forms
     public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly ApplicationConfiguration _appConf = new ApplicationConfiguration();
-
         private MainViewPresenter Presenter;
-        private IEnumerable<IPlugin> MangaServices;
+        private IEnumerable<IPlugin> pluginList;
 
-        public FormMain(IEnumerable<IPlugin> mangaServices, IWorkerController wc)
+        public FormMain(IEnumerable<IPlugin> pluginList, IWorkerController worker, ApplicationConfiguration applicationConfiguration)
         {
             InitializeComponent();
-            MangaServices = mangaServices;
-            Presenter = new MainViewPresenter(this, wc);
+            this.pluginList = pluginList;
+            Presenter = new MainViewPresenter(this, worker, applicationConfiguration);
         }
 
         public void SetChaptersProgress(string progress)
@@ -196,7 +194,7 @@ namespace MangaRipper.Forms
             // Enables double-buffering to reduce flicker.
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
-            var state = _appConf.LoadCommonSettings();
+            var state = Presenter.LoadCommon();
             Size = state.WindowSize;
             Location = state.Location;
             WindowState = state.WindowState;
@@ -211,7 +209,7 @@ namespace MangaRipper.Forms
 
             try
             {
-                foreach (var service in MangaServices)
+                foreach (var service in pluginList)
                 {
                     var infor = service.GetInformation();
                     dgvSupportedSites.Rows.Add(infor.Name, infor.Link, infor.Language);
@@ -225,9 +223,7 @@ namespace MangaRipper.Forms
             if (string.IsNullOrWhiteSpace(txtSaveTo.Text))
                 txtSaveTo.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            // TODO Move APpconfig
-            //_downloadQueue = _appConf.LoadDownloadChapterTasks();
-            //dgvQueueChapter.DataSource = _downloadQueue;
+            Presenter.LoadDownloadChapterTasks();
             LoadBookmark();
             CheckForUpdate();
         }
@@ -256,7 +252,7 @@ namespace MangaRipper.Forms
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var appConfig = _appConf.LoadCommonSettings();
+            var appConfig = Presenter.LoadCommon();
             switch (WindowState)
             {
                 case FormWindowState.Normal:
@@ -276,9 +272,8 @@ namespace MangaRipper.Forms
             appConfig.Url = cbTitleUrl.Text;
             appConfig.SaveTo = txtSaveTo.Text;
             appConfig.CbzChecked = cbSaveCbz.Checked;
-            _appConf.SaveCommonSettings(appConfig);
-            // TODO Move AppConfig to presenter
-            //_appConf.SaveDownloadChapterTasks(_downloadQueue);
+            Presenter.SaveCommon(appConfig);
+            Presenter.SaveDownloadChapterTasks();
         }
 
         private void FormMain_Paint(object sender, PaintEventArgs e)
@@ -288,30 +283,29 @@ namespace MangaRipper.Forms
 
         private void LoadBookmark()
         {
-            var bookmarks = _appConf.LoadBookMarks();
+            var bookmarks = Presenter.LoadBookMarks();
             cbTitleUrl.Items.Clear();
-            var sc = bookmarks;
-            if (sc == null) return;
-            foreach (var item in sc)
+            if (bookmarks == null) return;
+            foreach (var item in bookmarks)
                 cbTitleUrl.Items.Add(item);
         }
 
         private void BtnAddBookmark_Click(object sender, EventArgs e)
         {
-            var sc = _appConf.LoadBookMarks().ToList();
+            var sc = Presenter.LoadBookMarks().ToList();
             if (sc.Contains(cbTitleUrl.Text) == false)
             {
                 sc.Add(cbTitleUrl.Text);
-                _appConf.SaveBookmarks(sc);
+                Presenter.SaveBookmarks(sc);
                 LoadBookmark();
             }
         }
 
         private void BtnRemoveBookmark_Click(object sender, EventArgs e)
         {
-            var sc = _appConf.LoadBookMarks().ToList();
+            var sc = Presenter.LoadBookMarks().ToList();
             sc.Remove(cbTitleUrl.Text);
-            _appConf.SaveBookmarks(sc);
+            Presenter.SaveBookmarks(sc);
             LoadBookmark();
         }
 

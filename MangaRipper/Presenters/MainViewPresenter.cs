@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MangaRipper.Core;
 using MangaRipper.Core.Models;
+using MangaRipper.Helpers;
 using MangaRipper.Models;
 using NLog;
 
@@ -13,22 +14,20 @@ namespace MangaRipper.Presenters
 {
     public class MainViewPresenter
     {
-        // TODO Implement MVP (passive)
-        // So we can separate UI can UI's logic
-        // Then we can unit test presenter (it likes UI Test :)) ) 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IMainView View { get; set; }
 
         private IWorkerController worker;
+        private readonly ApplicationConfiguration applicationConfiguration;
         private IList<ChapterRow> chapterRows = new List<ChapterRow>();
         private IList<DownloadRow> downloadRows = new List<DownloadRow>();
 
         private CancellationTokenSource cancellationTokenSource;
 
-        public MainViewPresenter(IMainView view, IWorkerController wc)
+        internal MainViewPresenter(IMainView view, IWorkerController wc, ApplicationConfiguration applicationConfiguration)
         {
             View = view;
             worker = wc;
+            this.applicationConfiguration = applicationConfiguration;
         }
 
         public async Task GetChapterListAsync(string mangaUrl, bool hasPrefix)
@@ -117,6 +116,37 @@ namespace MangaRipper.Presenters
         internal void StopDownload()
         {
             cancellationTokenSource?.Cancel();
+        }
+
+        internal CommonSettings LoadCommon()
+        {
+            return applicationConfiguration.LoadCommonSettings();
+        }
+
+        internal void SaveCommon(CommonSettings commonSettings)
+        {
+            applicationConfiguration.SaveCommonSettings(commonSettings);
+        }
+        internal void LoadDownloadChapterTasks()
+        {
+            var downloadRequests = applicationConfiguration.LoadDownloadChapterTasks();
+            downloadRows = downloadRequests.ToList();
+            View.SetDownloadRows(downloadRows);
+        }
+
+        internal void SaveDownloadChapterTasks()
+        {
+            applicationConfiguration.SaveDownloadChapterTasks(downloadRows);
+        }
+
+        internal IEnumerable<string> LoadBookMarks()
+        {
+            return applicationConfiguration.LoadBookMarks();
+        }
+
+        internal void SaveBookmarks(IEnumerable<string> sc)
+        {
+            applicationConfiguration.SaveBookmarks(sc);
         }
     }
 }
