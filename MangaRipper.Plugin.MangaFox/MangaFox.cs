@@ -1,4 +1,5 @@
-﻿using MangaRipper.Core.Logging;
+﻿using HtmlAgilityPack;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Plugins;
 using OpenQA.Selenium;
@@ -19,17 +20,15 @@ namespace MangaRipper.Plugin.MangaFox
     {
         private readonly ILogger Logger;
         private readonly IHttpDownloader downloader;
-        private readonly IXPathSelector selector;
         private readonly IRetry retry;
         private readonly RemoteWebDriver webDriver;
 
         public WebDriverWait Wait { get; }
 
-        public MangaFox(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver webDriver)
+        public MangaFox(ILogger myLogger, IHttpDownloader downloader, IRetry retry, RemoteWebDriver webDriver)
         {
             Logger = myLogger;
             this.downloader = downloader;
-            this.selector = selector;
             this.retry = retry;
             this.webDriver = webDriver;
             Wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(10));
@@ -67,9 +66,11 @@ namespace MangaRipper.Plugin.MangaFox
         private async Task<IEnumerable<Chapter>> GetChaptersImpl(string manga, CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
-            var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
-            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            var title = doc.DocumentNode.SelectSingleNode( "//span[@class='detail-info-right-title-font']").InnerText;
+            var hrefs = doc.DocumentNode.SelectNodes( "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).Select(h => h.Value).ToList();
+            var texts = doc.DocumentNode.SelectNodes( "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
 
             var chaps = new List<Chapter>();
             for (int i = 0; i < hrefs.Count(); i++)
@@ -84,6 +85,9 @@ namespace MangaRipper.Plugin.MangaFox
         public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             webDriver.Url = chapterUrl;
+            webDriver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "fanfox.net", "/", null));
+            webDriver.Manage().Cookies.AddCookie(new Cookie("isAdult", "1", "fanfox.net", "/", null));
+            webDriver.Navigate().Refresh();
             var img = webDriver.FindElementByXPath("//img[@class='reader-main-img']");
             var imgList = new List<string>();
             var src = img.GetAttribute("src");
@@ -95,8 +99,16 @@ namespace MangaRipper.Plugin.MangaFox
                 cancellationToken.ThrowIfCancellationRequested();
                 var currentDatapage = nextButton.GetAttribute("data-page");
                 nextButton.Click();
-                var src2 = img.GetAttribute("src");
-                imgList.Add(src2);
+                Wait.Until(driver =>
+                {
+                    var src2 = img.GetAttribute("src");
+                    if (!src2.EndsWith("loading.gif"))
+                    {
+                        imgList.Add(src2);
+                        return true;
+                    }
+                    return false;
+                });
                 progress.Report("Detecting: " + imgList.Count);
                 Wait.Until(driver =>
                 {

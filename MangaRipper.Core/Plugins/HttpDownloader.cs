@@ -55,6 +55,7 @@ namespace MangaRipper.Core.Plugins
             var cookieContainer = new CookieContainer();
 
             cookieContainer.Add(new Cookie("isAdult", "1", "/", "www.mangahere.cc"));
+            cookieContainer.Add(new Cookie("isAdult", "1", "/", "fanfox.net"));
 
             var firstHandle = new HttpClientHandler
             {

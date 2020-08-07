@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Plugins;
@@ -17,28 +18,28 @@ namespace MangaRipper.Plugin.ReadOPM
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
-        private readonly IXPathSelector selector;
 
-        public ReadOPM(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
+        public ReadOPM(ILogger myLogger, IHttpDownloader downloader)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.selector = selector;
         }
         public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
-            var chaps = selector
-                .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a")
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            var chaps = doc.DocumentNode
+                .SelectNodes("//ul[contains(@class, 'chapters-list')]/li/a")
                 .Select(n =>
                 {
-                    string url = n.Attributes["href"];
+                    string url = n.Attributes["href"].Value;
                     return new Chapter(null, url);
                 }).ToList();
 
-            var chap_numbers = selector
-                .SelectMany(input, "//ul[contains(@class, 'chapters-list')]/li/a/span[contains(@class, 'chapter__no')]")
+            var chap_numbers = doc.DocumentNode
+                .SelectNodes("//ul[contains(@class, 'chapters-list')]/li/a/span[contains(@class, 'chapter__no')]")
                 .Select(n => n.InnerText)
                 .ToList();
 
@@ -51,8 +52,10 @@ namespace MangaRipper.Plugin.ReadOPM
         {
             progress.Report("Detecting...");
             string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
-            var images = selector.SelectMany(input, "//div[contains(@class,'img_container')]/img")
-                .Select(n => n.Attributes["src"])
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            var images = doc.DocumentNode.SelectNodes("//div[contains(@class,'img_container')]/img")
+                .Select(n => n.Attributes["src"].Value)
                 .Where(src =>
                 {
                     return !string.IsNullOrWhiteSpace(src)

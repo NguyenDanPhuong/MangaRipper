@@ -2,7 +2,10 @@
 using MangaRipper.Core.Logging;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Plugin.MangaReader;
+using MangaRipper.Tools.ChromeDriver;
 using Moq;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Linq;
 using System.Threading;
@@ -13,17 +16,32 @@ namespace MangaRipper.Test.Plugins
 {
     public class MangaReaderTests
     {
-        CancellationTokenSource source;
+        readonly CancellationTokenSource source;
         readonly ILogger logger;
-        IHttpDownloader downloader;
+
+        public ChromeDriver ChromeDriver { get; }
+
+        readonly IHttpDownloader downloader;
         private readonly MangaReader service;
 
         public MangaReaderTests()
         {
+            var updater = new ChromeDriverUpdater(".\\");
+            updater.ExecuteAsync().Wait();
+            source = new CancellationTokenSource();
+
+            var options = new ChromeOptions();
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--headless");
+            ChromeDriver = new ChromeDriver(options);
+
+
+            downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
             source = new CancellationTokenSource();
             logger = new Mock<ILogger>().Object;
             downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaReader(logger, downloader, new XPathSelector());
+            service = new MangaReader(logger, downloader, ChromeDriver);
         }
 
         [Fact]
@@ -48,9 +66,9 @@ namespace MangaRipper.Test.Plugins
         {
             var images = await service.GetImages("https://www.mangareader.net/naruto/1", new Progress<string>(), source.Token);
             Assert.Equal(53, images.Count());
-            Assert.Equal("https://i10.mangareader.net/naruto/1/naruto-1564773.jpg", images.ToArray()[0]);
-            Assert.Equal("https://i4.mangareader.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
-            Assert.Equal("https://i1.mangareader.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
+            Assert.Equal("https://i9.imggur.net/naruto/1/naruto-1564773.jpg", images.ToArray()[0]);
+            Assert.Equal("https://i7.imggur.net/naruto/1/naruto-1564774.jpg", images.ToArray()[1]);
+            Assert.Equal("https://i1.imggur.net/naruto/1/naruto-1564825.jpg", images.ToArray()[52]);
 
             string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);

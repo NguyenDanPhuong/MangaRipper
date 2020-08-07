@@ -1,4 +1,5 @@
-﻿using MangaRipper.Core.Logging;
+﻿using HtmlAgilityPack;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Plugins;
 using OpenQA.Selenium;
@@ -20,16 +21,14 @@ namespace MangaRipper.Plugin.MangaHere
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
-        private readonly IXPathSelector selector;
         private readonly IRetry retry;
         private readonly RemoteWebDriver driver;
-        private WebDriverWait Wait;
+        private readonly WebDriverWait Wait;
 
-        public MangaHere(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector, IRetry retry, RemoteWebDriver driver)
+        public MangaHere(ILogger myLogger, IHttpDownloader downloader, IRetry retry, RemoteWebDriver driver)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.selector = selector;
             this.retry = retry;
             this.driver = driver;
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -45,10 +44,13 @@ namespace MangaRipper.Plugin.MangaHere
 
         private async Task<IEnumerable<Chapter>> GetChaptersImpl(string mangaUrl, CancellationToken cancellationToken)
         {
+           
             string input = await downloader.GetStringAsync(mangaUrl, cancellationToken);
-            var title = selector.Select(input, "//span[@class='detail-info-right-title-font']").InnerText;
-            var hrefs = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).ToList();
-            var texts = selector.SelectMany(input, "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
+            var x = new HtmlDocument();
+            x.LoadHtml(input);
+            var title = x.DocumentNode.SelectSingleNode("//span[@class='detail-info-right-title-font']").InnerText;
+            var hrefs = x.DocumentNode.SelectNodes( "//ul[@class='detail-main-list']/li/a").Select(a => a.Attributes["href"]).Select(a => a.Value).ToList();
+            var texts = x.DocumentNode.SelectNodes( "//ul[@class='detail-main-list']/li/a/div/p[@class='title3']").Select(p => p.InnerText).ToList();
 
             var chaps = new List<Chapter>();
             for (int i = 0; i < hrefs.Count(); i++)
@@ -77,8 +79,16 @@ namespace MangaRipper.Plugin.MangaHere
                 cancellationToken.ThrowIfCancellationRequested();
                 var currentDatapage = nextButton.GetAttribute("data-page");
                 nextButton.Click();
-                var src2 = img.GetAttribute("src");
-                imgList.Add(src2);
+                Wait.Until(driver =>
+                {
+                    var src2 = img.GetAttribute("src");
+                    if (!src2.EndsWith("loading.gif"))
+                    {
+                        imgList.Add(src2);
+                        return true;
+                    }
+                    return false;
+                });
                 progress.Report("Detecting: " + imgList.Count);
                 Wait.Until(d =>
                 {

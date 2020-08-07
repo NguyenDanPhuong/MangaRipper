@@ -20,7 +20,6 @@ namespace MangaRipper.Test.Plugins
     public class FanfoxTests : IDisposable
     {
         readonly ChromeDriver ChromeDriver;
-        private readonly WebDriverWait Wait;
         readonly Mock<ILogger> logger = new Mock<ILogger>();
         readonly IHttpDownloader downloader;
         readonly MangaFox service;
@@ -38,11 +37,10 @@ namespace MangaRipper.Test.Plugins
             options.AddArgument("--start-maximized");
             options.AddArgument("--headless");
             ChromeDriver = new ChromeDriver(options);
-            Wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(10));
 
 
             downloader = new HttpDownloader(new FilenameDetector(new GoogleProxyFilenameDetector()));
-            service = new MangaFox(logger.Object, downloader, new XPathSelector(), new Retry(), ChromeDriver);
+            service = new MangaFox(logger.Object, downloader, new Retry(), ChromeDriver);
         }
 
         public void Dispose()
@@ -72,9 +70,9 @@ namespace MangaRipper.Test.Plugins
         {
             var images = await service.GetImages("https://fanfox.net/manga/tian_jiang_xian_shu_nan/c001/1.html", new Progress<string>(), source.Token);
             Assert.Equal(16, images.Count());
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
-            Assert.StartsWith("https://s.fanfox.net/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
+            Assert.StartsWith("https://zjcdn.mangafox.me/store/manga/19803/001.0/compressed/q001.jpg", images.ToArray()[0]);
+            Assert.StartsWith("https://zjcdn.mangafox.me/store/manga/19803/001.0/compressed/q002.jpg", images.ToArray()[1]);
+            Assert.StartsWith("https://zjcdn.mangafox.me/store/manga/19803/001.0/compressed/q003.jpg", images.ToArray()[2]);
 
             string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);

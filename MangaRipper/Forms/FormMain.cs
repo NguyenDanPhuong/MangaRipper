@@ -21,8 +21,8 @@ namespace MangaRipper.Forms
     public partial class FormMain : Form, IMainView
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private MainViewPresenter Presenter;
-        private IEnumerable<IPlugin> pluginList;
+        private readonly MainViewPresenter Presenter;
+        private readonly IEnumerable<IPlugin> pluginList;
 
         public FormMain(IEnumerable<IPlugin> pluginList, IWorkerController worker, ApplicationConfiguration applicationConfiguration)
         {

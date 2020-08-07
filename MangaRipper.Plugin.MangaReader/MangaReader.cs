@@ -1,6 +1,10 @@
-﻿using MangaRipper.Core.Logging;
+﻿using HtmlAgilityPack;
+using MangaRipper.Core.Logging;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Plugins;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,23 +20,28 @@ namespace MangaRipper.Plugin.MangaReader
     {
         private static ILogger logger;
         private readonly IHttpDownloader downloader;
-        private readonly IXPathSelector selector;
+        private readonly RemoteWebDriver driver;
 
-        public MangaReader(ILogger myLogger, IHttpDownloader downloader, IXPathSelector selector)
+        private readonly WebDriverWait Wait;
+
+        public MangaReader(ILogger myLogger, IHttpDownloader downloader, RemoteWebDriver driver)
         {
             logger = myLogger;
             this.downloader = downloader;
-            this.selector = selector;
+            this.driver = driver;
+            Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
         }
         public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
-            var title = selector.Select(input, "//h2[@class='aname']").InnerText;
-            var chaps = selector
-                .SelectMany(input, "//table[@id='listing']//a")
+            var doc = new HtmlDocument();
+            doc.LoadHtml(input);
+            var chaps = doc.DocumentNode
+                .SelectNodes("//i[@class='d16 d45']/following-sibling::a")
                 .Select(n =>
                 {
-                    string url = n.Attributes["href"];
+                    string url = n.Attributes["href"].Value;
                     var resultUrl = new Uri(new Uri(manga), url).AbsoluteUri;
                     return new Chapter(n.InnerText, resultUrl);
                 });
@@ -43,30 +52,34 @@ namespace MangaRipper.Plugin.MangaReader
         public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
-            string input = await downloader.GetStringAsync(chapterUrl, cancellationToken);
-            var pages = selector.SelectMany(input, "//select[@id='pageMenu']/option")
-                .Select(n => n.Attributes["value"]);
+            driver.Url = chapterUrl;
+            var scrollMode = driver.FindElementByXPath("//div[@id='swsc']");
+            scrollMode.Click();
+            Wait.Until(driver => {
 
-            // transform pages link
-            pages = pages.Select(p =>
-            {
-                var value = new Uri(new Uri(chapterUrl), p).AbsoluteUri;
-                return value;
-            }).ToList();
+                var x = driver.FindElements(By.XPath("//img[@data-id]"));
 
-            // find all images in pages
-            var images = new List<string>();
-            foreach (var page in pages)
-            {
-                var pageHtml = await downloader.GetStringAsync(page, cancellationToken);
-                var image = selector
-                .Select(pageHtml, "//img[@id='img']").Attributes["src"];
-                images.Add(image);
-                
-                progress.Report("Detecting: " + images.Count);
-            }
+                var isLoading = x.Any(p => p.GetAttribute("src").StartsWith("data:image/svg+xml"));
+                if (isLoading)
+                {
+                    return false;
+                }
 
-            return images;
+               
+                return true;
+            });
+
+            var pages = driver.FindElements(By.XPath("//img[@data-id]"));
+            var srts= pages.Select(n => n.GetAttribute("src"))
+               .Select(p =>
+               {
+                   var value = new Uri(new Uri(chapterUrl), p).AbsoluteUri;
+                   return value;
+               }).ToList();
+
+            progress.Report("Detecting: " + pages.Count);
+
+            return await Task.FromResult(srts.AsEnumerable());
         }
 
 

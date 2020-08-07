@@ -14,6 +14,7 @@ using OpenQA.Selenium.Remote;
 using MangaRipper.Core.Plugins;
 using MangaRipper.Core;
 using MangaRipper.Tools.ChromeDriver;
+using MangaRipper.Helpers;
 
 namespace MangaRipper
 {
@@ -79,25 +80,24 @@ namespace MangaRipper
 
             container.RegisterConditional(typeof(Core.Logging.ILogger),
                c => typeof(NLogLogger<>).MakeGenericType(c.Consumer.ImplementationType),
-               Lifestyle.Transient,
+               Lifestyle.Singleton,
                c => true
                );
 
-            container.Register<RemoteWebDriver>(() => driver);
+            container.Register<RemoteWebDriver>(() => driver, Lifestyle.Singleton);
 
-            container.Register<IWorkerController, WorkerController>();
-            container.Register<IPluginManager, PluginManager>();
-            container.Register<IOutputFactory, OutputFactory>();
+            container.Register<IWorkerController, WorkerController>(Lifestyle.Singleton);
+            container.Register<IPluginManager, PluginManager>(Lifestyle.Singleton);
+            container.Register<IOutputFactory, OutputFactory>(Lifestyle.Singleton);
 
             var configPath = Path.Combine(Environment.CurrentDirectory, "MangaRipper.Configuration.json");
-            container.Register<IHttpDownloader, HttpDownloader>();
-            container.Register<IXPathSelector, XPathSelector>();
-            container.Register<IRetry, Retry>();
+            container.Register<IHttpDownloader, HttpDownloader>(Lifestyle.Singleton);
+            container.Register<IRetry, Retry>(Lifestyle.Singleton);
 
-            container.Register<IFilenameDetector, FilenameDetector>();
-            container.Register<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>();
+            container.Register<IFilenameDetector, FilenameDetector>(Lifestyle.Singleton);
+            container.Register<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>(Lifestyle.Singleton);
 
-
+            container.Register<ApplicationConfiguration>(Lifestyle.Singleton);
 
             var pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             var pluginAssemblies = new DirectoryInfo(pluginPath).GetFiles()
@@ -106,9 +106,8 @@ namespace MangaRipper
 
             container.Collection.Register<IPlugin>(pluginAssemblies);
 
-            container.RegisterDecorator<IXPathSelector, XPathSelectorLogging>();
-            container.RegisterDecorator<IHttpDownloader, DownloadLogging>();
-            container.Register<FormMain>();
+            container.RegisterDecorator<IHttpDownloader, DownloadLogging>(Lifestyle.Singleton);
+            container.Register<FormMain>(Lifestyle.Singleton);
             //container.Verify();
         }
 
