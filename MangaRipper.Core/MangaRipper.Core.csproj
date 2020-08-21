@@ -116,7 +116,6 @@
     <Compile Include="Outputers\IOutputFactory.cs" />
     <Compile Include="Outputers\OutputFactory.cs" />
     <Compile Include="Plugins\IPluginManager.cs" />
-    <Compile Include="Models\MyHtmlNode.cs" />
     <Compile Include="Plugins\IRetry.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\DownloadChapterRequest.cs" />
