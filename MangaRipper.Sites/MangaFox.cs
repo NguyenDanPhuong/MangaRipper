@@ -45,25 +45,25 @@ namespace MangaRipper.Plugin.MangaFox
             return uri.Host.Equals("fanfox.net");
         }
 
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             Logger.Info($@"> FindChapters(): {manga}");
 
-            IEnumerable<Chapter> chaps = await retry.DoAsync(() =>
+            IReadOnlyCollection<Chapter> chaps = await retry.DoAsync(() =>
             {
                 return GetChaptersImpl(manga, cancellationToken);
             }, TimeSpan.FromSeconds(3));
 
-            chaps = chaps.Select(chap =>
+            var result = chaps.Select(chap =>
             {
                 chap.Url = $"https://fanfox.net{chap.Url}";
                 return chap;
             });
 
-            return chaps;
+            return result.ToList();
         }
 
-        private async Task<IEnumerable<Chapter>> GetChaptersImpl(string manga, CancellationToken cancellationToken)
+        private async Task<IReadOnlyCollection<Chapter>> GetChaptersImpl(string manga, CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var doc = new HtmlDocument();
@@ -82,7 +82,7 @@ namespace MangaRipper.Plugin.MangaFox
             return chaps;
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             webDriver.Url = chapterUrl;
             webDriver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "fanfox.net", "/", null));

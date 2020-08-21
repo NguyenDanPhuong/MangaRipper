@@ -1,0 +1,20 @@
+﻿<Window x:Class="MangaRipper.Presentation.AddToDownloadListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MangaRipper.Presentation"
+        mc:Ignorable="d"
+        Title="Add To Download List" Height="165" Width="595" ResizeMode="NoResize">
+    <Grid>
+        <Label x:Name="label" Content="Save Chapter To:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button" Content="Change Folder" HorizontalAlignment="Left" Margin="462,13,0,0" VerticalAlignment="Top" Width="101"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="136,14,0,0" Text="{Binding SaveToFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Width="321"/>
+        <CheckBox x:Name="checkBox" IsChecked="{Binding IsFolderSelected}" Content="Folder" HorizontalAlignment="Left" Margin="136,47,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox_Copy" IsChecked="{Binding IsCbzSelected}" Content="CBZ" HorizontalAlignment="Left" Margin="136,67,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Save Chapter As:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button_Copy" Content="Cancel" HorizontalAlignment="Left" Margin="483,94,0,0" VerticalAlignment="Top" Width="80" Click="ButtonCancel_Click"/>
+        <Button x:Name="button_Copy1"  Content="OK" HorizontalAlignment="Left" Margin="397,94,0,0" VerticalAlignment="Top" Width="81" Click="ButtonOk_Click"/>
+
+    </Grid>
+</Window>

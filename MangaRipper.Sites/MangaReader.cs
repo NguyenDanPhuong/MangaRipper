@@ -32,7 +32,7 @@ namespace MangaRipper.Plugin.MangaReader
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
         }
-        public async Task<IEnumerable<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var doc = new HtmlDocument();
@@ -45,11 +45,11 @@ namespace MangaRipper.Plugin.MangaReader
                     var resultUrl = new Uri(new Uri(manga), url).AbsoluteUri;
                     return new Chapter(n.InnerText, resultUrl);
                 });
-            chaps = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
-            return chaps;
+            var result = chaps.Reverse().GroupBy(x => x.Url).Select(g => g.First()).ToList();
+            return result.ToList();
         }
 
-        public async Task<IEnumerable<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
             driver.Url = chapterUrl;
@@ -79,7 +79,7 @@ namespace MangaRipper.Plugin.MangaReader
 
             progress.Report("Detecting: " + pages.Count);
 
-            return await Task.FromResult(srts.AsEnumerable());
+            return await Task.FromResult(srts);
         }
 
 
