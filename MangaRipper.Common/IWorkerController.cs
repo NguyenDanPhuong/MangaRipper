@@ -8,7 +8,7 @@ namespace MangaRipper.Core
 {
     public interface IWorkerController
     {
-        Task<IReadOnlyCollection<Chapter>> GetChapterListAsync(string mangaPath, IProgress<string> progress, CancellationToken cancellationToken);
+        Task<IReadOnlyList<Chapter>> GetChapterListAsync(string mangaPath, IProgress<string> progress, CancellationToken cancellationToken);
         Task<DownloadChapterResponse> GetChapterAsync(DownloadChapterRequest task, IProgress<string> progress, CancellationToken cancellationToken);
     }
 }

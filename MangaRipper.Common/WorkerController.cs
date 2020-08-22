@@ -64,7 +64,7 @@ namespace MangaRipper.Core
         /// <param name="mangaPath">The URL of manga</param>
         /// <param name="progress">Progress report callback</param>
         /// <returns></returns>
-        public async Task<IReadOnlyCollection<Chapter>> GetChapterListAsync(string mangaPath, IProgress<string> progress, CancellationToken cancellationTokenSource)
+        public async Task<IReadOnlyList<Chapter>> GetChapterListAsync(string mangaPath, IProgress<string> progress, CancellationToken cancellationTokenSource)
         {
             logger.Info($"> FindChapters: {mangaPath}");
             return await Task.Run(async () =>
@@ -109,7 +109,7 @@ namespace MangaRipper.Core
             progress.Report("Done");
         }
 
-        private async Task<IReadOnlyCollection<Chapter>> GetChapterListImpl(string mangaPath, IProgress<string> progress, CancellationToken cancellationToken)
+        private async Task<IReadOnlyList<Chapter>> GetChapterListImpl(string mangaPath, IProgress<string> progress, CancellationToken cancellationToken)
         {
             progress.Report("....");
             var service = pluginManager.GetPlugin(mangaPath);

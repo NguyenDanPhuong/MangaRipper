@@ -32,7 +32,7 @@ namespace MangaRipper.Plugin.MangaReader
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
         }
-        public async Task<IReadOnlyCollection<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
             var doc = new HtmlDocument();
@@ -49,7 +49,7 @@ namespace MangaRipper.Plugin.MangaReader
             return result.ToList();
         }
 
-        public async Task<IReadOnlyCollection<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             // find all pages in a chapter
             driver.Url = chapterUrl;

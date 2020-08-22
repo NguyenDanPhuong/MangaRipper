@@ -33,7 +33,7 @@ namespace MangaRipper.Plugin.MangaHere
             this.driver = driver;
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
-        public async Task<IReadOnlyCollection<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<Chapter>> GetChapters(string manga, IProgress<string> progress, CancellationToken cancellationToken)
         {
             var chapters = await retry.DoAsync(() =>
             {
@@ -42,7 +42,7 @@ namespace MangaRipper.Plugin.MangaHere
             return chapters;
         }
 
-        private async Task<IReadOnlyCollection<Chapter>> GetChaptersImpl(string mangaUrl, CancellationToken cancellationToken)
+        private async Task<IReadOnlyList<Chapter>> GetChaptersImpl(string mangaUrl, CancellationToken cancellationToken)
         {
            
             string input = await downloader.GetStringAsync(mangaUrl, cancellationToken);
@@ -62,7 +62,7 @@ namespace MangaRipper.Plugin.MangaHere
             return chaps;
         }
 
-        public async Task<IReadOnlyCollection<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<string>> GetImages(string chapterUrl, IProgress<string> progress, CancellationToken cancellationToken)
         {
             driver.Url = chapterUrl;
             driver.Manage().Cookies.AddCookie(new Cookie("noshowdanmaku", "1", "www.mangahere.cc", "/", null));

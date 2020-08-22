@@ -24,7 +24,7 @@ namespace MangaRipper.Plugin.ReadOPM
             logger = myLogger;
             this.downloader = downloader;
         }
-        public async Task<IReadOnlyCollection<Chapter>> GetChapters(string manga, IProgress<string> progress,
+        public async Task<IReadOnlyList<Chapter>> GetChapters(string manga, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
             string input = await downloader.GetStringAsync(manga, cancellationToken);
@@ -47,7 +47,7 @@ namespace MangaRipper.Plugin.ReadOPM
             return chaps;
         }
 
-        public async Task<IReadOnlyCollection<string>> GetImages(string chapterUrl, IProgress<string> progress,
+        public async Task<IReadOnlyList<string>> GetImages(string chapterUrl, IProgress<string> progress,
             CancellationToken cancellationToken)
         {
             progress.Report("Detecting...");

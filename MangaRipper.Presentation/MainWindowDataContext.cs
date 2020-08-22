@@ -19,8 +19,6 @@ namespace MangaRipper.Presentation
     public class MainWindowDataContext : BaseViewModel
     {
         private AddWindowDataContext AddWindowVM { get; set; } = new AddWindowDataContext();
-        private readonly IEnumerable<IPlugin> pluginList;
-        private readonly IWorkerController worker;
         private readonly ApplicationConfiguration applicationConfiguration;
         private IEnumerable<ChapterRow> chapterRows;
         private ICollection<DownloadRow> downloadRows;
@@ -61,8 +59,6 @@ namespace MangaRipper.Presentation
         }
         public MainWindowDataContext(IEnumerable<IPlugin> pluginList, IWorkerController worker, ApplicationConfiguration applicationConfiguration)
         {
-            this.pluginList = pluginList;
-            this.worker = worker;
             this.applicationConfiguration = applicationConfiguration;
 
             GetChaptersCommand = new RelayCommand(async x =>
@@ -75,8 +71,10 @@ namespace MangaRipper.Presentation
             {
                 IList items = (IList)x;
                 var collection = items.Cast<ChapterRow>();
-                var a = new AddToDownloadListWindow();
-                a.DataContext = AddWindowVM;
+                var a = new AddToDownloadListWindow
+                {
+                    DataContext = AddWindowVM
+                };
                 var isOk = a.ShowDialog();
                 if (isOk.GetValueOrDefault())
                 {
@@ -86,8 +84,10 @@ namespace MangaRipper.Presentation
 
             AddAllCommand = new RelayCommand(x =>
             {
-                var a = new AddToDownloadListWindow();
-                a.DataContext = AddWindowVM;
+                var a = new AddToDownloadListWindow
+                {
+                    DataContext = AddWindowVM
+                };
                 var isOk = a.ShowDialog();
                 if (isOk.GetValueOrDefault())
                 {
