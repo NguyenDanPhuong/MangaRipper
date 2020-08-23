@@ -44,8 +44,7 @@ namespace MangaRipper.Test.Plugins
 
         public void Dispose()
         {
-            ChromeDriver.Close();
-            ChromeDriver.Dispose();
+            ChromeDriver.Quit();
         }
 
 #if DEBUG

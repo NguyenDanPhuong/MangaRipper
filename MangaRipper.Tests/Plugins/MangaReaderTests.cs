@@ -14,7 +14,7 @@ using Xunit;
 
 namespace MangaRipper.Test.Plugins
 {
-    public class MangaReaderTests
+    public class MangaReaderTests:IDisposable
     {
         readonly CancellationTokenSource source;
         readonly ILogger<MangaReader> logger;
@@ -72,6 +72,11 @@ namespace MangaRipper.Test.Plugins
 
             string imageString = await downloader.GetStringAsync(images.ToArray()[0], source.Token);
             Assert.NotNull(imageString);
+        }
+
+        public void Dispose()
+        {
+            ChromeDriver.Quit();
         }
     }
 }
