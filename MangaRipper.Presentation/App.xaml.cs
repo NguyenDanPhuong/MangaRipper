@@ -12,7 +12,10 @@ using MangaRipper.Plugin.MangaReader;
 using MangaRipper.Plugin.ReadOPM;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
@@ -34,7 +37,7 @@ namespace MangaRipper.Presentation
 
         public IConfiguration Configuration { get; private set; }
 
-        OpenQA.Selenium.Chrome.ChromeDriver ChromeDriver;
+        private RemoteWebDriver chrome;
 
         public App()
         {
@@ -44,7 +47,7 @@ namespace MangaRipper.Presentation
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ChromeDriver?.Close();
+            chrome?.Quit();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -59,8 +62,10 @@ namespace MangaRipper.Presentation
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
+            chrome = CreateChromeDriver();
 
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<RemoteWebDriver>(x => chrome);
             serviceCollection.AddSingleton(Configuration);
             ConfigureServices(serviceCollection);
 
@@ -73,13 +78,13 @@ namespace MangaRipper.Presentation
 
         protected override void OnExit(ExitEventArgs e)
         {
-            ChromeDriver?.Dispose();
+            chrome?.Quit();
             base.OnExit(e);
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(typeof(ILogger<>), typeof(NLogLogger<>));
+            services.AddSingleton(typeof(ILogger<>),typeof(NLogLogger<>));
             services.AddSingleton<RemoteWebDriver>(x =>
             {
                 var options = new ChromeOptions();
@@ -88,8 +93,8 @@ namespace MangaRipper.Presentation
                 options.AddArgument("--headless");
                 var driverService = ChromeDriverService.CreateDefaultService();
                 driverService.HideCommandPromptWindow = true;
-                ChromeDriver = new OpenQA.Selenium.Chrome.ChromeDriver(driverService, options);
-                return ChromeDriver;
+                chrome = new OpenQA.Selenium.Chrome.ChromeDriver(driverService, options);
+                return chrome;
             });
             services.AddSingleton<IWorkerController, WorkerController>();
             services.AddSingleton<IPluginManager, PluginManager>();
@@ -107,6 +112,17 @@ namespace MangaRipper.Presentation
             services.AddSingleton<IHttpDownloader, HttpDownloader>();
             services.AddSingleton<MainWindowDataContext, MainWindowDataContext>();
             services.AddSingleton(typeof(MainWindow));
+        }
+
+        private RemoteWebDriver CreateChromeDriver()
+        {
+            var options = new ChromeOptions();
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArgument("--start-maximized");
+            options.AddArgument("--headless");
+            var driverService = ChromeDriverService.CreateDefaultService();
+            driverService.HideCommandPromptWindow = true;
+            return new OpenQA.Selenium.Chrome.ChromeDriver(driverService, options);
         }
     }
 }

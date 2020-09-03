@@ -19,7 +19,6 @@ namespace MangaRipper.Presentation
     public class MainWindowDataContext : BaseViewModel
     {
         private AddWindowDataContext AddWindowVM { get; set; } = new AddWindowDataContext();
-        private readonly ApplicationConfiguration applicationConfiguration;
         private IEnumerable<ChapterRow> chapterRows;
         private ICollection<DownloadRow> downloadRows;
         private CancellationTokenSource cancellationTokenSource;
@@ -52,21 +51,19 @@ namespace MangaRipper.Presentation
         public ICommand RemoveAllCommand { get; set; }
         public ICommand StartDownloadCommand { get; set; }
         public ICommand StopDownloadCommand { get; set; }
-
-        public MainWindowDataContext()
+        public ICommand AddRemovePrefixCommand { get; set; }
+        
+        public MainWindowDataContext(IEnumerable<IPlugin> pluginList, IWorkerController worker)
         {
-
-        }
-        public MainWindowDataContext(IEnumerable<IPlugin> pluginList, IWorkerController worker, ApplicationConfiguration applicationConfiguration)
-        {
-            this.applicationConfiguration = applicationConfiguration;
-
             GetChaptersCommand = new RelayCommand(async x =>
             {
                 var chapters = await worker.GetChapterListAsync(Url, new Progress<string>(x => x.ToString()), new System.Threading.CancellationToken());
                 ChapterRows = chapters.Select(c => new ChapterRow(c));
             });
-
+            AddRemovePrefixCommand = new RelayCommand( x =>
+            {
+                
+            });
             AddSelectedCommand = new RelayCommand(x =>
             {
                 IList items = (IList)x;

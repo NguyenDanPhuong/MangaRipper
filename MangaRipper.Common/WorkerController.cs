@@ -92,13 +92,9 @@ namespace MangaRipper.Core
 
             var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
-            var index = 1;
-            foreach (var image in images)
-            {
-                progress.Report($"Download: {index}/{images.Count()}");
-                await downloader.GetFileAsync(image, tempFolder, cancellationToken);
-                index++;
-            }
+            var imageTasks = images.Select(i => downloader.GetFileAsync(i, tempFolder, cancellationToken));
+
+            string[] imgPaths = await Task.WhenAll<string>(imageTasks);
 
             foreach (var format in task.Formats)
             {
