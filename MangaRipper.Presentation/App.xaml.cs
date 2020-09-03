@@ -36,38 +36,50 @@ namespace MangaRipper.Presentation
 
         OpenQA.Selenium.Chrome.ChromeDriver ChromeDriver;
 
+        public App()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ChromeDriver?.Close();
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            var loading = new LoadingWindow();
+            loading.Show();
             var update = new ChromeDriverUpdater(".\\");
             update.ExecuteAsync().GetAwaiter().GetResult();
 
-            var builder = new ConfigurationBuilder();
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton(Configuration);
             ConfigureServices(serviceCollection);
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+            loading.Close();
             mainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (ChromeDriver != null)
-            {
-                ChromeDriver.Dispose();
-            }
+            ChromeDriver?.Dispose();
             base.OnExit(e);
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(typeof(ILogger<>),typeof(NLogLogger<>));
+            services.AddSingleton(typeof(ILogger<>), typeof(NLogLogger<>));
             services.AddSingleton<RemoteWebDriver>(x =>
             {
                 var options = new ChromeOptions();
@@ -86,7 +98,6 @@ namespace MangaRipper.Presentation
 
             services.AddSingleton<IFilenameDetector, FilenameDetector>();
             services.AddSingleton<IGoogleProxyFilenameDetector, GoogleProxyFilenameDetector>();
-            services.AddSingleton<ApplicationConfiguration>();
 
             services.AddSingleton<IPlugin, MangaFox>();
             services.AddSingleton<IPlugin, MangaHere>();
