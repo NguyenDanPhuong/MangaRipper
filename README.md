@@ -1,4 +1,4 @@
-# MangaRipper
+# MangaRipper management
 
 This software helps you download manga (Japanese Comic) from several websites for your offline viewing.
 
