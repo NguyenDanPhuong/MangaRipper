@@ -1,6 +1,6 @@
 # MangaRipper
 
-This software helps you download manga (Japanese Comic) from several websites for your offline viewing.
+This software helps you download manga (Japanese Comic) from several websites for you that you can enjoy it offline anytime:)
 
 | BRANCH | STATUS |
 | --- | --- |
