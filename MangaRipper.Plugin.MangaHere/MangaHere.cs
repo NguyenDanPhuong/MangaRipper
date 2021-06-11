@@ -110,6 +110,13 @@ namespace MangaRipper.Plugin.MangaHere
 
             }
             while (nextButton != null && nextButton.Displayed);
+
+            // Remove the last page, because is always some commercial image, not from the comic
+            if (imgList.Count > 1)
+            {
+                imgList.RemoveAt(imgList.Count - 1);
+            }
+
             return await Task.FromResult(imgList);
         }
 
