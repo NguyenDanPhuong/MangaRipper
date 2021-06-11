@@ -77,8 +77,17 @@ namespace MangaRipper.Plugin.MangaHere
                 cancellationToken.ThrowIfCancellationRequested();
                 var currentDatapage = nextButton.GetAttribute("data-page");
                 nextButton.Click();
-                var src2 = img.GetAttribute("src");
-                imgList.Add(src2);
+                Wait.Until(driver =>
+                {
+                    var src2 = img.GetAttribute("src");
+                    if (!src2.EndsWith("loading.gif"))
+                    {
+                        imgList.Add(src2);
+                        return true;
+                    }
+                    return false;
+                });
+
                 progress.Report("Detecting: " + imgList.Count);
                 Wait.Until(d =>
                 {
